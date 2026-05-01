@@ -1,0 +1,62 @@
+---
+import BrandMark from "./BrandMark.astro";
+
+const year = new Date().getFullYear();
+
+const studioLinks = [
+  { href: "/about", label: "About" },
+  { href: "/team",  label: "Team" },
+  { href: "/work",  label: "Work" },
+];
+const serviceLinks = [
+  { href: "/services", label: "Landing — $800" },
+  { href: "/services", label: "Full Site — $1,800" },
+  { href: "/contact",  label: "Custom inquiry" },
+];
+---
+
+<footer class="mt-[6rem] border-t border-line bg-bg-soft pt-[5rem] pb-6">
+  <div class="container-page">
+    <div class="grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] md:gap-12 mb-12">
+      <div>
+        <div class="flex items-center -ml-3 mb-6 text-ink">
+          <BrandMark class="w-[140px] h-[140px] text-ink" decorative={true} />
+        </div>
+      </div>
+
+      <div>
+        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Studio</h5>
+        <ul class="grid gap-2 list-none p-0 m-0">
+          {studioLinks.map((l) => (
+            <li><a href={l.href} class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Services</h5>
+        <ul class="grid gap-2 list-none p-0 m-0">
+          {serviceLinks.map((l) => (
+            <li><a href={l.href} class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Contact</h5>
+        <ul class="grid gap-2 list-none p-0 m-0">
+          <li><a href="mailto:hello@fwd.studio" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">hello@fwd.studio</a></li>
+          <li><a href="/contact" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">Start a project</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-line text-fg-muted font-mono tracking-[0.04em] text-[length:var(--text-step--2)]">
+      <span>© {year} Forward Design Consulting · All rights reserved</span>
+      <span class="font-display italic text-fg-soft tracking-normal text-[length:var(--text-step--1)]"
+            style="font-variation-settings: 'opsz' 60, 'SOFT' 100;">
+        Designed &amp; built in-house.
+      </span>
+    </div>
+  </div>
+</footer>

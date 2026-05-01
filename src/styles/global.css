@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+/* ========================================================================
+   THEME — design tokens exposed to Tailwind utilities
+   Tailwind v4 reads --color-*, --font-*, --text-* etc. from @theme and
+   automatically generates utilities (bg-navy, text-blue, font-display, …).
+   ======================================================================== */
+@theme {
+  /* Brand palette */
+  --color-paper: #ffffff;
+  --color-periwinkle: #8e94b8;
+  --color-blue: #144667;
+  --color-navy: #0d2f45;
+  --color-ink: #071722;
+
+  /* Surfaces */
+  --color-bg-soft: #f6f6f8;
+  --color-surface: #efeff2;
+
+  /* Semantic text shades */
+  --color-fg: #0d2f45;
+  --color-fg-soft: #243845;
+  --color-fg-muted: #5e6b78;
+
+  /* Hairlines */
+  --color-line: rgb(7 23 34 / 0.10);
+  --color-line-strong: rgb(7 23 34 / 0.30);
+  --color-hairline: rgb(7 23 34 / 0.08);
+
+  /* Typography */
+  --font-display: "Fraunces", "Times New Roman", Georgia, serif;
+  --font-sans: "Inter Tight", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Fluid type scale */
+  --text-step--2: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  --text-step--1: clamp(0.82rem, 0.78rem + 0.18vw, 0.9rem);
+  --text-step-0: clamp(0.95rem, 0.9rem + 0.22vw, 1.05rem);
+  --text-step-1: clamp(1.1rem, 1.02rem + 0.4vw, 1.28rem);
+  --text-step-2: clamp(1.4rem, 1.2rem + 1vw, 1.85rem);
+  --text-step-3: clamp(1.85rem, 1.5rem + 1.7vw, 2.65rem);
+  --text-step-4: clamp(2.4rem, 1.9rem + 2.6vw, 3.85rem);
+  --text-step-5: clamp(3.2rem, 2.4rem + 4vw, 5.6rem);
+  --text-step-6: clamp(4rem, 2.8rem + 6vw, 8rem);
+
+  /* Easings — used by custom animations */
+  --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout container width */
+  --container-prose: 880px;
+  --container-page: 1240px;
+}
+
+/* ========================================================================
+   BASE — site-wide defaults
+   ======================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-step-0);
+    line-height: 1.55;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper grain — fixed full-viewport overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  main, header, footer { position: relative; z-index: 1; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  img, svg { max-width: 100%; display: block; }
+
+  ::selection { background: var(--color-navy); color: var(--color-paper); }
+}
+
+/* ========================================================================
+   COMPONENTS — typographic patterns + repeating UI fragments.
+   These are kept as classes (rather than long Tailwind chains) because
+   they involve Fraunces variation settings, italic-em treatment, and
+   composite states that don't translate cleanly to inline utilities.
+   ======================================================================== */
+@layer components {
+  /* --- Typography --- */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 350;
+    letter-spacing: -0.025em;
+    line-height: 0.98;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    text-wrap: balance;
+  }
+  .display em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--color-blue);
+    font-weight: 350;
+  }
+
+  .lede {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-step-2);
+    line-height: 1.32;
+    color: var(--color-fg-soft);
+    letter-spacing: -0.012em;
+    font-variation-settings: "opsz" 80, "SOFT" 50;
+    text-wrap: pretty;
+  }
+  .lede em {
+    font-style: italic;
+    color: var(--color-blue);
+    font-variation-settings: "opsz" 80, "SOFT" 100;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-step--2);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--color-periwinkle);
+    flex-shrink: 0;
+  }
+  .eyebrow.no-rule::before { display: none; }
+  .eyebrow .num {
+    font-family: var(--font-mono);
+    color: var(--color-blue);
+    font-weight: 500;
+  }
+
+  /* --- Page container (matches original .container) --- */
+  .container-page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  /* --- Section frame --- */
+  .section-rule {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding-block: 1rem;
+    border-top: 1px solid var(--color-line);
+    margin-bottom: 3rem;
+    font-size: var(--text-step--2);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    font-weight: 500;
+  }
+  .section-rule .num { font-family: var(--font-mono); color: var(--color-blue); }
+  .section-rule .meta {
+    font-family: var(--font-mono);
+    text-transform: none;
+    letter-spacing: 0.05em;
+    font-size: var(--text-step--2);
+    color: var(--color-fg-muted);
+  }
+
+  /* --- Buttons --- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.95rem 1.5rem;
+    font-weight: 500;
+    font-size: var(--text-step-0);
+    letter-spacing: 0.01em;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 450ms var(--ease-soft);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary {
+    background: var(--color-navy);
+    color: var(--color-paper);
+    border-color: var(--color-navy);
+  }
+  .btn-primary:hover {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px -16px rgb(7 23 34 / 0.45);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-navy);
+    background: var(--color-navy);
+    color: var(--color-paper);
+  }
+  .btn .arrow { transition: transform 450ms var(--ease-soft); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 500;
+    font-size: var(--text-step-0);
+    color: var(--color-fg);
+    border-bottom: 1px solid var(--color-line-strong);
+    padding-bottom: 2px;
+    transition: color 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
+  }
+  .link-arrow:hover { color: var(--color-blue); border-bottom-color: var(--color-blue); }
+  .link-arrow .arrow { transition: transform 450ms var(--ease-soft); }
+  .link-arrow:hover .arrow { transform: translateX(3px); }
+
+  /* --- Section heads --- */
+  .section-title {
+    font-size: var(--text-step-4);
+    max-width: 18ch;
+    margin: 0;
+  }
+  .section-sub {
+    color: var(--color-fg-soft);
+    max-width: 50ch;
+    font-size: var(--text-step-1);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* --- Reveal animation entrypoint --- */
+  .reveal > * {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: revealUp 900ms var(--ease-out-expo) forwards;
+  }
+  .reveal > *:nth-child(1) { animation-delay: 0.05s; }
+  .reveal > *:nth-child(2) { animation-delay: 0.18s; }
+  .reveal > *:nth-child(3) { animation-delay: 0.32s; }
+  .reveal > *:nth-child(4) { animation-delay: 0.46s; }
+  .reveal > *:nth-child(5) { animation-delay: 0.6s;  }
+  .reveal > *:nth-child(6) { animation-delay: 0.74s; }
+}
+
+/* ========================================================================
+   ANIMATIONS
+   ======================================================================== */
+@keyframes revealUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes pulseDot {
+  70%  { box-shadow: 0 0 0 7px rgb(43 182 115 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(43 182 115 / 0); }
+}
+
+/* Whole page fades in */
+main { animation: pageIn 900ms var(--ease-out-expo) both; }
+
+/* ========================================================================
+   REDUCED MOTION
+   ======================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

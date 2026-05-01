@@ -1,0 +1,71 @@
+---
+interface Props {
+  tierNum: string;
+  tierLabel: string;
+  deliverable: string;
+  title: string;
+  price: string;
+  priceNote: string;
+  features: string[];
+  ctaLabel: string;
+}
+const { tierNum, tierLabel, deliverable, title, price, priceNote, features, ctaLabel } = Astro.props;
+---
+
+<article
+  class="service-card relative flex flex-col overflow-hidden rounded-[18px] border border-line bg-paper
+         p-7 md:p-11 transition-[border-color,transform,box-shadow] duration-[450ms] ease-[var(--ease-soft)]
+         hover:border-line-strong hover:-translate-y-[3px] hover:shadow-[0_24px_50px_-32px_rgb(7_23_34_/0.25)]"
+  data-tilt
+>
+  <div class="flex justify-between items-baseline gap-4 mb-6 pb-6 border-b border-hairline">
+    <span class="font-mono text-[length:var(--text-step--2)] text-fg-muted tracking-[0.1em] uppercase">
+      Tier <span class="text-blue">{tierNum}</span> — {tierLabel}
+    </span>
+    <span class="font-mono text-[length:var(--text-step--2)] text-fg-muted tracking-[0.05em]">{deliverable}</span>
+  </div>
+
+  <h3 class="font-display text-[length:var(--text-step-3)] font-light leading-[1.05] tracking-[-0.02em] mb-4"
+      style="font-variation-settings: 'opsz' 144, 'SOFT' 30;">
+    {title}
+  </h3>
+
+  <div class="font-display text-[length:var(--text-step-2)] flex items-baseline gap-2 mb-6 tracking-[-0.02em]"
+       style="font-variation-settings: 'opsz' 60, 'SOFT' 30;">
+    <span class="italic text-blue text-[0.65em] self-start mt-[0.15em]"
+          style="font-variation-settings: 'opsz' 60, 'SOFT' 100;">$</span>
+    {price}
+    <small class="font-sans text-[length:var(--text-step--1)] text-fg-muted font-normal tracking-normal">
+      {priceNote}
+    </small>
+  </div>
+
+  <ul class="list-none p-0 mb-8 grid gap-2.5 text-[length:var(--text-step-0)] text-fg-soft">
+    {features.map((f) => (
+      <li class="relative pl-7 leading-[1.5]
+                 before:content-[''] before:absolute before:left-0 before:top-[0.7em]
+                 before:w-3.5 before:h-px before:bg-periwinkle">
+        {f}
+      </li>
+    ))}
+  </ul>
+
+  <div class="mt-auto">
+    <a href="/contact" class="link-arrow">
+      {ctaLabel} <span class="arrow">→</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 0%), rgb(20 70 103 / 0.07), transparent 45%);
+    opacity: 0;
+    transition: opacity 450ms var(--ease-soft);
+    pointer-events: none;
+  }
+  .service-card:hover::before { opacity: 1; }
+</style>

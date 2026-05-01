@@ -1,0 +1,54 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;       // accepts <em> markup
+  lede?: string;       // accepts <em> markup
+  titleClass?: string; // override max-width etc.
+  /** Set true on the About page so we render a giant tracker-display headline instead. */
+  aboutLede?: boolean;
+}
+const { eyebrow, title, lede, titleClass = "max-w-[18ch]", aboutLede = false } = Astro.props;
+---
+
+<div class="container-page hero">
+  <div class="reveal">
+    <span class="eyebrow">{eyebrow}</span>
+
+    {aboutLede ? (
+      <h1 class="about-lede" set:html={title}></h1>
+    ) : (
+      <h1 class:list={["display hero-title", titleClass]} set:html={title}></h1>
+    )}
+
+    {lede && (
+      <p class="lede max-w-[55ch] mt-6" set:html={lede}></p>
+    )}
+  </div>
+</div>
+
+<style>
+  .hero {
+    padding-block: clamp(3.5rem, 9vh, 7rem) clamp(4rem, 12vh, 9rem);
+    position: relative;
+  }
+  .hero-title {
+    font-size: var(--text-step-6);
+    margin: 0;
+  }
+  .about-lede {
+    font-size: var(--text-step-4);
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    max-width: 22ch;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .about-lede :global(em) {
+    font-style: italic;
+    color: var(--color-blue);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+</style>

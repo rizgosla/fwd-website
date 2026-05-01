@@ -1,0 +1,256 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionRule from "../components/SectionRule.astro";
+
+const tiers = [
+  {
+    num: "01",
+    title: "Landing Page",
+    price: "800",
+    terms: "Flat · ~1–2 weeks · 1 revision round",
+    intro:
+      "A single, beautifully-designed page focused on one job: getting visitors to contact, book, or call you.",
+    features: [
+      "Clean, modern landing page built around your brand",
+      "Contact / booking form with instant email notifications",
+      "Mobile and desktop optimized",
+      "Hosting setup and domain connection included",
+      "One round of revisions",
+      "Basic on-page SEO (titles, descriptions, structured headings)",
+    ],
+    bestFor:
+      "Best for new practices, pop-up locations, or anyone who needs a clean page to capture leads and get found online.",
+    ctaLabel: "Pick Landing",
+    ctaClass: "btn btn-ghost",
+    featured: false,
+  },
+  {
+    num: "02",
+    title: "Full Site",
+    price: "1,800",
+    terms: "Flat · ~2–4 weeks · up to 8 pages · 2 revision rounds",
+    intro:
+      "A complete, multi-page site with a real brand system. The kind that holds up against bigger competitors without costing what they pay.",
+    features: [
+      "Everything in Landing Page",
+      "Up to 8 pages — Home, Services, About, Contact + 4 of your choice",
+      "Two rounds of revisions instead of one",
+      "Consistent typography, color, and component system",
+      "Working contact / booking forms with email notifications",
+      "Hosting setup and domain connection included",
+      "Handoff doc so you (or anyone) can update content later",
+    ],
+    bestFor:
+      "Best for established practices ready to build a full online presence that reflects the quality of their business.",
+    ctaLabel: "Pick Full Site",
+    ctaClass: "btn btn-primary",
+    featured: true,
+  },
+];
+
+const faqs = [
+  { q: "How long does it take?",
+    a: "Landing pages typically take one to two weeks from kickoff. Full sites usually run two to four weeks, depending on how quickly we get your content. We'll give you a real timeline on our first call — not a guess." },
+  { q: "What do I need before we start?",
+    a: "Honestly, not much. A rough sense of what you do and who you serve. If you have a logo, brand colors, or copy already, great. If you don't, we'll help you figure it out." },
+  { q: "What's hosting going to cost me later?",
+    a: "We set you up on hosting that typically runs $5–$20 per month depending on traffic, plus your domain (usually $12–$20 per year). We don't mark these up — you pay the providers directly." },
+  { q: "Can I update the site myself after launch?",
+    a: "Yes. We hand over documentation and, where appropriate, a simple way to edit text and images. If you'd rather we handle ongoing changes, we offer that too — ask us." },
+  { q: "Do you do logos or brand identity?",
+    a: "Light brand work — colors, type pairings, layout — is part of every site. Full logo design isn't our main focus, but we have people we trust and can refer you out if needed." },
+  { q: "Need something bigger than a Full Site?",
+    a: 'If your project is more than 8 pages, has e-commerce, or needs a custom integration, we\'ll quote it separately and honestly. <a href="/contact" class="text-blue underline">Reach out</a> — we\'ll tell you whether we\'re the right fit.' },
+];
+---
+
+<BaseLayout title="Services & pricing — fwd." description="Two tiers. Flat pricing. No mystery line items.">
+  <PageHero
+    eyebrow="Services & pricing"
+    title="Two tiers. <em>Flat pricing.</em> No mystery line items."
+    lede="Most small businesses don't need an enterprise build — they need a site that loads fast, looks the part, and lets people contact them. So that's what we make."
+  />
+
+  <section class="pb-24">
+    <div class="container-page grid gap-6">
+      {tiers.map((t) => (
+        <article class:list={["tier", t.featured && "tier-featured"]}>
+          <div class="tier-head">
+            <span class="eyebrow no-rule"><span class="num">{t.num}</span> &nbsp;Tier {t.num}</span>
+            <h3>{t.title}</h3>
+            <p class="price"><em>$</em>{t.price}</p>
+            <p class="terms">{t.terms}</p>
+          </div>
+          <div>
+            <p class="text-fg-soft m-0 mb-6 text-[length:var(--text-step-1)] leading-[1.55]">{t.intro}</p>
+            <ul class="list-none p-0 m-0 mb-6 grid gap-2.5">
+              {t.features.map((f) => (<li>{f}</li>))}
+            </ul>
+            <p class="tier-best">{t.bestFor}</p>
+            <a href="/contact" class={t.ctaClass}>
+              {t.ctaLabel} <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {/* === FAQ ============================================================== */}
+    <div class="container-page">
+      <section class="faq mt-24 border-t border-line">
+        <SectionRule num="§" label="Frequently asked" meta="06 questions" />
+        <h2 class="display section-title m-0 mb-8 max-w-none">
+          Common <em>questions</em>.
+        </h2>
+
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p set:html={f.a}></p>
+          </details>
+        ))}
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tier {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    position: relative;
+    background: var(--color-paper);
+  }
+  @media (min-width: 800px) {
+    .tier { grid-template-columns: 0.9fr 1.4fr; gap: 3rem; }
+  }
+  .tier-featured {
+    border-color: var(--color-navy);
+    background: linear-gradient(180deg, var(--color-paper), var(--color-bg-soft));
+  }
+  .tier-featured::before {
+    content: "Most chosen";
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    background: var(--color-navy);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+  .tier-head { border-right: none; padding-right: 0; }
+  @media (min-width: 800px) {
+    .tier-head {
+      border-right: 1px solid var(--color-line);
+      padding-right: 3rem;
+    }
+  }
+  .tier-head h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-step-3);
+    font-weight: 350;
+    margin: 0.5rem 0;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .tier-head .price {
+    font-family: var(--font-display);
+    font-size: var(--text-step-5);
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 1.5rem 0 1rem;
+  }
+  .tier-head .price em {
+    font-style: italic;
+    color: var(--color-blue);
+    font-size: 0.5em;
+    vertical-align: top;
+    margin-right: 0.1em;
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+  }
+  .tier-head .terms {
+    color: var(--color-fg-muted);
+    font-size: var(--text-step--1);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+  .tier ul li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--color-fg-soft);
+    line-height: 1.55;
+    font-size: var(--text-step-0);
+  }
+  .tier ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 14px;
+    height: 1px;
+    background: var(--color-blue);
+  }
+  .tier-best {
+    color: var(--color-fg-muted);
+    font-style: italic;
+    font-family: var(--font-display);
+    margin: 1.5rem 0;
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+    font-size: var(--text-step--1);
+    border-top: 1px solid var(--color-hairline);
+    padding-top: 1.5rem;
+    text-wrap: pretty;
+  }
+
+  /* FAQ */
+  .faq details {
+    border-bottom: 1px solid var(--color-line);
+    padding-block: 1.5rem;
+  }
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    font-family: var(--font-display);
+    font-size: var(--text-step-1);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    padding-right: 0.5rem;
+    transition: color 200ms var(--ease-soft);
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary:hover { color: var(--color-blue); }
+  .faq summary::after {
+    content: "+";
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-blue);
+    font-size: 1.4em;
+    line-height: 1;
+    transition: transform 450ms var(--ease-soft);
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+  }
+  .faq details[open] summary::after { content: "−"; }
+  .faq details > p {
+    margin-top: 1rem;
+    color: var(--color-fg-soft);
+    max-width: 65ch;
+    line-height: 1.65;
+    font-size: var(--text-step-0);
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+interface Props {
+  glyph: string;       // e.g. "i.", "ii."
+  step: string;        // e.g. "Step 01"
+  title: string;
+  body: string;
+  meta: string;
+}
+const { glyph, step, title, body, meta } = Astro.props;
+---
+
+<li class="process-step">
+  <span class="font-mono text-[length:var(--text-step--2)] text-blue tracking-[0.1em] font-medium uppercase">
+    <span class="block leading-none mb-1 font-display italic text-[length:var(--text-step-2)]"
+          style="font-variation-settings: 'opsz' 144, 'SOFT' 100;">{glyph}</span>
+    {step}
+  </span>
+
+  <h3 class="m-0 font-display font-normal leading-[1.15] text-[length:var(--text-step-2)] tracking-[-0.015em]"
+      style="font-variation-settings: 'opsz' 60, 'SOFT' 30;">
+    {title}
+  </h3>
+
+  <p class="m-0 max-w-[55ch] text-fg-soft text-[length:var(--text-step-0)]">
+    {body}
+    <span class="block font-mono text-[length:var(--text-step--2)] text-fg-muted tracking-[0.05em] mt-4">— {meta}</span>
+  </p>
+</li>
+
+<style>
+  .process-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    padding-block: 2rem;
+    border-bottom: 1px solid var(--color-line);
+    align-items: start;
+    transition: padding-left 450ms var(--ease-soft), background 450ms var(--ease-soft);
+  }
+  @media (min-width: 800px) {
+    .process-step {
+      grid-template-columns: 110px 1.2fr 2fr;
+      gap: 3rem;
+      align-items: baseline;
+    }
+  }
+  .process-step:hover {
+    padding-left: 0.75rem;
+    background: rgb(20 70 103 / 0.025);
+  }
+</style>

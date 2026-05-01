@@ -1,0 +1,96 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionRule from "../components/SectionRule.astro";
+
+const values = [
+  { roman: "i.",   strong: "Small is a feature.",        body: "Three people means you talk to the people doing the work — every time. No account managers, no handoffs, no telephone game." },
+  { roman: "ii.",  strong: "Pricing should be boring.",  body: "Flat fees, listed publicly. No “let's get on a call so we can quote you.” You should know the number before you reach out." },
+  { roman: "iii.", strong: "Restraint over flash.",      body: "Most websites are too busy. Good design is mostly about what you take out, then what you leave in working hard." },
+  { roman: "iv.",  strong: "Built to last.",             body: "Standards-based code, clean handoffs, no proprietary lock-in. Your site is yours to keep, edit, or move." },
+];
+---
+
+<BaseLayout
+  title="About — fwd."
+  description="We started Forward Design Consulting because too many small businesses are stuck with websites that don't work."
+>
+  <PageHero
+    eyebrow="About · Forward Design Consulting"
+    title="We started <em>Forward Design Consulting</em> because too many small businesses are stuck with websites that don't work."
+    aboutLede={true}
+  />
+
+  <section class="pb-24 pt-8">
+    <div class="container-page">
+      <div class="grid gap-12 grid-cols-1 lg:grid-cols-2 lg:gap-20 mt-12">
+        <p class="text-fg-soft text-[length:var(--text-step-1)] leading-[1.65] max-w-[50ch] m-0" style="text-wrap: pretty;">
+          Walk down any main street and you'll find practitioners doing
+          excellent work — dentists, therapists, independent shops, small
+          studios — represented online by sites built a decade ago in tools
+          nobody wants to learn. Slow. Hard to update. Built for desktop in 2014.
+        </p>
+        <p class="text-fg-soft text-[length:var(--text-step-1)] leading-[1.65] max-w-[50ch] m-0" style="text-wrap: pretty;">
+          We make the alternative. Sites that load instantly, look like they
+          were made on purpose, and are honest about what they cost. No
+          retainers you don't need. No quote padded with “discovery.” Just
+          two clear tiers, real timelines, and work we'd be happy to put our
+          name on.
+        </p>
+      </div>
+
+      <div class="mt-24">
+        <SectionRule num="§" label="What we believe" meta="04 principles" />
+        <ul class="values list-none p-0 m-0 border-t border-line">
+          {values.map((v) => (
+            <li>
+              <span class="roman">{v.roman}</span>
+              <strong>{v.strong}</strong>
+              <small>{v.body}</small>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .values li {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    align-items: baseline;
+  }
+  @media (min-width: 800px) {
+    .values li {
+      grid-template-columns: 80px 1fr 1.5fr;
+      gap: 3rem;
+    }
+  }
+  .values li > .roman {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-blue);
+    font-size: var(--text-step-1);
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+    font-weight: 400;
+  }
+  .values li strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-2);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    letter-spacing: -0.01em;
+    display: block;
+  }
+  .values li small {
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+</style>

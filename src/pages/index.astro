@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandMark from "../components/BrandMark.astro";
+import Marquee from "../components/Marquee.astro";
+import SectionRule from "../components/SectionRule.astro";
+import SectionHead from "../components/SectionHead.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import ProcessStep from "../components/ProcessStep.astro";
+import CtaStrip from "../components/CtaStrip.astro";
+
+const heroMeta = [
+  { label: "Studio size",       value: "Three partners" },
+  { label: "Typical turnaround", value: "2–4 weeks" },
+  { label: "Pricing model",     value: "Flat fee, no retainers" },
+  { label: "Hosting & domain",  value: "Set up & included" },
+];
+
+const tiers = [
+  {
+    tierNum: "01", tierLabel: "Solo", deliverable: "~1–2 weeks",
+    title: "Landing Page", price: "800", priceNote: "flat · one round of revisions",
+    features: [
+      "One beautifully-designed page built around your brand",
+      "Booking / contact form with instant email notifications",
+      "Mobile and desktop optimized, basic on-page SEO",
+      "Hosting setup and domain connection included",
+    ],
+    ctaLabel: "Start with Landing",
+  },
+  {
+    tierNum: "02", tierLabel: "Full", deliverable: "~2–4 weeks · up to 8 pages",
+    title: "Full Site", price: "1,800", priceNote: "flat · two rounds of revisions",
+    features: [
+      "Everything in Landing Page, scaled up to 8 pages",
+      "Home, Services, About, Contact + 4 of your choice",
+      "Cohesive type, color, and component system",
+      "Handoff doc so you (or anyone) can update content later",
+    ],
+    ctaLabel: "Start with Full Site",
+  },
+];
+
+const steps = [
+  { glyph: "i.",   step: "Step 01", title: "A short call",  body: "15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.", meta: "No prep required" },
+  { glyph: "ii.",  step: "Step 02", title: "Design draft",  body: "A first version, built around your brand and content. You see real layouts in your browser, not Figma squiggles.", meta: "Delivered in week one" },
+  { glyph: "iii.", step: "Step 03", title: "Revisions",     body: "One or two rounds depending on tier. We adjust until it feels right, then lock it.", meta: "Async, on your time" },
+  { glyph: "iv.",  step: "Step 04", title: "Launch",        body: "We connect your domain, set up hosting, and hand over a clean handoff doc you can actually read.", meta: "Live the same day" },
+];
+---
+
+<BaseLayout>
+  {/* === HERO ============================================================== */}
+  <div class="container-page hero relative">
+    <div class="hero-watermark" aria-hidden="true">
+      <BrandMark class="w-full h-auto text-navy" decorative={true} />
+    </div>
+
+    <div class="hero-grid reveal grid gap-8">
+      <h1 class="display hero-title m-0 max-w-[14ch] text-[length:var(--text-step-6)]">
+        Websites that <em>earn</em> their place online.
+      </h1>
+
+      <div class="hero-bottom grid gap-8 mt-6 items-end md:grid-cols-[1.2fr_1fr] md:gap-20">
+        <p class="lede hero-lede max-w-[38ch] m-0">
+          We build clean, considered sites for practices and small businesses —
+          the kind that quietly do their job, look the part, and <em>show up</em>
+          when clients search for you.
+        </p>
+        <div class="hero-actions flex flex-wrap gap-4 justify-self-start md:justify-self-end">
+          <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
+          <a href="/contact"  class="btn btn-ghost">Start a project</a>
+        </div>
+      </div>
+
+      <div class="hero-meta grid gap-x-8 gap-y-6 text-fg-muted text-[length:var(--text-step--1)] border-t border-line pt-6 mt-20"
+           style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        {heroMeta.map((m) => (
+          <div class="flex flex-col gap-1">
+            <span class="font-mono text-[length:var(--text-step--2)] tracking-[0.08em] uppercase text-fg-muted">{m.label}</span>
+            <strong class="text-fg font-medium text-[length:var(--text-step-0)] font-display"
+                    style="font-variation-settings: 'opsz' 60, 'SOFT' 30;">{m.value}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <Marquee />
+
+  {/* === SERVICES OVERVIEW ================================================== */}
+  <section class="py-24 relative">
+    <div class="container-page">
+      <SectionRule num="§ 01" label="Services" meta="Two tiers · Flat fee" />
+      <SectionHead
+        title="Two ways to <em>get online</em>."
+        sub="Pick the size that fits. Both come with hosting setup, a domain connection, mobile and desktop optimization, and a real human helping you ship it."
+      />
+      <div class="grid gap-6 grid-cols-1 md:grid-cols-2">
+        {tiers.map((t) => (<ServiceCard {...t} />))}
+      </div>
+    </div>
+  </section>
+
+  {/* === PROCESS ============================================================ */}
+  <section class="pb-24 relative">
+    <div class="container-page">
+      <SectionRule num="§ 02" label="Process" meta="Four short steps" />
+      <SectionHead
+        title="A simple, <em>honest</em> process."
+        sub="No bloated discovery decks. No surprise fees. Four steps from “we should probably get a website” to a live site you're proud to send people to."
+      />
+      <ol class="grid grid-cols-1 list-none p-0 m-0 border-t border-line">
+        {steps.map((s) => (<ProcessStep {...s} />))}
+      </ol>
+    </div>
+  </section>
+
+  {/* === CTA STRIP ========================================================== */}
+  <div class="container-page">
+    <CtaStrip
+      title="Got a practice, a product, or a <em>side project</em>?"
+      body="Tell us about it. We reply to every inquiry — usually within a day."
+    />
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(3.5rem, 9vh, 7rem) clamp(4rem, 12vh, 9rem);
+  }
+  .hero-watermark {
+    position: absolute;
+    top: 42%;
+    right: 2vw;
+    transform: translateY(-50%);
+    width: clamp(280px, 30vw, 460px);
+    color: var(--color-navy);
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @media (max-width: 900px) {
+    .hero-watermark { display: none; }
+  }
+  .hero-grid { position: relative; z-index: 1; }
+</style>

@@ -1,0 +1,13 @@
+---
+// Title supports HTML so callers can pass <em>…</em> for the italic accent.
+interface Props {
+  title: string;
+  sub?: string;
+}
+const { title, sub } = Astro.props;
+---
+
+<div class="grid gap-4 grid-cols-1 md:grid-cols-[1fr_1.1fr] md:items-end md:gap-12 mb-12">
+  <h2 class="display section-title" set:html={title}></h2>
+  {sub && <p class="section-sub">{sub}</p>}
+</div>

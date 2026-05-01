@@ -1,0 +1,49 @@
+---
+const phrases = [
+  "Landing pages",
+  "Full sites",
+  "Booking forms",
+  "Hosting setup",
+  "Mobile-first",
+  "Honest pricing",
+];
+---
+
+<div class="border-y border-hairline py-5 overflow-hidden whitespace-nowrap bg-bg-soft" aria-hidden="true">
+  <div class="marquee-track">
+    <span>
+      {phrases.map((p) => (<><span>{p}</span><i class="dot"></i></>))}
+    </span>
+    <span>
+      {phrases.map((p) => (<><span>{p}</span><i class="dot"></i></>))}
+    </span>
+  </div>
+</div>
+
+<style>
+  .marquee-track {
+    display: inline-flex;
+    gap: 3rem;
+    animation: marquee 38s linear infinite;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-step-2);
+    color: var(--color-fg-soft);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .marquee-track > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3rem;
+  }
+  .marquee-track .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--color-periwinkle);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+  }
+</style>

@@ -1,0 +1,193 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+
+const contactInfo = [
+  { heading: "Email",         body: '<a href="mailto:hello@fwd.studio">hello@fwd.studio</a>' },
+  { heading: "Response time", body: "Within 24 hours, weekdays." },
+  { heading: "Based in",      body: "California — working with clients anywhere." },
+  { heading: "Prefer a call?", body: "Send a message first. If it sounds like a fit, we'll schedule 15 minutes." },
+];
+---
+
+<BaseLayout title="Start a project — fwd." description="Tell us about your project.">
+  <PageHero
+    eyebrow="Start a project"
+    title="Tell us about <em>your project</em>."
+    lede="A few questions below. We read every message and reply within a day or so — usually with a real timeline and a yes/no on whether we're the right fit."
+  />
+
+  <section class="pb-24">
+    <div class="container-page">
+      <div class="contact-grid grid gap-12 grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <aside class="contact-aside grid gap-8 content-start">
+          {contactInfo.map((i) => (
+            <div class="item">
+              <h3>{i.heading}</h3>
+              {i.body.startsWith("<") ? (
+                <Fragment set:html={i.body} />
+              ) : (
+                <p>{i.body}</p>
+              )}
+            </div>
+          ))}
+        </aside>
+
+        <form class="form" id="contactForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="company">Business / Practice</label>
+              <input id="company" name="company" type="text" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="tier">Service</label>
+              <select id="tier" name="tier">
+                <option value="">Not sure yet</option>
+                <option value="landing">Landing Page — $800</option>
+                <option value="full">Full Site — $1,800</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Tell us about your project</label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              placeholder="What you do, who you serve, what you're hoping the site will do for you, and a rough timeline."
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-between gap-6 flex-wrap mt-4">
+            <p class="text-fg-muted text-[length:var(--text-step--2)] m-0 max-w-[34ch] font-mono tracking-[0.04em]">
+              Your details are only used to respond to your inquiry. No mailing list. No resale. Ever.
+            </p>
+            <button type="submit" class="btn btn-primary">
+              Send message <span class="arrow">→</span>
+            </button>
+          </div>
+
+          <p id="formStatus" role="status" aria-live="polite" class="m-0 min-h-[1.4em] text-blue"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    // === Contact-form placeholder handler ==================================
+    // Wire to your real backend / form service in production.
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("formStatus");
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const message = form.message.value.trim();
+      if (!name || !email || !message) {
+        status.textContent = "Please fill in your name, email, and a short message.";
+        status.style.color = "#c25b5b";
+        return;
+      }
+      status.textContent = "Thanks — we'll be in touch within a day or so.";
+      status.style.color = "var(--color-blue)";
+      form.reset();
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .contact-aside .item h3 {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--text-step--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    margin: 0 0 0.4rem;
+  }
+  .contact-aside .item p,
+  .contact-aside .item a {
+    font-family: var(--font-display);
+    font-size: var(--text-step-1);
+    color: var(--color-fg);
+    line-height: 1.35;
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .contact-aside .item a {
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: 1px;
+    transition: color 200ms, border-color 200ms;
+  }
+  .contact-aside .item a:hover {
+    color: var(--color-blue);
+    border-bottom-color: var(--color-blue);
+  }
+
+  .form {
+    display: grid;
+    gap: 1.5rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field label {
+    font-size: var(--text-step--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    font-weight: 500;
+    font-family: var(--font-mono);
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    color: var(--color-fg);
+    font: inherit;
+    transition: border-color 200ms var(--ease-soft), background 200ms var(--ease-soft);
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    outline: none;
+    border-color: var(--color-blue);
+    background: var(--color-paper);
+    box-shadow: 0 0 0 3px rgb(20 70 103 / 0.08);
+  }
+  .field textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
+  .field-row {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 600px) {
+    .field-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>

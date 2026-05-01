@@ -1,0 +1,72 @@
+---
+interface Props {
+  title: string;   // accepts <em> markup
+  body: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+const { title, body, ctaHref = "/contact", ctaLabel = "Start a project" } = Astro.props;
+---
+
+<div class="cta-strip">
+  <h3 class="display" set:html={title}></h3>
+  <p>{body}</p>
+  <a href={ctaHref} class="btn btn-primary justify-self-center">
+    {ctaLabel} <span class="arrow">→</span>
+  </a>
+</div>
+
+<style>
+  .cta-strip {
+    margin: 6rem 0 0;
+    padding: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 4vw, 3rem);
+    border-radius: 18px;
+    display: grid;
+    gap: 1.5rem;
+    text-align: center;
+    background: var(--color-navy);
+    color: var(--color-paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-strip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgb(142 148 184 / 0.18), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgb(20 70 103 / 0.5), transparent 70%);
+    pointer-events: none;
+  }
+  .cta-strip > * { position: relative; z-index: 1; }
+  .cta-strip h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-step-4);
+    letter-spacing: -0.025em;
+    margin: 0;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    text-wrap: balance;
+  }
+  .cta-strip h3 :global(em) {
+    font-style: italic;
+    color: var(--color-periwinkle);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .cta-strip p {
+    color: rgb(255 255 255 / 0.7);
+    margin: 0 auto;
+    max-width: 50ch;
+  }
+  /* Invert the button colors against dark panel */
+  .cta-strip :global(.btn-primary) {
+    background: var(--color-paper);
+    color: var(--color-navy);
+    border-color: var(--color-paper);
+  }
+  .cta-strip :global(.btn-primary:hover) {
+    background: var(--color-periwinkle);
+    border-color: var(--color-periwinkle);
+    color: var(--color-navy);
+  }
+</style>

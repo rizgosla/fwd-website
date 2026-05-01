@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import TeamMember from "../components/TeamMember.astro";
+
+const team = [
+  {
+    name: "Riz",
+    role: "Founder · Design",
+    bio: "Leads design direction and client work. Cares too much about kerning. Started fwd. so good design wouldn't be reserved for big budgets.",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="200" height="250" fill="#E8EAF2"/>
+        <circle cx="100" cy="95" r="40" fill="#8E94B8" opacity="0.8"/>
+        <path d="M30,250 Q30,170 100,170 Q170,170 170,250 Z" fill="#144667" opacity="0.6"/>
+        <text x="100" y="240" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#0D2F45" opacity="0.4">R.</text>
+      </svg>`,
+  },
+  {
+    name: "Alex",
+    role: "Founder · Financials",
+    bio: "Turns designs into fast, accessible, working sites. Believes most websites would be better if they did less, more carefully.",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="200" height="250" fill="#EDEEF6"/>
+        <circle cx="100" cy="100" r="42" fill="#0D2F45" opacity="0.75"/>
+        <path d="M25,250 Q25,165 100,165 Q175,165 175,250 Z" fill="#8E94B8" opacity="0.7"/>
+        <text x="100" y="240" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#0D2F45" opacity="0.4">A.</text>
+      </svg>`,
+  },
+  {
+    name: "JVL With The BBL",
+    role: "Founder · Operations",
+    bio: "Helps clients figure out what their site should actually say. Asks the questions you wish someone had asked you years ago.",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="200" height="250" fill="#E5E7F0"/>
+        <circle cx="100" cy="92" r="38" fill="#144667" opacity="0.7"/>
+        <path d="M35,250 Q35,175 100,175 Q165,175 165,250 Z" fill="#0D2F45" opacity="0.55"/>
+        <text x="100" y="240" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="14" fill="#0D2F45" opacity="0.4">J.</text>
+      </svg>`,
+  },
+];
+---
+
+<BaseLayout title="Team — fwd." description="Three people. One studio.">
+  <PageHero
+    eyebrow="Who we are"
+    title="Three people. <em>One studio.</em>"
+    lede="We met building things together — and decided we'd rather keep doing that for clients we actually like than work for someone who didn't care."
+    titleClass="max-w-[20ch]"
+  />
+
+  <section class="pb-24">
+    <div class="container-page">
+      <div class="grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-3 reveal">
+        {team.map((m) => (<TeamMember {...m} />))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,14 @@
+---
+interface Props {
+  num: string;
+  label: string;
+  meta?: string;
+}
+const { num, label, meta } = Astro.props;
+---
+
+<div class="section-rule">
+  <span class="num">{num}</span>
+  <span>{label}</span>
+  {meta ? <span class="meta">{meta}</span> : <span></span>}
+</div>

@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import WorkItem from "../components/WorkItem.astro";
+
+const works = [
+  {
+    title: "Hillside Dental",
+    meta: "Landing — 2026",
+    thumb: `
+      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="wg1" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#144667"/>
+            <stop offset="100%" stop-color="#071722"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="280" fill="url(#wg1)"/>
+        <rect x="40" y="50" width="160" height="14" rx="3" fill="#8E94B8" opacity="0.9"/>
+        <rect x="40" y="74" width="220" height="8"  rx="2" fill="#8E94B8" opacity="0.4"/>
+        <rect x="40" y="86" width="180" height="8"  rx="2" fill="#8E94B8" opacity="0.4"/>
+        <rect x="40" y="120" width="80" height="28" rx="14" fill="#8E94B8"/>
+        <rect x="240" y="50" width="120" height="180" rx="8" fill="#8E94B8" opacity="0.18"/>
+      </svg>`,
+  },
+  {
+    title: "Aster & Oak Studio",
+    meta: "Full site — 2026",
+    thumb: `
+      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="wg2" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#0D2F45"/>
+            <stop offset="100%" stop-color="#071722"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="280" fill="url(#wg2)"/>
+        <circle cx="200" cy="120" r="62" fill="#8E94B8" opacity="0.18"/>
+        <circle cx="200" cy="120" r="32" fill="#8E94B8" opacity="0.5"/>
+        <rect x="60" y="210" width="280" height="10" rx="2" fill="#8E94B8" opacity="0.5"/>
+        <rect x="100" y="226" width="200" height="6" rx="2" fill="#8E94B8" opacity="0.3"/>
+      </svg>`,
+  },
+  {
+    title: "Birch & Wren",
+    meta: "Landing — 2026",
+    thumb: `
+      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="wg3" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#144667"/>
+            <stop offset="100%" stop-color="#0D2F45"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="280" fill="url(#wg3)"/>
+        <rect x="40" y="40" width="320" height="200" rx="6" fill="none" stroke="#8E94B8" stroke-opacity="0.4" stroke-width="1.2"/>
+        <text x="200" y="155" text-anchor="middle" font-family="serif" font-style="italic" font-size="58" fill="#8E94B8" opacity="0.55">b&amp;w</text>
+      </svg>`,
+  },
+  {
+    title: "Tide PT & Recovery",
+    meta: "Full site — 2026",
+    thumb: `
+      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="wg4" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#0D2F45"/>
+            <stop offset="100%" stop-color="#144667"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="280" fill="url(#wg4)"/>
+        <g stroke="#8E94B8" stroke-opacity="0.5" stroke-width="1" fill="none">
+          <path d="M0 200 Q 100 140 200 180 T 400 160" />
+          <path d="M0 220 Q 100 160 200 200 T 400 180" />
+          <path d="M0 240 Q 100 180 200 220 T 400 200" />
+        </g>
+        <circle cx="320" cy="80" r="28" fill="#8E94B8" opacity="0.7"/>
+      </svg>`,
+  },
+];
+---
+
+<BaseLayout title="Selected work — fwd." description="A few of the sites we've shipped.">
+  <PageHero
+    eyebrow="Selected work"
+    title="A few of the sites we've <em>shipped</em>."
+    lede="A small, growing portfolio. Click into any project to see goals, decisions, and the live site."
+  />
+
+  <section class="pb-24">
+    <div class="container-page">
+      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 md:gap-8 reveal">
+        {works.map((w) => (<WorkItem {...w} />))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

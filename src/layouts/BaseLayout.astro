@@ -1,0 +1,82 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "fwd. — A small web design studio",
+  description = "fwd. is a small web design studio crafting clean, considered websites for practices and small businesses. Flat pricing. Honest timelines.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0D2F45" />
+
+    {/* Inline-SVG favicon — same mark as the original, periwinkle dot accent */}
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={`data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D2F45'/><text x='50%25' y='58%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='16' fill='white'>n</text><circle cx='22' cy='22' r='2' fill='%238E94B8'/></svg>`}
+    />
+
+    {/* Fonts: Fraunces (display serif) + Inter Tight (body) */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <Nav />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* Tiny inline scripts — small enough that bundling and shipping a separate
+        file would cost more than just inlining. is:inline keeps them out of the
+        Astro build pipeline. */}
+    <script is:inline>
+      // === Mobile nav toggle =================================================
+      const toggle = document.getElementById("navToggle");
+      const links = document.getElementById("navLinks");
+      toggle?.addEventListener("click", () => {
+        const open = links.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(open));
+      });
+
+      // === Sticky-nav scrolled state =========================================
+      const navEl = document.getElementById("nav");
+      const setNavScrolled = () => {
+        navEl?.classList.toggle("is-scrolled", window.scrollY > 8);
+      };
+      window.addEventListener("scroll", setNavScrolled, { passive: true });
+      setNavScrolled();
+
+      // === Card mouse-spotlight effect =======================================
+      // Any element marked [data-tilt] gets two CSS vars (--mx, --my) updated
+      // on mousemove, used by the radial-gradient hover sheen on cards.
+      document.querySelectorAll("[data-tilt]").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty("--mx", ((e.clientX - rect.left) / rect.width) * 100 + "%");
+          card.style.setProperty("--my", ((e.clientY - rect.top) / rect.height) * 100 + "%");
+        });
+      });
+    </script>
+  </body>
+</html>
