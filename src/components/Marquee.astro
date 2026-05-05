@@ -1,47 +1,72 @@
 ---
 const phrases = [
-  "Landing pages",
-  "Full sites",
-  "Booking forms",
-  "Hosting setup",
-  "Mobile-first",
-  "Honest pricing",
+  "Practices",
+  "Small businesses",
+  "Studios",
+  "Independent founders",
+  "Service providers",
+  "Local shops",
+  "Practitioners",
+  "Side projects",
 ];
 ---
 
-<div class="border-y border-hairline py-5 overflow-hidden whitespace-nowrap bg-bg-soft" aria-hidden="true">
+<div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>
-      {phrases.map((p) => (<><span>{p}</span><i class="dot"></i></>))}
-    </span>
-    <span>
-      {phrases.map((p) => (<><span>{p}</span><i class="dot"></i></>))}
-    </span>
+    <div class="marquee-row">
+      {phrases.map((p) => (
+        <span class="marquee-item">
+          {p}<span class="marquee-dot">●</span>
+        </span>
+      ))}
+    </div>
+    <div class="marquee-row" aria-hidden="true">
+      {phrases.map((p) => (
+        <span class="marquee-item">
+          {p}<span class="marquee-dot">●</span>
+        </span>
+      ))}
+    </div>
   </div>
 </div>
 
 <style>
+  .marquee {
+    border-block: 1px solid var(--color-line);
+    background: var(--color-paper);
+    overflow: hidden;
+    padding: 22px 0;
+  }
   .marquee-track {
-    display: inline-flex;
-    gap: 3rem;
-    animation: marquee 38s linear infinite;
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee-row {
+    display: flex;
+    gap: 44px;
+    padding-inline: 22px;
+    white-space: nowrap;
+  }
+  .marquee-item {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: var(--text-step-2);
-    color: var(--color-fg-soft);
-    font-variation-settings: "opsz" 144, "SOFT" 100;
-  }
-  .marquee-track > span {
+    font-weight: 350;
+    font-size: var(--text-step-3);
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    font-variation-settings: "opsz" 144, "SOFT" 70;
     display: inline-flex;
     align-items: center;
-    gap: 3rem;
+    gap: 22px;
   }
-  .marquee-track .dot {
-    width: 5px;
-    height: 5px;
-    background: var(--color-periwinkle);
-    border-radius: 50%;
-    display: inline-block;
+  .marquee-dot {
+    color: var(--color-periwinkle);
+    font-style: normal;
+    font-size: 0.5em;
+  }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
   }
   @media (prefers-reduced-motion: reduce) {
     .marquee-track { animation: none; }

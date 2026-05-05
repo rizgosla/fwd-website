@@ -1,0 +1,313 @@
+---
+// 3D drifting reel of recent work. Pure CSS animation — no JS.
+const REEL_PAGES = [
+  { name: "Smith Dental",        url: "smithdental.com",       hue: "periwinkle" },
+  { name: "North & Pine Books",  url: "northpinebooks.com",    hue: "blue" },
+  { name: "Lila Park Therapy",   url: "lilapark.co",           hue: "navy" },
+  { name: "Roost Coffee",        url: "roostcoffee.com",       hue: "ink" },
+  { name: "Maven Veterinary",    url: "mavenvet.com",          hue: "blue" },
+  { name: "Studio Bertrand",     url: "studiobertrand.fr",     hue: "navy" },
+  { name: "Fern & Field Yoga",   url: "fernandfield.studio",   hue: "periwinkle" },
+  { name: "Halsted Law",         url: "halstedlaw.com",        hue: "ink" },
+  { name: "Cove Architects",     url: "covearch.studio",       hue: "blue" },
+  { name: "Margot's Bakery",     url: "margotsbakery.com",     hue: "navy" },
+];
+
+// Two columns are duplicated; one column is reversed for visual variety
+const colA = [...REEL_PAGES, ...REEL_PAGES];
+const colB = [...REEL_PAGES.slice().reverse(), ...REEL_PAGES.slice().reverse()];
+const colC = [...REEL_PAGES, ...REEL_PAGES];
+
+// Hue → background gradient + accent + on-color
+const hueClass = (h: string) => `hue-${h}`;
+
+// Variants for the body content of each card so they don't all look the same
+const headlineFor = (i: number) =>
+  i % 3 === 0 ? "What we do" : i % 3 === 1 ? "How it works" : "Get in touch";
+---
+
+<section class="reel">
+  <div class="reel-pad">
+    <div class="section-rule reel-rule">
+      <span class="num">§ 03</span>
+      <span>Recent work</span>
+      <span class="meta">A drift through what we've shipped</span>
+    </div>
+    <header class="reel-head">
+      <h2 class="display reel-title">Sites we're <em>proud of</em>.</h2>
+    </header>
+  </div>
+
+  <div class="reel-stage">
+    <div class="reel-perspective">
+      <div class="reel-plane">
+        <div class="reel-col reel-col-a">
+          <div class="reel-col-track">
+            {colA.map((s, i) => (
+              <div class={`reel-site ${hueClass(s.hue)}`}>
+                <div class="rs-chrome">
+                  <div class="rs-dots">
+                    <span style="background:#FF6058"></span>
+                    <span style="background:#FFBE2E"></span>
+                    <span style="background:#28C940"></span>
+                  </div>
+                  <div class="rs-url">{s.url}</div>
+                </div>
+                <div class="rs-hero">
+                  <div class="rs-hero-title">{s.name}</div>
+                  <div class="rs-hero-sub">A calmer place to start.</div>
+                  <div class="rs-hero-cta">Book →</div>
+                </div>
+                <div class="rs-content">
+                  <div class="rs-h">{headlineFor(i)}</div>
+                  <div class="rs-line" style="width:85%"></div>
+                  <div class="rs-line" style="width:70%"></div>
+                  <div class="rs-line" style="width:60%"></div>
+                  <div class="rs-cards">
+                    <div class="rs-card"><div class="rs-card-h"></div><div class="rs-card-l"></div><div class="rs-card-l short"></div></div>
+                    <div class="rs-card"><div class="rs-card-h"></div><div class="rs-card-l"></div><div class="rs-card-l short"></div></div>
+                    <div class="rs-card"><div class="rs-card-h"></div><div class="rs-card-l"></div><div class="rs-card-l short"></div></div>
+                  </div>
+                </div>
+                <div class="rs-strip">
+                  <div class="rs-strip-h">Trusted by local clients.</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="reel-col reel-col-b">
+          <div class="reel-col-track">
+            {colB.map((s, i) => (
+              <div class={`reel-site ${hueClass(s.hue)}`}>
+                <div class="rs-chrome">
+                  <div class="rs-dots">
+                    <span style="background:#FF6058"></span>
+                    <span style="background:#FFBE2E"></span>
+                    <span style="background:#28C940"></span>
+                  </div>
+                  <div class="rs-url">{s.url}</div>
+                </div>
+                <div class="rs-hero">
+                  <div class="rs-hero-title">{s.name}</div>
+                  <div class="rs-hero-sub">A calmer place to start.</div>
+                  <div class="rs-hero-cta">Book →</div>
+                </div>
+                <div class="rs-content">
+                  <div class="rs-h">{headlineFor(i + 1)}</div>
+                  <div class="rs-line" style="width:80%"></div>
+                  <div class="rs-line" style="width:65%"></div>
+                  <div class="rs-line" style="width:55%"></div>
+                </div>
+                <div class="rs-strip">
+                  <div class="rs-strip-h">Built to last.</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="reel-col reel-col-c">
+          <div class="reel-col-track">
+            {colC.map((s, i) => (
+              <div class={`reel-site ${hueClass(s.hue)}`}>
+                <div class="rs-chrome">
+                  <div class="rs-dots">
+                    <span style="background:#FF6058"></span>
+                    <span style="background:#FFBE2E"></span>
+                    <span style="background:#28C940"></span>
+                  </div>
+                  <div class="rs-url">{s.url}</div>
+                </div>
+                <div class="rs-hero">
+                  <div class="rs-hero-title">{s.name}</div>
+                  <div class="rs-hero-sub">A calmer place to start.</div>
+                  <div class="rs-hero-cta">Book →</div>
+                </div>
+                <div class="rs-content">
+                  <div class="rs-h">{headlineFor(i + 2)}</div>
+                  <div class="rs-line" style="width:78%"></div>
+                  <div class="rs-line" style="width:62%"></div>
+                </div>
+                <div class="rs-strip">
+                  <div class="rs-strip-h">Local-first design.</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reel-fade reel-fade-top"></div>
+    <div class="reel-fade reel-fade-bottom"></div>
+    <div class="reel-fade reel-fade-left"></div>
+    <div class="reel-fade reel-fade-right"></div>
+  </div>
+</section>
+
+<style>
+  .reel {
+    padding-block: clamp(4rem, 9vh, 7rem) 0;
+    background: var(--color-navy);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .reel-pad {
+    width: 100%;
+    padding-inline: clamp(1.5rem, 3.5vw, 3.5rem);
+  }
+  .reel-rule {
+    border-top-color: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.65);
+  }
+  .reel-rule .num { color: var(--color-periwinkle); }
+  .reel-rule .meta { color: rgba(255,255,255,0.5); }
+
+  .reel-head { margin-bottom: 1rem; }
+  .reel-title {
+    color: #fff;
+    font-size: var(--text-step-4);
+    margin: 0;
+    max-width: 18ch;
+  }
+  .reel-title :global(em) { color: var(--color-periwinkle); }
+
+  .reel-stage {
+    position: relative;
+    height: clamp(640px, 85vh, 900px);
+    margin-top: 3rem;
+    overflow: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    contain: paint;
+  }
+  .reel-perspective {
+    position: absolute; inset: 0;
+    perspective: 2400px;
+    perspective-origin: 50% 50%;
+  }
+  .reel-plane {
+    position: absolute;
+    top: -10%; left: -15%; right: -15%; bottom: -10%;
+    transform: rotateX(50deg) rotateZ(-32deg) translateZ(-100px);
+    transform-style: preserve-3d;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 60px;
+  }
+  .reel-col {
+    position: relative;
+    overflow: visible;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .reel-col-track {
+    display: flex; flex-direction: column; gap: 60px;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .reel-col-a .reel-col-track { animation: reelDown 60s linear infinite; }
+  .reel-col-b .reel-col-track { animation: reelUp   70s linear infinite; }
+  .reel-col-c .reel-col-track { animation: reelDown 80s linear infinite; }
+  @keyframes reelDown { from { transform: translateY(-50%); } to { transform: translateY(0%); } }
+  @keyframes reelUp   { from { transform: translateY(0%); }   to { transform: translateY(-50%); } }
+
+  .reel-fade { position: absolute; pointer-events: none; z-index: 2; }
+  .reel-fade-top    { top: 0; left: 0; right: 0; height: 18%; background: linear-gradient(to bottom, var(--color-navy), transparent); }
+  .reel-fade-bottom { bottom: 0; left: 0; right: 0; height: 25%; background: linear-gradient(to top, var(--color-navy), transparent); }
+  .reel-fade-left   { top: 0; bottom: 0; left: 0; width: 12%; background: linear-gradient(to right, var(--color-navy), transparent); }
+  .reel-fade-right  { top: 0; bottom: 0; right: 0; width: 12%; background: linear-gradient(to left, var(--color-navy), transparent); }
+
+  .reel-site {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.5), 0 8px 20px -8px rgb(0 0 0 / 0.3);
+    color: var(--color-ink);
+    border: 1px solid rgba(255,255,255,0.06);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    isolation: isolate;
+  }
+  .rs-chrome {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: #f4f5f7;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .rs-dots { display: flex; gap: 5px; }
+  .rs-dots span { width: 9px; height: 9px; border-radius: 50%; }
+  .rs-url {
+    font-family: var(--font-mono); font-size: 10px;
+    color: #888; flex: 1; background: #fff;
+    padding: 3px 10px; border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .rs-hero {
+    padding: 32px 28px 36px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .hue-periwinkle .rs-hero { background: linear-gradient(135deg,#eceef5,#c6cbe0); }
+  .hue-blue       .rs-hero { background: linear-gradient(135deg,#e3eaf1,#9eb3c8); }
+  .hue-navy       .rs-hero { background: linear-gradient(135deg,#dde3eb,#8b9eb1); }
+  .hue-ink        .rs-hero { background: linear-gradient(135deg,#d8dde2,#7a8693); }
+
+  .rs-hero-title {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 28px; line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--color-navy);
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .rs-hero-sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: #5e6b78; font-size: 14px;
+  }
+  .rs-hero-cta {
+    align-self: flex-start; margin-top: 8px;
+    font-size: 12px; padding: 6px 14px;
+    border-radius: 999px;
+  }
+  .hue-periwinkle .rs-hero-cta { background: var(--color-periwinkle); color: var(--color-navy); }
+  .hue-blue       .rs-hero-cta { background: var(--color-blue);       color: #fff; }
+  .hue-navy       .rs-hero-cta { background: var(--color-navy);       color: #fff; }
+  .hue-ink        .rs-hero-cta { background: var(--color-ink);        color: #fff; }
+
+  .rs-content { padding: 22px 28px; display: flex; flex-direction: column; gap: 8px; }
+  .rs-h { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--color-navy); margin-bottom: 4px; }
+  .rs-line { height: 6px; background: rgba(13,47,69,0.12); border-radius: 3px; }
+  .rs-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .rs-card { padding: 12px; border-radius: 6px; background: #f6f6f8; display: flex; flex-direction: column; gap: 6px; }
+  .rs-card-h { height: 28px; background: rgba(13,47,69,0.12); border-radius: 3px; }
+  .rs-card-l { height: 5px; background: rgba(13,47,69,0.10); border-radius: 2px; }
+  .rs-card-l.short { width: 60%; }
+  .rs-strip { padding: 22px 28px; }
+  .hue-periwinkle .rs-strip { background: var(--color-periwinkle); color: var(--color-navy); }
+  .hue-blue       .rs-strip { background: var(--color-blue);       color: #fff; }
+  .hue-navy       .rs-strip { background: var(--color-navy);       color: #fff; }
+  .hue-ink        .rs-strip { background: var(--color-ink);        color: #fff; }
+  .rs-strip-h {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 18px; letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reel-col-track { animation: none !important; }
+  }
+</style>
