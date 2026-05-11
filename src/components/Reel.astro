@@ -13,15 +13,11 @@ const REEL_PAGES = [
   { name: "Margot's Bakery",     url: "margotsbakery.com",     hue: "navy" },
 ];
 
-// Two columns are duplicated; one column is reversed for visual variety
 const colA = [...REEL_PAGES, ...REEL_PAGES];
 const colB = [...REEL_PAGES.slice().reverse(), ...REEL_PAGES.slice().reverse()];
 const colC = [...REEL_PAGES, ...REEL_PAGES];
 
-// Hue → background gradient + accent + on-color
 const hueClass = (h: string) => `hue-${h}`;
-
-// Variants for the body content of each card so they don't all look the same
 const headlineFor = (i: number) =>
   i % 3 === 0 ? "What we do" : i % 3 === 1 ? "How it works" : "Get in touch";
 ---
@@ -31,7 +27,6 @@ const headlineFor = (i: number) =>
     <div class="section-rule reel-rule">
       <span class="num">§ 03</span>
       <span>Recent work</span>
-      <span class="meta">A drift through what we've shipped</span>
     </div>
     <header class="reel-head">
       <h2 class="display reel-title">Sites we're <em>proud of</em>.</h2>
@@ -147,75 +142,19 @@ const headlineFor = (i: number) =>
 </section>
 
 <style>
-  .reel {
-    padding-block: clamp(4rem, 9vh, 7rem) 0;
-    background: var(--color-navy);
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-  }
-  .reel-pad {
-    width: 100%;
-    padding-inline: clamp(1.5rem, 3.5vw, 3.5rem);
-  }
-  .reel-rule {
-    border-top-color: rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.65);
-  }
+  .reel { padding-block: clamp(4rem, 9vh, 7rem) 0; background: var(--color-navy); color: #fff; position: relative; overflow: hidden; }
+  .reel-pad { width: 100%; padding-inline: clamp(1.5rem, 3.5vw, 3.5rem); }
+  .reel-rule { border-top-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); }
   .reel-rule .num { color: var(--color-periwinkle); }
-  .reel-rule .meta { color: rgba(255,255,255,0.5); }
-
   .reel-head { margin-bottom: 1rem; }
-  .reel-title {
-    color: #fff;
-    font-size: var(--text-step-4);
-    margin: 0;
-    max-width: 18ch;
-  }
+  .reel-title { color: #fff; font-size: var(--text-step-4); margin: 0; max-width: 18ch; }
   .reel-title :global(em) { color: var(--color-periwinkle); }
 
-  .reel-stage {
-    position: relative;
-    height: clamp(640px, 85vh, 900px);
-    margin-top: 3rem;
-    overflow: hidden;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    contain: paint;
-  }
-  .reel-perspective {
-    position: absolute; inset: 0;
-    perspective: 2400px;
-    perspective-origin: 50% 50%;
-  }
-  .reel-plane {
-    position: absolute;
-    top: -10%; left: -15%; right: -15%; bottom: -10%;
-    transform: rotateX(50deg) rotateZ(-32deg) translateZ(-100px);
-    transform-style: preserve-3d;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 60px;
-  }
-  .reel-col {
-    position: relative;
-    overflow: visible;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-  .reel-col-track {
-    display: flex; flex-direction: column; gap: 60px;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    will-change: transform;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
+  .reel-stage { position: relative; height: clamp(640px, 85vh, 900px); margin-top: 3rem; overflow: hidden; transform: translateZ(0); contain: paint; }
+  .reel-perspective { position: absolute; inset: 0; perspective: 2400px; perspective-origin: 50% 50%; }
+  .reel-plane { position: absolute; top: -10%; left: -15%; right: -15%; bottom: -10%; transform: rotateX(50deg) rotateZ(-32deg) translateZ(-100px); transform-style: preserve-3d; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 60px; }
+  .reel-col { position: relative; overflow: visible; transform: translateZ(0); will-change: transform; backface-visibility: hidden; }
+  .reel-col-track { display: flex; flex-direction: column; gap: 60px; will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
   .reel-col-a .reel-col-track { animation: reelDown 60s linear infinite; }
   .reel-col-b .reel-col-track { animation: reelUp   70s linear infinite; }
   .reel-col-c .reel-col-track { animation: reelDown 80s linear infinite; }
@@ -228,66 +167,23 @@ const headlineFor = (i: number) =>
   .reel-fade-left   { top: 0; bottom: 0; left: 0; width: 12%; background: linear-gradient(to right, var(--color-navy), transparent); }
   .reel-fade-right  { top: 0; bottom: 0; right: 0; width: 12%; background: linear-gradient(to left, var(--color-navy), transparent); }
 
-  .reel-site {
-    width: 100%;
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.5), 0 8px 20px -8px rgb(0 0 0 / 0.3);
-    color: var(--color-ink);
-    border: 1px solid rgba(255,255,255,0.06);
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    isolation: isolate;
-  }
-  .rs-chrome {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px;
-    background: #f4f5f7;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-  }
+  .reel-site { width: 100%; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.5), 0 8px 20px -8px rgb(0 0 0 / 0.3); color: var(--color-ink); border: 1px solid rgba(255,255,255,0.06); transform: translateZ(0); backface-visibility: hidden; isolation: isolate; }
+  .rs-chrome { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f4f5f7; border-bottom: 1px solid rgba(0,0,0,0.06); }
   .rs-dots { display: flex; gap: 5px; }
   .rs-dots span { width: 9px; height: 9px; border-radius: 50%; }
-  .rs-url {
-    font-family: var(--font-mono); font-size: 10px;
-    color: #888; flex: 1; background: #fff;
-    padding: 3px 10px; border-radius: 4px;
-    border: 1px solid rgba(0,0,0,0.06);
-  }
-  .rs-hero {
-    padding: 32px 28px 36px;
-    display: flex; flex-direction: column; gap: 8px;
-    position: relative;
-  }
+  .rs-url { font-family: var(--font-mono); font-size: 10px; color: #888; flex: 1; background: #fff; padding: 3px 10px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.06); }
+  .rs-hero { padding: 32px 28px 36px; display: flex; flex-direction: column; gap: 8px; position: relative; }
   .hue-periwinkle .rs-hero { background: linear-gradient(135deg,#eceef5,#c6cbe0); }
   .hue-blue       .rs-hero { background: linear-gradient(135deg,#e3eaf1,#9eb3c8); }
   .hue-navy       .rs-hero { background: linear-gradient(135deg,#dde3eb,#8b9eb1); }
   .hue-ink        .rs-hero { background: linear-gradient(135deg,#d8dde2,#7a8693); }
-
-  .rs-hero-title {
-    font-family: var(--font-display); font-weight: 400;
-    font-size: 28px; line-height: 1.05;
-    letter-spacing: -0.025em;
-    color: var(--color-navy);
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-  .rs-hero-sub {
-    font-family: var(--font-display);
-    font-style: italic;
-    color: #5e6b78; font-size: 14px;
-  }
-  .rs-hero-cta {
-    align-self: flex-start; margin-top: 8px;
-    font-size: 12px; padding: 6px 14px;
-    border-radius: 999px;
-  }
+  .rs-hero-title { font-family: var(--font-display); font-weight: 400; font-size: 28px; line-height: 1.05; letter-spacing: -0.025em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .rs-hero-sub { font-family: var(--font-display); font-style: italic; color: #5e6b78; font-size: 14px; }
+  .rs-hero-cta { align-self: flex-start; margin-top: 8px; font-size: 12px; padding: 6px 14px; border-radius: 999px; }
   .hue-periwinkle .rs-hero-cta { background: var(--color-periwinkle); color: var(--color-navy); }
   .hue-blue       .rs-hero-cta { background: var(--color-blue);       color: #fff; }
   .hue-navy       .rs-hero-cta { background: var(--color-navy);       color: #fff; }
   .hue-ink        .rs-hero-cta { background: var(--color-ink);        color: #fff; }
-
   .rs-content { padding: 22px 28px; display: flex; flex-direction: column; gap: 8px; }
   .rs-h { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--color-navy); margin-bottom: 4px; }
   .rs-line { height: 6px; background: rgba(13,47,69,0.12); border-radius: 3px; }
@@ -301,13 +197,7 @@ const headlineFor = (i: number) =>
   .hue-blue       .rs-strip { background: var(--color-blue);       color: #fff; }
   .hue-navy       .rs-strip { background: var(--color-navy);       color: #fff; }
   .hue-ink        .rs-strip { background: var(--color-ink);        color: #fff; }
-  .rs-strip-h {
-    font-family: var(--font-display); font-weight: 400;
-    font-size: 18px; letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
+  .rs-strip-h { font-family: var(--font-display); font-weight: 400; font-size: 18px; letter-spacing: -0.02em; font-variation-settings: "opsz" 144, "SOFT" 30; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reel-col-track { animation: none !important; }
-  }
+  @media (prefers-reduced-motion: reduce) { .reel-col-track { animation: none !important; } }
 </style>

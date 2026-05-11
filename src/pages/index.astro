@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import BrandMark from "../components/BrandMark.astro";
 import Marquee from "../components/Marquee.astro";
 import SectionRule from "../components/SectionRule.astro";
 import SectionHead from "../components/SectionHead.astro";
@@ -10,15 +9,22 @@ import CtaStrip from "../components/CtaStrip.astro";
 import Reel from "../components/Reel.astro";
 
 const heroMeta = [
-  { label: "Studio size",        value: "Three partners" },
-  { label: "Typical turnaround", value: "2–4 weeks" },
-  { label: "Pricing model",      value: "Flat fee, no retainers" },
-  { label: "Hosting & domain",   value: "Set up & included" },
+  ["Studio size",        "Three partners"],
+  ["Typical turnaround", "2–4 weeks"],
+  ["Pricing model",      "Flat fee, no retainers"],
+  ["Hosting & domain",   "Set up & included"],
+];
+
+const HERO_STAGES = [
+  { id: "blank",   label: "01 · Blank canvas",  pct: 0.00 },
+  { id: "grid",    label: "02 · Grid system",   pct: 0.20 },
+  { id: "wires",   label: "03 · Wireframe",     pct: 0.42 },
+  { id: "content", label: "04 · Content",       pct: 0.66 },
+  { id: "polish",  label: "05 · Live site",     pct: 0.88 },
 ];
 
 const tiers = [
-  {
-    tierNum: "01", tierLabel: "Solo", deliverable: "~1–2 weeks",
+  { tierNum: "01", tierLabel: "Solo", deliverable: "~1–2 weeks",
     title: "Landing Page", price: "800", priceNote: "flat · one round of revisions",
     features: [
       "One beautifully-designed page built around your brand",
@@ -26,10 +32,8 @@ const tiers = [
       "Mobile and desktop optimized, basic on-page SEO",
       "Hosting setup and domain connection included",
     ],
-    ctaLabel: "Start with Landing",
-  },
-  {
-    tierNum: "02", tierLabel: "Full", deliverable: "~2–4 weeks · up to 8 pages",
+    ctaLabel: "Start with Landing" },
+  { tierNum: "02", tierLabel: "Full", deliverable: "~2–4 weeks · up to 8 pages",
     title: "Full Site", price: "1,800", priceNote: "flat · two rounds of revisions",
     features: [
       "Everything in Landing Page, scaled up to 8 pages",
@@ -37,8 +41,7 @@ const tiers = [
       "Cohesive type, color, and component system",
       "Handoff doc so you (or anyone) can update content later",
     ],
-    ctaLabel: "Start with Full Site",
-  },
+    ctaLabel: "Start with Full Site" },
 ];
 
 const steps = [
@@ -50,187 +53,125 @@ const steps = [
 ---
 
 <BaseLayout>
-  {/* === SCROLL-DRIVEN HERO ============================================== */}
-  <section class="hero-pin" id="heroPin">
-    <div class="hero-pin-inner">
-      <div class="container-page hero-shell">
-
-        {/* Left: copy */}
-        <div class="hero-copy reveal">
-          <div class="hero-rule">
-            <span class="hero-rule-num">§ 00</span>
-            <span class="hero-rule-label">fwd. — A small web design studio</span>
-            <span class="hero-rule-meta" id="heroProgress">phase 01 / 05</span>
+  <section class="hero-outer" id="heroOuter">
+    <div class="hero-pin">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-eyebrow">
+            <span class="bar"></span>
+            <span class="num">§ 00</span>
+            <span>fwd. — small web studio</span>
           </div>
-
-          <h1 class="display hero-title">
-            Websites that <em>earn</em> their place online.
-          </h1>
-
+          <h1 class="display hero-title">Websites that <em>earn</em> their place online.</h1>
           <p class="lede hero-lede">
             We build clean, considered sites for practices and small businesses —
             the kind that quietly do their job, look the part, and <em>show up</em>
             when clients search for you.
           </p>
-
           <div class="hero-actions">
             <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
             <a href="/contact"  class="btn btn-ghost">Start a project</a>
           </div>
-
           <div class="hero-meta">
-            {heroMeta.map((m) => (
-              <div class="hero-meta-item">
-                <span class="hero-meta-label">{m.label}</span>
-                <strong class="hero-meta-value">{m.value}</strong>
+            {heroMeta.map(([k, v]) => (
+              <div class="meta-cell">
+                <span class="meta-key">{k}</span>
+                <strong class="meta-val">{v}</strong>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: building browser mock */}
-        <div class="hero-stage" aria-hidden="true">
-          <div class="hero-watermark">
-            <BrandMark class="w-full h-auto text-navy" decorative={true} />
-          </div>
-
-          <div class="browser" data-phase="0">
+        <div class="hero-right">
+          <div class="browser">
             <div class="browser-chrome">
-              <div class="browser-dots">
+              <div class="dots">
                 <span style="background:#FF6058"></span>
                 <span style="background:#FFBE2E"></span>
                 <span style="background:#28C940"></span>
               </div>
-              <div class="browser-url" id="heroUrl">about:blank</div>
+              <div class="urlbar"><span class="lock">●</span><span class="url" id="heroUrl">localhost:4321</span></div>
+              <div class="stage-pill" id="heroStagePill">01 · Blank canvas</div>
             </div>
-            <div class="browser-stage">
+            <div class="browser-body">
+              <div class="grid-bg" id="gridBg"></div>
 
-              {/* Phase 0 — empty */}
-              <div class="phase phase-0" data-show="0">
-                <div class="phase-empty">
-                  <span class="cursor-blink">|</span>
+              <div class="wf-row" id="wfRow1"><div class="wf-h1"></div></div>
+              <div class="wf-row narrow" id="wfRow2">
+                <div class="wf-line" style="width:78%"></div>
+                <div class="wf-line" style="width:62%"></div>
+              </div>
+              <div class="wf-grid" id="wfGrid">
+                <div class="wf-block tall"></div>
+                <div class="wf-stack">
+                  <div class="wf-line" style="width:85%"></div>
+                  <div class="wf-line" style="width:70%"></div>
+                  <div class="wf-line" style="width:55%"></div>
+                  <div class="wf-pill"></div>
                 </div>
               </div>
 
-              {/* Phase 1 — grid */}
-              <div class="phase phase-1" data-show="1">
-                <div class="phase-grid"></div>
+              <div class="content-layer" id="contentLayer">
+                <div class="ct-eyebrow">— Family dentistry · Irvine, CA</div>
+                <div class="ct-h1">A calmer kind of <em>dental visit</em>.</div>
+                <div class="ct-lede">Same-day appointments, gentle care, and a team that actually remembers your name.</div>
               </div>
 
-              {/* Phase 2 — wireframe */}
-              <div class="phase phase-2" data-show="2">
-                <div class="wf-nav">
-                  <div class="wf-logo"></div>
-                  <div class="wf-nav-links">
-                    <span></span><span></span><span></span><span></span>
-                  </div>
+              <div class="polish-layer" id="polishLayer">
+                <div class="pl-image">
+                  <div class="pl-image-grad"></div>
+                  <div class="pl-image-tag">[ studio photo ]</div>
                 </div>
-                <div class="wf-hero">
-                  <div class="wf-h-line big"></div>
-                  <div class="wf-h-line big short"></div>
-                  <div class="wf-h-line"></div>
-                  <div class="wf-h-line short"></div>
-                  <div class="wf-h-cta"></div>
-                </div>
-                <div class="wf-cards">
-                  <div class="wf-card"></div>
-                  <div class="wf-card"></div>
-                  <div class="wf-card"></div>
+                <div class="pl-cta">Book a visit <span>→</span></div>
+                <div class="pl-hours">
+                  <div><span>Mon–Thu</span><strong>8a — 6p</strong></div>
+                  <div><span>Fri</span><strong>8a — 2p</strong></div>
+                  <div><span>Sat–Sun</span><strong>Closed</strong></div>
                 </div>
               </div>
-
-              {/* Phase 3 — content */}
-              <div class="phase phase-3" data-show="3">
-                <div class="cn-nav">
-                  <div class="cn-logo">fwd.</div>
-                  <div class="cn-nav-links">
-                    <span>Services</span><span>Work</span><span>About</span><span>Contact</span>
-                  </div>
-                </div>
-                <div class="cn-hero">
-                  <div class="cn-eyebrow">A small studio · Est. 2026</div>
-                  <div class="cn-title">Websites that earn their place online.</div>
-                  <div class="cn-lede">Clean, considered sites for practices and small businesses.</div>
-                  <div class="cn-cta">See services →</div>
-                </div>
-                <div class="cn-cards">
-                  <div class="cn-card"><div class="cn-card-h">Landing</div><div class="cn-card-p">$800 flat</div></div>
-                  <div class="cn-card cn-card-pri"><div class="cn-card-h">Full Site</div><div class="cn-card-p">$1,800 flat</div></div>
-                  <div class="cn-card"><div class="cn-card-h">Process</div><div class="cn-card-p">Four steps</div></div>
-                </div>
-              </div>
-
-              {/* Phase 4 — finished site */}
-              <div class="phase phase-4" data-show="4">
-                <div class="fn-nav">
-                  <div class="fn-logo">fwd.</div>
-                  <div class="fn-nav-links">
-                    <span>Services</span><span>Work</span><span>About</span><span>Contact</span>
-                  </div>
-                  <div class="fn-cta">Start →</div>
-                </div>
-                <div class="fn-hero">
-                  <div class="fn-eyebrow">— A small web studio</div>
-                  <div class="fn-title">Websites that <em>earn</em> their place online.</div>
-                  <div class="fn-lede">Clean, considered sites for practices and small businesses.</div>
-                  <div class="fn-actions"><div class="fn-cta-pri">See services →</div><div class="fn-cta-ghost">Start a project</div></div>
-                </div>
-                <div class="fn-marquee">
-                  <span>Practices</span><span>●</span>
-                  <span>Small businesses</span><span>●</span>
-                  <span>Studios</span><span>●</span>
-                  <span>Founders</span>
-                </div>
-                <div class="fn-cards">
-                  <div class="fn-card"><div class="fn-card-num">01</div><div class="fn-card-h">Landing</div><div class="fn-card-p">$800 flat</div></div>
-                  <div class="fn-card fn-card-pri"><div class="fn-card-num">02</div><div class="fn-card-h">Full Site</div><div class="fn-card-p">$1,800 flat</div></div>
-                </div>
-              </div>
-
             </div>
-            <div class="browser-progress"><div class="browser-progress-bar" id="heroBar"></div></div>
+            <div class="browser-foot">
+              <span class="foot-label">scroll to build</span>
+              <div class="track">
+                <div class="fill" id="heroFill"></div>
+                {HERO_STAGES.map((s) => (
+                  <div class="tick" data-pct={s.pct} style={`left:${s.pct * 100}%`}></div>
+                ))}
+              </div>
+              <span class="foot-label right" id="heroPct">0%</span>
+            </div>
           </div>
+          <div class="hero-caption">↑ a site coming together as you scroll</div>
         </div>
-
       </div>
     </div>
   </section>
 
   <Marquee />
 
-  {/* === SERVICES OVERVIEW ================================================== */}
-  <section class="py-24 relative">
-    <div class="container-page">
-      <SectionRule num="§ 01" label="Services" meta="Two tiers · Flat fee" />
-      <SectionHead
-        title="Two ways to <em>get online</em>."
-        sub="Pick the size that fits. Both come with hosting setup, a domain connection, mobile and desktop optimization, and a real human helping you ship it."
-      />
+  <section id="services" class="section">
+    <div class="full">
+      <SectionRule num="§ 01" label="Services" />
+      <SectionHead title="Two ways to <em>get online</em>." />
       <div class="grid gap-6 grid-cols-1 md:grid-cols-2">
         {tiers.map((t) => (<ServiceCard {...t} />))}
       </div>
     </div>
   </section>
 
-  {/* === PROCESS ============================================================ */}
-  <section class="pb-24 relative">
-    <div class="container-page">
-      <SectionRule num="§ 02" label="Process" meta="Four short steps" />
-      <SectionHead
-        title="A simple, <em>honest</em> process."
-        sub="No bloated discovery decks. No surprise fees. Four steps from “we should probably get a website” to a live site you're proud to send people to."
-      />
+  <section class="section section-process">
+    <div class="full">
+      <SectionRule num="§ 02" label="Process" />
+      <SectionHead title="A simple, <em>honest</em> process." />
       <ol class="grid grid-cols-1 list-none p-0 m-0 border-t border-line">
         {steps.map((s) => (<ProcessStep {...s} />))}
       </ol>
     </div>
   </section>
 
-  {/* === 3D REEL ============================================================ */}
   <Reel />
 
-  {/* === CTA STRIP ========================================================== */}
-  <div class="container-page mt-24">
+  <div class="full mt-24" id="contact">
     <CtaStrip
       title="Got a practice, a product, or a <em>side project</em>?"
       body="Tell us about it. We reply to every inquiry — usually within a day."
@@ -239,45 +180,68 @@ const steps = [
 </BaseLayout>
 
 <script is:inline>
-  // === Hero scroll-pin: drive the building browser mock ====================
   (() => {
-    const root  = document.getElementById('heroPin');
-    if (!root) return;
-    const browser  = root.querySelector('.browser');
-    const phases   = Array.from(root.querySelectorAll('.phase'));
-    const url      = document.getElementById('heroUrl');
-    const bar      = document.getElementById('heroBar');
-    const progress = document.getElementById('heroProgress');
+    const outer = document.getElementById('heroOuter');
+    if (!outer) return;
+    const STAGES = [
+      { id: "blank",   label: "01 · Blank canvas",  pct: 0.00, url: "localhost:4321" },
+      { id: "grid",    label: "02 · Grid system",   pct: 0.20, url: "localhost:4321" },
+      { id: "wires",   label: "03 · Wireframe",     pct: 0.42, url: "localhost:4321" },
+      { id: "content", label: "04 · Content",       pct: 0.66, url: "localhost:4321" },
+      { id: "polish",  label: "05 · Live site",     pct: 0.88, url: "smithdental.com" },
+    ];
+    const gridBg = document.getElementById('gridBg');
+    const wf1 = document.getElementById('wfRow1');
+    const wf2 = document.getElementById('wfRow2');
+    const wfG = document.getElementById('wfGrid');
+    const cl  = document.getElementById('contentLayer');
+    const pl  = document.getElementById('polishLayer');
+    const url = document.getElementById('heroUrl');
+    const pill = document.getElementById('heroStagePill');
+    const fill = document.getElementById('heroFill');
+    const pctEl = document.getElementById('heroPct');
+    const ticks = outer.querySelectorAll('.tick');
 
-    const URLS = ['about:blank', '/grid.css', '/wireframe', '/draft', '/'];
-    const LABELS = ['phase 01 / 05', 'phase 02 / 05', 'phase 03 / 05', 'phase 04 / 05', 'phase 05 / 05'];
+    const reach = (id, idx) => idx >= STAGES.findIndex((s) => s.id === id);
 
-    let lastPhase = -1;
-    const setPhase = (p) => {
-      if (p === lastPhase) return;
-      lastPhase = p;
-      browser.dataset.phase = String(p);
-      phases.forEach((el) => {
-        const show = Number(el.dataset.show) === p;
-        el.classList.toggle('phase-active', show);
+    const apply = (progress) => {
+      let idx = 0;
+      for (let i = 0; i < STAGES.length; i++) if (progress >= STAGES[i].pct) idx = i;
+      const stage = STAGES[idx];
+
+      // grid bg visible from "grid" stage, hides at "polish"
+      gridBg.style.opacity = reach("grid", idx) ? (reach("polish", idx) ? 0 : 0.5) : 0;
+
+      // wireframe
+      const wfOn = reach("wires", idx);
+      [wf1, wf2, wfG].forEach((el, i) => {
+        el.style.opacity = wfOn ? 1 : 0;
+        el.style.transform = wfOn ? 'translateY(0)' : 'translateY(8px)';
+        el.style.transitionDelay = (i * 60) + 'ms';
       });
-      if (url) url.textContent = URLS[p];
-      if (progress) progress.textContent = LABELS[p];
-    };
 
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+      cl.style.opacity = reach("content", idx) ? 1 : 0;
+      pl.style.opacity = reach("polish", idx) ? 1 : 0;
+
+      url.textContent = stage.url;
+      pill.textContent = stage.label;
+      fill.style.width = (progress * 100) + '%';
+      pctEl.textContent = Math.round(progress * 100) + '%';
+      ticks.forEach((t) => {
+        const p = parseFloat(t.dataset.pct);
+        t.style.background = progress >= p - 0.001 ? 'var(--color-periwinkle)' : 'rgba(7,23,34,0.18)';
+      });
+    };
 
     const onScroll = () => {
-      const rect = root.getBoundingClientRect();
-      const total = root.offsetHeight - window.innerHeight;
-      const scrolled = clamp(-rect.top, 0, total);
-      const t = total > 0 ? scrolled / total : 0;          // 0..1
-      const phase = clamp(Math.floor(t * 5), 0, 4);
-      setPhase(phase);
-      if (bar) bar.style.transform = `scaleX(${t})`;
+      const rect = outer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = outer.offsetHeight - vh;
+      const scrolled = Math.min(Math.max(-rect.top, 0), total);
+      apply(total > 0 ? scrolled / total : 0);
     };
 
-    setPhase(0);
+    apply(0);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
@@ -285,276 +249,86 @@ const steps = [
 </script>
 
 <style>
-  /* === HERO PIN ========================================================== */
-  .hero-pin {
-    position: relative;
-    /* 5 phases × 1 viewport each gives a generous scroll runway */
-    height: 500vh;
-    background: var(--color-paper);
-  }
-  .hero-pin-inner {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    width: 100%;
-    display: grid;
-    align-items: center;
-    overflow: hidden;
-  }
-  .hero-shell {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding-block: clamp(2rem, 6vh, 4rem);
-  }
-  @media (min-width: 1024px) {
-    .hero-shell { grid-template-columns: 1.05fr 1.15fr; gap: 5rem; }
-  }
+  /* ===== HERO — pinned scroll (exact match to prototype) ===== */
+  .hero-outer { height: 320vh; position: relative; }
+  .hero-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  .hero { display: grid; grid-template-columns: 1.05fr 1fr; height: 100%; width: 100%; align-items: stretch; }
+  .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding: clamp(2rem, 4vh, 3.5rem) clamp(1.5rem, 4vw, 4rem) 2.5rem var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); justify-content: center; }
 
-  .hero-copy { position: relative; z-index: 2; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .hero-eyebrow .bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
+  .hero-eyebrow .num { font-family: var(--font-mono); color: var(--color-blue); }
 
-  .hero-rule {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-line);
-    margin-bottom: 2.2rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.08em;
-    color: var(--color-fg-muted);
-    flex-wrap: wrap;
-  }
-  .hero-rule-num   { color: var(--color-blue); }
-  .hero-rule-label { text-transform: none; letter-spacing: 0.04em; }
-  .hero-rule-meta  { margin-left: auto; color: var(--color-fg-muted); }
+  .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 14ch; }
+  .hero-lede { max-width: 38ch; margin: 0; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  .hero-title {
-    margin: 0 0 1.6rem;
-    font-size: clamp(3rem, 6.5vw, 6.4rem);
-    max-width: 14ch;
-    line-height: 0.96;
-  }
-  .hero-lede { max-width: 38ch; margin: 0 0 2rem; }
+  .hero-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem 2rem; border-top: 1px solid var(--color-line); padding-top: 1.25rem; margin-top: 0.5rem; }
+  .meta-cell { display: flex; flex-direction: column; gap: 0.3rem; }
+  .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .meta-val { font-family: var(--font-display); font-weight: 500; font-size: var(--text-step-0); font-variation-settings: "opsz" 60, "SOFT" 30; color: var(--color-fg); }
 
-  .hero-actions {
-    display: flex; flex-wrap: wrap; gap: 1rem;
-    margin-bottom: 3rem;
-  }
+  .hero-right { position: relative; background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%); border-left: 1px solid var(--color-line); display: flex; align-items: center; justify-content: center; padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 3vw, 3rem); overflow: hidden; }
+  .hero-right::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); pointer-events: none; }
 
-  .hero-meta {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.2rem 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-line);
-    color: var(--color-fg-muted);
-    max-width: 36rem;
-  }
-  @media (min-width: 600px) {
-    .hero-meta { grid-template-columns: repeat(4, 1fr); }
-  }
-  .hero-meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
-  .hero-meta-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
-  }
-  .hero-meta-value {
-    font-family: var(--font-display);
-    font-weight: 400;
-    color: var(--color-fg);
-    font-size: var(--text-step-0);
-    font-variation-settings: "opsz" 60, "SOFT" 30;
-  }
+  .browser { width: min(620px, 95%); background: #fff; border-radius: 12px; border: 1px solid var(--color-line); box-shadow: 0 50px 100px -40px rgb(7 23 34 / 0.35), 0 12px 30px -12px rgb(7 23 34 / 0.18); overflow: hidden; position: relative; z-index: 1; }
+  .browser-chrome { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f5f6f8; border-bottom: 1px solid var(--color-line); }
+  .dots { display: flex; gap: 6px; }
+  .dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .urlbar { flex: 1; height: 26px; border-radius: 6px; background: #fff; border: 1px solid var(--color-line); display: flex; align-items: center; gap: 8px; padding: 0 12px; font-family: var(--font-mono); font-size: 11px; color: var(--color-fg-muted); }
+  .urlbar .lock { color: var(--color-blue); font-size: 8px; }
+  .stage-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue); background: #fff; border: 1px solid var(--color-line); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .browser-body { position: relative; height: clamp(360px, 48vh, 460px); background: #fff; overflow: hidden; }
+  .browser-body > * { transition: opacity 600ms cubic-bezier(0.2,0.7,0.2,1), transform 600ms cubic-bezier(0.2,0.7,0.2,1); }
 
-  /* === HERO STAGE / WATERMARK =========================================== */
-  .hero-stage {
-    position: relative;
-    display: grid;
-    place-items: center;
-    min-height: clamp(420px, 60vh, 640px);
-  }
-  .hero-watermark {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    color: var(--color-navy);
-    opacity: 0.04;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .hero-watermark > :global(svg) {
-    width: clamp(280px, 38vw, 560px);
-    height: auto;
-  }
+  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.12) 1px, transparent 1px); background-size: 24px 24px; opacity: 0; }
+  .wf-row, .wf-grid { position: relative; padding: 28px 32px; opacity: 0; }
+  .wf-row { padding-bottom: 0; }
+  .wf-row.narrow { padding-top: 12px; }
+  .wf-h1 { height: 48px; width: 60%; background: rgba(13,47,69,0.18); border-radius: 4px; }
+  .wf-line { height: 10px; background: rgba(13,47,69,0.14); border-radius: 3px; margin-bottom: 8px; }
+  .wf-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; margin-top: 8px; }
+  .wf-block.tall { height: 180px; background: repeating-linear-gradient(135deg, rgba(13,47,69,0.12) 0 8px, transparent 8px 16px); border: 1px dashed rgba(13,47,69,0.25); border-radius: 6px; }
+  .wf-stack { display: flex; flex-direction: column; gap: 10px; }
+  .wf-pill { width: 110px; height: 30px; border-radius: 999px; background: var(--color-periwinkle); margin-top: 8px; }
 
-  /* === BROWSER MOCK ===================================================== */
-  .browser {
-    position: relative;
-    z-index: 1;
-    width: min(640px, 92%);
-    aspect-ratio: 4 / 3;
-    background: #fff;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow:
-      0 40px 80px -30px rgb(7 23 34 / 0.45),
-      0 12px 24px -10px rgb(7 23 34 / 0.25),
-      0 0 0 1px rgb(7 23 34 / 0.06);
-  }
-  .browser-chrome {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 14px;
-    background: #f4f5f7;
-    border-bottom: 1px solid rgba(7,23,34,0.08);
-  }
-  .browser-dots { display: flex; gap: 6px; }
-  .browser-dots span { width: 11px; height: 11px; border-radius: 50%; }
-  .browser-url {
-    flex: 1; font-family: var(--font-mono); font-size: 11px;
-    color: #5e6b78; background: #fff;
-    padding: 5px 12px; border-radius: 5px;
-    border: 1px solid rgba(7,23,34,0.07);
-    transition: color 220ms var(--ease-soft);
-  }
-  .browser-stage {
-    position: relative; height: calc(100% - 38px - 3px);
-  }
-  .browser-progress {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
-    background: rgba(7,23,34,0.06);
-  }
-  .browser-progress-bar {
-    height: 100%;
-    width: 100%;
-    transform-origin: left center;
-    transform: scaleX(0);
-    background: var(--color-blue);
-    transition: transform 200ms var(--ease-soft);
-  }
+  .content-layer { position: absolute; inset: 0; padding: 36px 36px 24px; display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; }
+  .ct-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--color-fg-muted); }
+  .ct-h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 2.3vw, 2.4rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; margin-top: 4px; }
+  .ct-h1 em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144, "SOFT" 100; }
+  .ct-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); max-width: 36ch; line-height: 1.35; }
 
-  .phase {
-    position: absolute; inset: 0;
-    opacity: 0;
-    transition: opacity 500ms var(--ease-soft);
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .phase.phase-active { opacity: 1; }
+  .polish-layer { position: absolute; inset: 0; padding: 28px 32px 20px; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr auto; gap: 16px; background: #fff; opacity: 0; }
+  .pl-image { grid-row: 1 / span 2; position: relative; border-radius: 8px; overflow: hidden; background: linear-gradient(135deg, #e8eef3 0%, #c4d2dc 60%, var(--color-periwinkle) 120%); }
+  .pl-image-grad { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 50%), repeating-linear-gradient(45deg, rgba(13,47,69,0.05) 0 4px, transparent 4px 12px); }
+  .pl-image-tag { position: absolute; bottom: 10px; left: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--color-fg-muted); background: rgba(255,255,255,0.85); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.04em; }
+  .pl-cta { align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+  .pl-hours { display: flex; flex-direction: column; gap: 6px; font-size: 12px; align-self: end; }
+  .pl-hours > div { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid var(--color-line); }
+  .pl-hours strong { font-family: var(--font-display); font-weight: 500; font-variation-settings: "opsz" 60, "SOFT" 30; }
+  .pl-hours span { color: var(--color-fg-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
 
-  /* Phase 0 — empty */
-  .phase-empty {
-    height: 100%; display: grid; place-items: center;
-    color: var(--color-periwinkle);
-    font-family: var(--font-mono); font-size: 14px;
-  }
-  .cursor-blink { animation: blink 1.1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
+  .browser-foot { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #fafafb; border-top: 1px solid var(--color-line); }
+  .foot-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .foot-label.right { margin-left: auto; }
+  .track { flex: 1; height: 2px; background: rgba(7,23,34,0.08); border-radius: 2px; position: relative; }
+  .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; transition: width 200ms linear; width: 0; }
+  .tick { position: absolute; top: -2px; width: 6px; height: 6px; border-radius: 50%; transform: translateX(-3px); transition: background 280ms cubic-bezier(0.2,0.7,0.2,1); background: rgba(7,23,34,0.18); }
 
-  /* Phase 1 — grid */
-  .phase-grid {
-    width: 100%; height: 100%;
-    background-image:
-      linear-gradient(to right, rgba(20,70,103,0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(20,70,103,0.08) 1px, transparent 1px);
-    background-size: 28px 28px;
-  }
+  .hero-caption { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); opacity: 0.7; }
 
-  /* Phase 2 — wireframe */
-  .phase-2 { padding: 28px; display: grid; gap: 18px; align-content: start; }
-  .wf-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-bottom: 14px; border-bottom: 1px dashed rgba(7,23,34,0.18);
-  }
-  .wf-logo { width: 44px; height: 14px; background: rgba(7,23,34,0.18); border-radius: 3px; }
-  .wf-nav-links { display: flex; gap: 12px; }
-  .wf-nav-links span { width: 36px; height: 8px; background: rgba(7,23,34,0.14); border-radius: 2px; }
-  .wf-hero { display: flex; flex-direction: column; gap: 10px; padding-top: 8px; }
-  .wf-h-line { height: 8px; background: rgba(7,23,34,0.18); border-radius: 3px; width: 90%; }
-  .wf-h-line.big { height: 14px; width: 80%; background: rgba(7,23,34,0.28); }
-  .wf-h-line.short { width: 60%; }
-  .wf-h-cta { width: 110px; height: 28px; background: rgba(7,23,34,0.28); border-radius: 999px; margin-top: 4px; }
-  .wf-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
-  .wf-card { aspect-ratio: 4/3; background: rgba(7,23,34,0.08); border: 1px dashed rgba(7,23,34,0.2); border-radius: 6px; }
+  .full { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+  .section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
 
-  /* Phase 3 — content */
-  .phase-3 { padding: 28px; display: grid; gap: 16px; align-content: start; }
-  .cn-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(7,23,34,0.08); }
-  .cn-logo {
-    font-family: var(--font-display); font-style: italic;
-    color: var(--color-navy); font-size: 18px;
-    font-variation-settings: "opsz" 144, "SOFT" 100;
+  @media (max-width: 1000px) {
+    .hero-outer { height: auto; }
+    .hero-pin { position: relative; height: auto; }
+    .hero { grid-template-columns: 1fr; height: auto; }
+    .hero-right { border-left: 0; border-top: 1px solid var(--color-line); padding-top: 3rem; padding-bottom: 4rem; }
+    .hero-title { font-size: clamp(2.6rem, 9vw, 4.5rem); }
   }
-  .cn-nav-links { display: flex; gap: 16px; font-family: var(--font-sans); font-size: 11px; color: var(--color-fg-muted); }
-  .cn-hero { display: flex; flex-direction: column; gap: 8px; padding: 8px 0 4px; }
-  .cn-eyebrow { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-fg-muted); }
-  .cn-title { font-family: var(--font-display); font-weight: 350; font-size: 28px; line-height: 1.05; letter-spacing: -0.025em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; }
-  .cn-lede { font-family: var(--font-display); font-style: italic; color: var(--color-fg-soft); font-size: 13px; }
-  .cn-cta { align-self: flex-start; margin-top: 6px; padding: 6px 14px; background: var(--color-navy); color: #fff; border-radius: 999px; font-size: 11px; }
-  .cn-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 6px; }
-  .cn-card { padding: 12px; border-radius: 8px; background: #f6f6f8; display: flex; flex-direction: column; gap: 4px; }
-  .cn-card.cn-card-pri { background: var(--color-navy); color: #fff; }
-  .cn-card-h { font-family: var(--font-display); font-size: 14px; }
-  .cn-card-p { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
-
-  /* Phase 4 — finished */
-  .phase-4 { padding: 24px 26px; display: grid; gap: 14px; align-content: start; }
-  .fn-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(7,23,34,0.08); }
-  .fn-logo {
-    font-family: var(--font-display); font-style: italic;
-    color: var(--color-navy); font-size: 18px;
-    font-variation-settings: "opsz" 144, "SOFT" 100;
-  }
-  .fn-nav-links { display: flex; gap: 14px; font-family: var(--font-sans); font-size: 10px; color: var(--color-fg-muted); }
-  .fn-cta { padding: 6px 12px; background: var(--color-navy); color: #fff; border-radius: 999px; font-size: 10px; }
-  .fn-hero { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
-  .fn-eyebrow { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--color-fg-muted); }
-  .fn-title {
-    font-family: var(--font-display); font-weight: 350;
-    font-size: 32px; line-height: 1; letter-spacing: -0.03em;
-    color: var(--color-navy);
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-  .fn-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144, "SOFT" 100; }
-  .fn-lede { font-family: var(--font-display); font-style: italic; color: var(--color-fg-soft); font-size: 12px; max-width: 36ch; }
-  .fn-actions { display: flex; gap: 8px; margin-top: 6px; }
-  .fn-cta-pri { padding: 6px 12px; background: var(--color-navy); color: #fff; border-radius: 999px; font-size: 10px; }
-  .fn-cta-ghost { padding: 6px 12px; border: 1px solid rgba(7,23,34,0.25); color: var(--color-fg); border-radius: 999px; font-size: 10px; }
-  .fn-marquee {
-    display: flex; gap: 12px; align-items: center;
-    border-block: 1px solid rgba(7,23,34,0.08);
-    padding: 8px 0; margin-top: 6px;
-    font-family: var(--font-display); font-style: italic;
-    font-size: 14px; color: var(--color-fg);
-    font-variation-settings: "opsz" 144, "SOFT" 70;
-    overflow: hidden; white-space: nowrap;
-  }
-  .fn-marquee span:nth-child(even) { color: var(--color-periwinkle); font-style: normal; font-size: 8px; }
-  .fn-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .fn-card { padding: 14px; border-radius: 10px; background: #f6f6f8; display: flex; flex-direction: column; gap: 4px; }
-  .fn-card.fn-card-pri { background: var(--color-navy); color: #fff; }
-  .fn-card-num { font-family: var(--font-mono); font-size: 9px; opacity: 0.6; }
-  .fn-card-h { font-family: var(--font-display); font-size: 16px; }
-  .fn-card-p { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
-
-  /* Reduced motion: collapse the pin into a normal section */
   @media (prefers-reduced-motion: reduce) {
-    .hero-pin { height: auto; }
-    .hero-pin-inner { position: relative; height: auto; }
-    .browser-progress-bar { transition: none; }
-  }
-
-  @media (max-width: 1023px) {
-    .hero-pin { height: auto; }
-    .hero-pin-inner { position: relative; height: auto; padding-block: 4rem; }
-    .hero-stage { min-height: 420px; }
+    .hero-outer { height: auto; }
+    .hero-pin { position: relative; height: auto; }
   }
 </style>
