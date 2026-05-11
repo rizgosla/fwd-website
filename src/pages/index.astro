@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Marquee from "../components/Marquee.astro";
-import SectionRule from "../components/SectionRule.astro";
 import SectionHead from "../components/SectionHead.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import ProcessStep from "../components/ProcessStep.astro";
@@ -24,7 +23,7 @@ const HERO_STAGES = [
 ];
 
 const tiers = [
-  { tierNum: "01", tierLabel: "Solo", deliverable: "~1–2 weeks",
+  { variant: "light", deliverable: "~1–2 weeks",
     title: "Landing Page", price: "800", priceNote: "flat · one round of revisions",
     features: [
       "One beautifully-designed page built around your brand",
@@ -33,7 +32,7 @@ const tiers = [
       "Hosting setup and domain connection included",
     ],
     ctaLabel: "Start with Landing" },
-  { tierNum: "02", tierLabel: "Full", deliverable: "~2–4 weeks · up to 8 pages",
+  { variant: "dark", deliverable: "~2–4 weeks · up to 8 pages",
     title: "Full Site", price: "1,800", priceNote: "flat · two rounds of revisions",
     features: [
       "Everything in Landing Page, scaled up to 8 pages",
@@ -149,11 +148,10 @@ const steps = [
 
   <Marquee />
 
-  <section id="services" class="section">
+  <section id="services" class="section section-services">
     <div class="full">
-      <SectionRule num="§ 01" label="Services" />
       <SectionHead title="Two ways to <em>get online</em>." />
-      <div class="grid gap-6 grid-cols-1 md:grid-cols-2">
+      <div class="tiers-grid">
         {tiers.map((t) => (<ServiceCard {...t} />))}
       </div>
     </div>
@@ -161,7 +159,6 @@ const steps = [
 
   <section class="section section-process">
     <div class="full">
-      <SectionRule num="§ 02" label="Process" />
       <SectionHead title="A simple, <em>honest</em> process." />
       <ol class="grid grid-cols-1 list-none p-0 m-0 border-t border-line">
         {steps.map((s) => (<ProcessStep {...s} />))}
@@ -319,6 +316,9 @@ const steps = [
 
   .full { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
   .section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
+  .section-services { padding-top: clamp(3rem, 6vh, 5rem); }
+  .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
 
   @media (max-width: 1000px) {
     .hero-outer { height: auto; }

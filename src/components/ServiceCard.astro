@@ -1,7 +1,6 @@
 ---
 interface Props {
-  tierNum: string;
-  tierLabel: string;
+  variant?: "light" | "dark";
   deliverable: string;
   title: string;
   price: string;
@@ -9,63 +8,157 @@ interface Props {
   features: string[];
   ctaLabel: string;
 }
-const { tierNum, tierLabel, deliverable, title, price, priceNote, features, ctaLabel } = Astro.props;
+const { variant = "light", deliverable, title, price, priceNote, features, ctaLabel } = Astro.props;
 ---
 
-<article
-  class="service-card relative flex flex-col overflow-hidden rounded-[18px] border border-line bg-paper
-         p-7 md:p-11 transition-[border-color,transform,box-shadow] duration-[450ms] ease-[var(--ease-soft)]
-         hover:border-line-strong hover:-translate-y-[3px] hover:shadow-[0_24px_50px_-32px_rgb(7_23_34_/0.25)]"
-  data-tilt
->
-  <div class="flex justify-between items-baseline gap-4 mb-6 pb-6 border-b border-hairline">
-    <span class="font-mono text-[length:var(--text-step--2)] text-fg-muted tracking-[0.1em] uppercase">
-      Tier <span class="text-blue">{tierNum}</span> — {tierLabel}
-    </span>
-    <span class="font-mono text-[length:var(--text-step--2)] text-fg-muted tracking-[0.05em]">{deliverable}</span>
+<article class={`tier tier-${variant}`}>
+  <div class="tier-top">
+    <span class="tier-deliv">{deliverable}</span>
   </div>
-
-  <h3 class="font-display text-[length:var(--text-step-3)] font-light leading-[1.05] tracking-[-0.02em] mb-4"
-      style="font-variation-settings: 'opsz' 144, 'SOFT' 30;">
-    {title}
-  </h3>
-
-  <div class="font-display text-[length:var(--text-step-2)] flex items-baseline gap-2 mb-6 tracking-[-0.02em]"
-       style="font-variation-settings: 'opsz' 60, 'SOFT' 30;">
-    <span class="italic text-blue text-[0.65em] self-start mt-[0.15em]"
-          style="font-variation-settings: 'opsz' 60, 'SOFT' 100;">$</span>
-    {price}
-    <small class="font-sans text-[length:var(--text-step--1)] text-fg-muted font-normal tracking-normal">
-      {priceNote}
-    </small>
+  <h3 class="tier-title">{title}</h3>
+  <div class="tier-price">
+    <span class="dollar">$</span>
+    <span class="amount">{price}</span>
+    <span class="note">{priceNote}</span>
   </div>
-
-  <ul class="list-none p-0 mb-8 grid gap-2.5 text-[length:var(--text-step-0)] text-fg-soft">
-    {features.map((f) => (
-      <li class="relative pl-7 leading-[1.5]
-                 before:content-[''] before:absolute before:left-0 before:top-[0.7em]
-                 before:w-3.5 before:h-px before:bg-periwinkle">
-        {f}
-      </li>
-    ))}
+  <ul class="tier-features">
+    {features.map((f) => (<li><span class="check">✓</span>{f}</li>))}
   </ul>
-
-  <div class="mt-auto">
-    <a href="/contact" class="link-arrow">
-      {ctaLabel} <span class="arrow">→</span>
-    </a>
-  </div>
+  <a href="/contact" class="tier-cta">{ctaLabel} <span class="arrow">→</span></a>
 </article>
 
 <style>
-  .service-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 0%), rgb(20 70 103 / 0.07), transparent 45%);
-    opacity: 0;
-    transition: opacity 450ms var(--ease-soft);
-    pointer-events: none;
+  .tier {
+    --bg: #fff;
+    --fg: var(--color-navy);
+    --fg-soft: var(--color-fg-soft);
+    --fg-muted: var(--color-fg-muted);
+    --line: var(--color-line);
+    --accent: var(--color-blue);
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: clamp(2rem, 3.5vw, 3rem);
+    display: flex; flex-direction: column;
+    gap: 1.5rem;
+    transition: background 360ms cubic-bezier(0.2,0.7,0.2,1),
+                color 360ms cubic-bezier(0.2,0.7,0.2,1),
+                border-color 360ms cubic-bezier(0.2,0.7,0.2,1),
+                transform 360ms cubic-bezier(0.2,0.7,0.2,1),
+                box-shadow 360ms cubic-bezier(0.2,0.7,0.2,1);
+    min-height: 560px;
   }
-  .service-card:hover::before { opacity: 1; }
+  .tier-dark {
+    --bg: var(--color-navy);
+    --fg: #ffffff;
+    --fg-soft: rgba(255,255,255,0.82);
+    --fg-muted: rgba(255,255,255,0.55);
+    --line: rgba(255,255,255,0.14);
+    --accent: var(--color-periwinkle);
+  }
+  /* Hover inverts: light ⇄ dark */
+  .tier-light:hover {
+    --bg: var(--color-navy);
+    --fg: #ffffff;
+    --fg-soft: rgba(255,255,255,0.82);
+    --fg-muted: rgba(255,255,255,0.55);
+    --line: rgba(255,255,255,0.14);
+    --accent: var(--color-periwinkle);
+    transform: translateY(-2px);
+    box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.45);
+  }
+  .tier-dark:hover {
+    --bg: #ffffff;
+    --fg: var(--color-navy);
+    --fg-soft: var(--color-fg-soft);
+    --fg-muted: var(--color-fg-muted);
+    --line: var(--color-line);
+    --accent: var(--color-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25);
+  }
+
+  .tier-top { display: flex; align-items: center; justify-content: flex-end; }
+  .tier-deliv {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .tier-title {
+    font-family: var(--font-display);
+    font-weight: 350;
+    font-size: clamp(2.4rem, 3.6vw, 3.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin: 0;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .tier-price {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem;
+    padding-block: 1.2rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .tier-price .dollar {
+    font-family: var(--font-display);
+    font-size: 1.8rem; color: var(--fg-muted);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+  }
+  .tier-price .amount {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(3rem, 5vw, 4.4rem);
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    line-height: 1;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .tier-price .note {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+    margin-left: auto;
+  }
+  .tier-features {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0.85rem;
+    flex: 1;
+  }
+  .tier-features li {
+    display: flex; gap: 0.75rem;
+    color: var(--fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.45;
+  }
+  .tier-features .check {
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .tier-cta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    align-self: stretch;
+    padding: 1rem 1.5rem;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: var(--text-step--1);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    border: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    transition: background 280ms cubic-bezier(0.2,0.7,0.2,1),
+                color 280ms cubic-bezier(0.2,0.7,0.2,1);
+  }
+  .tier-cta:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .tier-cta .arrow { transition: transform 320ms cubic-bezier(0.2,0.7,0.2,1); }
+  .tier-cta:hover .arrow { transform: translateX(4px); }
 </style>
