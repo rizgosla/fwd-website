@@ -63,26 +63,8 @@ const { variant = "light", deliverable, title, price, priceNote, features, ctaLa
     --accent: var(--color-periwinkle);
     --sheen: rgb(255 255 255 / 0.14);
   }
-  /* Hover inverts: light ⇄ dark */
-  .tier-light:hover {
-    --bg: var(--color-navy);
-    --fg: #ffffff;
-    --fg-soft: rgba(255,255,255,0.82);
-    --fg-muted: rgba(255,255,255,0.55);
-    --line: rgba(255,255,255,0.14);
-    --accent: var(--color-periwinkle);
-    --sheen: rgb(255 255 255 / 0.14);
-    transform: translateY(-2px);
-    box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.45);
-  }
-  .tier-dark:hover {
-    --bg: #ffffff;
-    --fg: var(--color-navy);
-    --fg-soft: var(--color-fg-soft);
-    --fg-muted: var(--color-fg-muted);
-    --line: var(--color-line);
-    --accent: var(--color-blue);
-    --sheen: rgb(13 47 69 / 0.10);
+  /* Hover: gentle lift only — colors stay put, halo does the talking */
+  .tier:hover {
     transform: translateY(-2px);
     box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25);
   }
