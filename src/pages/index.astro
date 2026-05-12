@@ -53,94 +53,87 @@ const steps = [
 
 <BaseLayout>
   <section class="hero-outer" id="heroOuter">
-    <div class="hero-pin">
-      <div class="hero">
-        <div class="hero-left">
-          <div class="hero-eyebrow">
-            <span class="bar"></span>
-            <span class="num">§ 00</span>
-            <span>fwd. — small web studio</span>
-          </div>
-          <h1 class="display hero-title">Websites that <em>earn</em> their place online.</h1>
-          <p class="lede hero-lede">
-            We build clean, considered sites for practices and small businesses —
-            the kind that quietly do their job, look the part, and <em>show up</em>
-            when clients search for you.
-          </p>
-          <div class="hero-actions">
-            <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
-            <a href="/contact"  class="btn btn-ghost">Start a project</a>
-          </div>
-          <div class="hero-meta">
-            {heroMeta.map(([k, v]) => (
-              <div class="meta-cell">
-                <span class="meta-key">{k}</span>
-                <strong class="meta-val">{v}</strong>
-              </div>
-            ))}
-          </div>
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-eyebrow">
+          <span class="bar"></span>
+          <span class="num">§ 00</span>
+          <span>fwd. — small web studio</span>
         </div>
-
-        <div class="hero-right">
-          <div class="browser">
-            <div class="browser-chrome">
-              <div class="dots">
-                <span style="background:#FF6058"></span>
-                <span style="background:#FFBE2E"></span>
-                <span style="background:#28C940"></span>
-              </div>
-              <div class="urlbar"><span class="lock">●</span><span class="url" id="heroUrl">localhost:4321</span></div>
-              <div class="stage-pill" id="heroStagePill">01 · Blank canvas</div>
+        <h1 class="display hero-title">Your website is your new <em>storefront</em>.</h1>
+        <p class="lede hero-lede">Give it the <em>respect</em> it deserves.</p>
+        <div class="hero-actions">
+          <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
+          <a href="/contact"  class="btn btn-ghost">Start a project</a>
+        </div>
+        <div class="hero-meta">
+          {heroMeta.map(([k, v]) => (
+            <div class="meta-cell">
+              <span class="meta-key">{k}</span>
+              <strong class="meta-val">{v}</strong>
             </div>
-            <div class="browser-body">
-              <div class="grid-bg" id="gridBg"></div>
+          ))}
+        </div>
+      </div>
 
-              <div class="wf-row" id="wfRow1"><div class="wf-h1"></div></div>
-              <div class="wf-row narrow" id="wfRow2">
-                <div class="wf-line" style="width:78%"></div>
-                <div class="wf-line" style="width:62%"></div>
-              </div>
-              <div class="wf-grid" id="wfGrid">
-                <div class="wf-block tall"></div>
-                <div class="wf-stack">
-                  <div class="wf-line" style="width:85%"></div>
-                  <div class="wf-line" style="width:70%"></div>
-                  <div class="wf-line" style="width:55%"></div>
-                  <div class="wf-pill"></div>
-                </div>
-              </div>
+      <div class="hero-right">
+        <div class="browser">
+          <div class="browser-chrome">
+            <div class="dots">
+              <span style="background:#FF6058"></span>
+              <span style="background:#FFBE2E"></span>
+              <span style="background:#28C940"></span>
+            </div>
+            <div class="urlbar"><span class="lock">●</span><span class="url" id="heroUrl">localhost:4321</span></div>
+            <div class="stage-pill" id="heroStagePill">01 · Blank canvas</div>
+          </div>
+          <div class="browser-body">
+            <div class="grid-bg" id="gridBg"></div>
 
-              <div class="content-layer" id="contentLayer">
-                <div class="ct-eyebrow">— Family dentistry · Irvine, CA</div>
-                <div class="ct-h1">A calmer kind of <em>dental visit</em>.</div>
-                <div class="ct-lede">Same-day appointments, gentle care, and a team that actually remembers your name.</div>
-              </div>
-
-              <div class="polish-layer" id="polishLayer">
-                <div class="pl-image">
-                  <div class="pl-image-grad"></div>
-                  <div class="pl-image-tag">[ studio photo ]</div>
-                </div>
-                <div class="pl-cta">Book a visit <span>→</span></div>
-                <div class="pl-hours">
-                  <div><span>Mon–Thu</span><strong>8a — 6p</strong></div>
-                  <div><span>Fri</span><strong>8a — 2p</strong></div>
-                  <div><span>Sat–Sun</span><strong>Closed</strong></div>
-                </div>
+            <div class="wf-row" id="wfRow1"><div class="wf-h1"></div></div>
+            <div class="wf-row narrow" id="wfRow2">
+              <div class="wf-line" style="width:78%"></div>
+              <div class="wf-line" style="width:62%"></div>
+            </div>
+            <div class="wf-grid" id="wfGrid">
+              <div class="wf-block tall"></div>
+              <div class="wf-stack">
+                <div class="wf-line" style="width:85%"></div>
+                <div class="wf-line" style="width:70%"></div>
+                <div class="wf-line" style="width:55%"></div>
+                <div class="wf-pill"></div>
               </div>
             </div>
-            <div class="browser-foot">
-              <span class="foot-label">scroll to build</span>
-              <div class="track">
-                <div class="fill" id="heroFill"></div>
-                {HERO_STAGES.map((s) => (
-                  <div class="tick" data-pct={s.pct} style={`left:${s.pct * 100}%`}></div>
-                ))}
+
+            <div class="content-layer" id="contentLayer">
+              <div class="ct-eyebrow">— Family dentistry · Irvine, CA</div>
+              <div class="ct-h1">A calmer kind of <em>dental visit</em>.</div>
+              <div class="ct-lede">Same-day appointments, gentle care, and a team that actually remembers your name.</div>
+            </div>
+
+            <div class="polish-layer" id="polishLayer">
+              <div class="pl-image">
+                <div class="pl-image-grad"></div>
+                <div class="pl-image-tag">[ studio photo ]</div>
               </div>
-              <span class="foot-label right" id="heroPct">0%</span>
+              <div class="pl-cta">Book a visit <span>→</span></div>
+              <div class="pl-hours">
+                <div><span>Mon–Thu</span><strong>8a — 6p</strong></div>
+                <div><span>Fri</span><strong>8a — 2p</strong></div>
+                <div><span>Sat–Sun</span><strong>Closed</strong></div>
+              </div>
             </div>
           </div>
-          <div class="hero-caption">↑ a site coming together as you scroll</div>
+          <div class="browser-foot">
+            <span class="foot-label" id="heroFootLabel">building…</span>
+            <div class="track">
+              <div class="fill" id="heroFill"></div>
+              {HERO_STAGES.map((s) => (
+                <div class="tick" data-pct={s.pct} style={`left:${s.pct * 100}%`}></div>
+              ))}
+            </div>
+            <span class="foot-label right" id="heroPct">0%</span>
+          </div>
         </div>
       </div>
     </div>
@@ -197,6 +190,7 @@ const steps = [
     const pill = document.getElementById('heroStagePill');
     const fill = document.getElementById('heroFill');
     const pctEl = document.getElementById('heroPct');
+    const footLabel = document.getElementById('heroFootLabel');
     const ticks = outer.querySelectorAll('.tick');
 
     const reach = (id, idx) => idx >= STAGES.findIndex((s) => s.id === id);
@@ -206,10 +200,8 @@ const steps = [
       for (let i = 0; i < STAGES.length; i++) if (progress >= STAGES[i].pct) idx = i;
       const stage = STAGES[idx];
 
-      // grid bg visible from "grid" stage, hides at "polish"
       gridBg.style.opacity = reach("grid", idx) ? (reach("polish", idx) ? 0 : 0.5) : 0;
 
-      // wireframe
       const wfOn = reach("wires", idx);
       [wf1, wf2, wfG].forEach((el, i) => {
         el.style.opacity = wfOn ? 1 : 0;
@@ -230,34 +222,93 @@ const steps = [
       });
     };
 
-    const onScroll = () => {
-      const rect = outer.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = outer.offsetHeight - vh;
-      const scrolled = Math.min(Math.max(-rect.top, 0), total);
-      apply(total > 0 ? scrolled / total : 0);
+    apply(0);
+
+    // === Auto-play timeline ============================================
+    // Builds the site over ~5 seconds on page load. No scroll lock.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      apply(1);
+      if (footLabel) footLabel.textContent = "live site";
+      return;
+    }
+
+    const DURATION = 5000; // ms
+    let raf;
+    let startedAt = null;
+
+    const tick = (ts) => {
+      if (startedAt === null) startedAt = ts;
+      const elapsed = ts - startedAt;
+      const t = Math.min(elapsed / DURATION, 1);
+      // ease-out so it lands gracefully on "live site"
+      const eased = 1 - Math.pow(1 - t, 2.2);
+      apply(eased);
+      if (footLabel) footLabel.textContent = t < 1 ? "building…" : "live site";
+      if (t < 1) raf = requestAnimationFrame(tick);
     };
 
-    apply(0);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    // Kick off shortly after paint so the user catches the transition
+    const start = () => { startedAt = null; raf = requestAnimationFrame(tick); };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { io.disconnect(); start(); }
+        });
+      }, { threshold: 0.2 });
+      io.observe(outer);
+    } else {
+      setTimeout(start, 300);
+    }
   })();
 </script>
 
 <style>
-  /* ===== HERO — pinned scroll (exact match to prototype) ===== */
-  .hero-outer { height: 320vh; position: relative; }
-  .hero-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-  .hero { display: grid; grid-template-columns: 1.05fr 1fr; height: 100%; width: 100%; align-items: stretch; }
-  .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding: clamp(2rem, 4vh, 3.5rem) clamp(1.5rem, 4vw, 4rem) 2.5rem var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); justify-content: center; }
+  /* ===== HERO — auto-play (no scroll lock) ===== */
+  .hero-outer {
+    position: relative;
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem);
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    width: 100%;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding-left: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
+    padding-right: 0;
+    justify-content: center;
+  }
 
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .hero-eyebrow .bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
   .hero-eyebrow .num { font-family: var(--font-mono); color: var(--color-blue); }
 
   .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 14ch; }
-  .hero-lede { max-width: 38ch; margin: 0; }
+  .hero-lede {
+    margin: 0;
+    font-size: var(--text-step-3);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-fg-soft);
+    font-variation-settings: "opsz" 96, "SOFT" 80;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+  .hero-lede em {
+    font-style: italic;
+    color: var(--color-blue);
+    font-variation-settings: "opsz" 96, "SOFT" 100;
+  }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
   .hero-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem 2rem; border-top: 1px solid var(--color-line); padding-top: 1.25rem; margin-top: 0.5rem; }
@@ -265,54 +316,63 @@ const steps = [
   .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .meta-val { font-family: var(--font-display); font-weight: 500; font-size: var(--text-step-0); font-variation-settings: "opsz" 60, "SOFT" 30; color: var(--color-fg); }
 
-  .hero-right { position: relative; background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%); border-left: 1px solid var(--color-line); display: flex; align-items: center; justify-content: center; padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 3vw, 3rem); overflow: hidden; }
-  .hero-right::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); pointer-events: none; }
+  .hero-right {
+    position: relative;
+    background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%);
+    border-left: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem);
+    overflow: hidden;
+    align-self: stretch;
+    min-height: clamp(560px, 70vh, 760px);
+  }
+  .hero-right::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 38px 38px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); pointer-events: none; }
 
-  .browser { width: min(620px, 95%); background: #fff; border-radius: 12px; border: 1px solid var(--color-line); box-shadow: 0 50px 100px -40px rgb(7 23 34 / 0.35), 0 12px 30px -12px rgb(7 23 34 / 0.18); overflow: hidden; position: relative; z-index: 1; }
-  .browser-chrome { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f5f6f8; border-bottom: 1px solid var(--color-line); }
-  .dots { display: flex; gap: 6px; }
-  .dots span { width: 11px; height: 11px; border-radius: 50%; }
-  .urlbar { flex: 1; height: 26px; border-radius: 6px; background: #fff; border: 1px solid var(--color-line); display: flex; align-items: center; gap: 8px; padding: 0 12px; font-family: var(--font-mono); font-size: 11px; color: var(--color-fg-muted); }
-  .urlbar .lock { color: var(--color-blue); font-size: 8px; }
-  .stage-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue); background: #fff; border: 1px solid var(--color-line); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
-  .browser-body { position: relative; height: clamp(360px, 48vh, 460px); background: #fff; overflow: hidden; }
+  .browser { width: min(820px, 100%); background: #fff; border-radius: 14px; border: 1px solid var(--color-line); box-shadow: 0 60px 120px -40px rgb(7 23 34 / 0.40), 0 16px 36px -14px rgb(7 23 34 / 0.20); overflow: hidden; position: relative; z-index: 1; }
+  .browser-chrome { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #f5f6f8; border-bottom: 1px solid var(--color-line); }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; }
+  .urlbar { flex: 1; height: 30px; border-radius: 7px; background: #fff; border: 1px solid var(--color-line); display: flex; align-items: center; gap: 9px; padding: 0 14px; font-family: var(--font-mono); font-size: 12px; color: var(--color-fg-muted); }
+  .urlbar .lock { color: var(--color-blue); font-size: 9px; }
+  .stage-pill { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue); background: #fff; border: 1px solid var(--color-line); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+  .browser-body { position: relative; height: clamp(440px, 56vh, 560px); background: #fff; overflow: hidden; }
   .browser-body > * { transition: opacity 600ms cubic-bezier(0.2,0.7,0.2,1), transform 600ms cubic-bezier(0.2,0.7,0.2,1); }
 
-  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.12) 1px, transparent 1px); background-size: 24px 24px; opacity: 0; }
-  .wf-row, .wf-grid { position: relative; padding: 28px 32px; opacity: 0; }
+  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.12) 1px, transparent 1px); background-size: 28px 28px; opacity: 0; }
+  .wf-row, .wf-grid { position: relative; padding: 32px 40px; opacity: 0; }
   .wf-row { padding-bottom: 0; }
-  .wf-row.narrow { padding-top: 12px; }
-  .wf-h1 { height: 48px; width: 60%; background: rgba(13,47,69,0.18); border-radius: 4px; }
-  .wf-line { height: 10px; background: rgba(13,47,69,0.14); border-radius: 3px; margin-bottom: 8px; }
-  .wf-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; margin-top: 8px; }
-  .wf-block.tall { height: 180px; background: repeating-linear-gradient(135deg, rgba(13,47,69,0.12) 0 8px, transparent 8px 16px); border: 1px dashed rgba(13,47,69,0.25); border-radius: 6px; }
-  .wf-stack { display: flex; flex-direction: column; gap: 10px; }
-  .wf-pill { width: 110px; height: 30px; border-radius: 999px; background: var(--color-periwinkle); margin-top: 8px; }
+  .wf-row.narrow { padding-top: 14px; }
+  .wf-h1 { height: 56px; width: 60%; background: rgba(13,47,69,0.18); border-radius: 5px; }
+  .wf-line { height: 11px; background: rgba(13,47,69,0.14); border-radius: 3px; margin-bottom: 9px; }
+  .wf-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 22px; margin-top: 10px; }
+  .wf-block.tall { height: 220px; background: repeating-linear-gradient(135deg, rgba(13,47,69,0.12) 0 8px, transparent 8px 16px); border: 1px dashed rgba(13,47,69,0.25); border-radius: 7px; }
+  .wf-stack { display: flex; flex-direction: column; gap: 11px; }
+  .wf-pill { width: 130px; height: 34px; border-radius: 999px; background: var(--color-periwinkle); margin-top: 8px; }
 
-  .content-layer { position: absolute; inset: 0; padding: 36px 36px 24px; display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; }
-  .ct-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--color-fg-muted); }
-  .ct-h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 2.3vw, 2.4rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; margin-top: 4px; }
+  .content-layer { position: absolute; inset: 0; padding: 44px 44px 28px; display: flex; flex-direction: column; gap: 14px; background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; }
+  .ct-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--color-fg-muted); }
+  .ct-h1 { font-family: var(--font-display); font-size: clamp(2rem, 2.8vw, 2.9rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; margin-top: 4px; }
   .ct-h1 em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144, "SOFT" 100; }
-  .ct-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); max-width: 36ch; line-height: 1.35; }
+  .ct-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); max-width: 38ch; line-height: 1.35; }
 
-  .polish-layer { position: absolute; inset: 0; padding: 28px 32px 20px; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr auto; gap: 16px; background: #fff; opacity: 0; }
-  .pl-image { grid-row: 1 / span 2; position: relative; border-radius: 8px; overflow: hidden; background: linear-gradient(135deg, #e8eef3 0%, #c4d2dc 60%, var(--color-periwinkle) 120%); }
+  .polish-layer { position: absolute; inset: 0; padding: 34px 40px 24px; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr auto; gap: 18px; background: #fff; opacity: 0; }
+  .pl-image { grid-row: 1 / span 2; position: relative; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, #e8eef3 0%, #c4d2dc 60%, var(--color-periwinkle) 120%); }
   .pl-image-grad { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 50%), repeating-linear-gradient(45deg, rgba(13,47,69,0.05) 0 4px, transparent 4px 12px); }
-  .pl-image-tag { position: absolute; bottom: 10px; left: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--color-fg-muted); background: rgba(255,255,255,0.85); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.04em; }
-  .pl-cta { align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
-  .pl-hours { display: flex; flex-direction: column; gap: 6px; font-size: 12px; align-self: end; }
-  .pl-hours > div { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid var(--color-line); }
+  .pl-image-tag { position: absolute; bottom: 12px; left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--color-fg-muted); background: rgba(255,255,255,0.85); padding: 4px 9px; border-radius: 4px; letter-spacing: 0.04em; }
+  .pl-cta { align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; }
+  .pl-hours { display: flex; flex-direction: column; gap: 7px; font-size: 13px; align-self: end; }
+  .pl-hours > div { display: flex; justify-content: space-between; padding: 7px 11px; border-bottom: 1px solid var(--color-line); }
   .pl-hours strong { font-family: var(--font-display); font-weight: 500; font-variation-settings: "opsz" 60, "SOFT" 30; }
   .pl-hours span { color: var(--color-fg-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
 
-  .browser-foot { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #fafafb; border-top: 1px solid var(--color-line); }
-  .foot-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .browser-foot { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #fafafb; border-top: 1px solid var(--color-line); }
+  .foot-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .foot-label.right { margin-left: auto; }
   .track { flex: 1; height: 2px; background: rgba(7,23,34,0.08); border-radius: 2px; position: relative; }
-  .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; transition: width 200ms linear; width: 0; }
+  .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; transition: width 120ms linear; width: 0; }
   .tick { position: absolute; top: -2px; width: 6px; height: 6px; border-radius: 50%; transform: translateX(-3px); transition: background 280ms cubic-bezier(0.2,0.7,0.2,1); background: rgba(7,23,34,0.18); }
-
-  .hero-caption { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); opacity: 0.7; }
 
   .full { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
   .section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
@@ -321,14 +381,10 @@ const steps = [
   @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
 
   @media (max-width: 1000px) {
-    .hero-outer { height: auto; }
-    .hero-pin { position: relative; height: auto; }
-    .hero { grid-template-columns: 1fr; height: auto; }
-    .hero-right { border-left: 0; border-top: 1px solid var(--color-line); padding-top: 3rem; padding-bottom: 4rem; }
+    .hero-outer { min-height: 0; padding-block: 2rem 3rem; }
+    .hero { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-left { padding-right: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+    .hero-right { border-left: 0; border-top: 1px solid var(--color-line); min-height: 480px; padding-top: 3rem; padding-bottom: 4rem; }
     .hero-title { font-size: clamp(2.6rem, 9vw, 4.5rem); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hero-outer { height: auto; }
-    .hero-pin { position: relative; height: auto; }
   }
 </style>

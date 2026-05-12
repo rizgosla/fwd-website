@@ -19,7 +19,7 @@ const isActive = (href: string) =>
   class="sticky top-0 z-50 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent
          bg-paper/80 transition-[border-color,background] duration-[450ms] ease-[var(--ease-soft)]"
 >
-  <div class="container-page flex items-center justify-between gap-6 py-1 relative">
+  <div class="nav-bar flex items-center justify-between gap-6 py-1 relative">
     <a href="/" class="inline-flex items-center gap-2 text-ink hover:opacity-70 transition-opacity duration-200" aria-label="fwd. — home">
       <BrandMark class="h-[78px] w-[140px] text-ink" />
     </a>
@@ -65,6 +65,10 @@ const isActive = (href: string) =>
 </header>
 
 <style>
+  .nav-bar {
+    width: 100%;
+    padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
+  }
   .nav-link::after {
     content: "";
     position: absolute;

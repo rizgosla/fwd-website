@@ -18,7 +18,7 @@ const serviceLinks = [
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="/" class="footer-logo-link" aria-label="fwd. home">
-          <span class="footer-mark">fwd<span class="footer-mark-dot">.</span></span>
+          <img src="/assets/fwd-logo.svg" alt="fwd. — small web design studio" class="footer-logo-img" width="180" height="80" />
         </a>
         <p class="footer-tagline">A small web design studio building clean, considered sites for practices and small businesses.</p>
       </div>
@@ -79,17 +79,12 @@ const serviceLinks = [
 
   .footer-brand { display: flex; flex-direction: column; gap: 1.25rem; max-width: 32ch; }
   .footer-logo-link { display: inline-flex; }
-  .footer-mark {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 350;
-    font-size: clamp(2.6rem, 4vw, 3.5rem);
-    line-height: 1;
-    color: #fff;
-    letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144, "SOFT" 80;
+  .footer-logo-img {
+    height: clamp(56px, 5.5vw, 78px);
+    width: auto;
+    display: block;
+    /* logo art is dark-on-light by default; the dark footer needs the light version (fwd-logo.svg) */
   }
-  .footer-mark-dot { color: var(--color-periwinkle, #8e94b8); font-style: normal; }
   .footer-tagline {
     font-family: var(--font-display);
     font-weight: 300;
