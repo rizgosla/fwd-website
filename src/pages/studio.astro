@@ -1,0 +1,552 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHead from "../components/SectionHead.astro";
+import CtaStrip from "../components/CtaStrip.astro";
+
+// === STORY ================================================================
+const storyParas = [
+  "Walk down any main street and you'll find practitioners doing excellent work — dentists, therapists, independent shops, small studios — represented online by sites built a decade ago in tools nobody wants to learn. Slow. Hard to update. Built for desktop in 2014.",
+  "We started <em>Forward Design Consulting</em> because too many small businesses are stuck with websites that don't work. We're three people in Irvine, California — a designer, an operator, and a financials lead — who decided we'd rather build the alternative than complain about it.",
+  "Sites that load instantly, look like they were made on purpose, and are honest about what they cost. No retainers you don't need. No quote padded with “discovery.” Just two clear tiers, real timelines, and work we'd be happy to put our name on.",
+];
+
+// === VALUES ===============================================================
+const values = [
+  { roman: "i.",   strong: "Small is a feature.",         body: "Three people means you talk to the people doing the work — every time. No account managers, no handoffs, no telephone game." },
+  { roman: "ii.",  strong: "Pricing should be boring.",   body: "Flat fees, listed publicly. No “let's get on a call so we can quote you.” You should know the number before you reach out." },
+  { roman: "iii.", strong: "Restraint over flash.",       body: "Most websites are too busy. Good design is mostly about what you take out, then what you leave in working hard." },
+  { roman: "iv.",  strong: "Built to last.",              body: "Standards-based code, clean handoffs, no proprietary lock-in. Your site is yours to keep, edit, or move." },
+];
+
+// === PEOPLE ===============================================================
+const team = [
+  {
+    name: "Rizwan",
+    role: "Design",
+    title: "Founder · Design",
+    bio: "Owns website planning, execution, and delivery. Sets the visual direction for every project, runs the design phase end-to-end, and ships the final build.",
+    swatch: "var(--color-periwinkle)",
+    swatchSoft: "rgb(142 148 184 / 0.18)",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#EEF0F7"/>
+            <stop offset="1" stop-color="#E2E5F0"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="250" fill="url(#rg)"/>
+        <circle cx="100" cy="98" r="38" fill="#8E94B8"/>
+        <path d="M30,250 Q30,168 100,168 Q170,168 170,250 Z" fill="#144667"/>
+        <line x1="0" y1="158" x2="200" y2="158" stroke="#0D2F45" stroke-opacity="0.08" stroke-width="1"/>
+      </svg>`,
+  },
+  {
+    name: "Alex",
+    role: "Financials",
+    title: "Founder · Financials",
+    bio: "Runs payment processing, contracts, and the organizational timeline. Makes sure invoices, kickoffs, and milestones land on schedule, every time.",
+    swatch: "var(--color-blue)",
+    swatchSoft: "rgb(20 70 103 / 0.14)",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F0F2F8"/>
+            <stop offset="1" stop-color="#E4E7F1"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="250" fill="url(#ag)"/>
+        <circle cx="100" cy="100" r="40" fill="#0D2F45"/>
+        <path d="M25,250 Q25,162 100,162 Q175,162 175,250 Z" fill="#8E94B8"/>
+        <line x1="0" y1="152" x2="200" y2="152" stroke="#0D2F45" stroke-opacity="0.08" stroke-width="1"/>
+      </svg>`,
+  },
+  {
+    name: "Jaiden Lee",
+    role: "Operations",
+    title: "Founder · Operations",
+    bio: "Looks after the client experience end to end — onboarding, communication, status updates, handoff. The reason projects feel calm rather than chaotic.",
+    swatch: "var(--color-navy)",
+    swatchSoft: "rgb(13 47 69 / 0.12)",
+    portrait: `
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="jg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ECEEF6"/>
+            <stop offset="1" stop-color="#DFE2EE"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="250" fill="url(#jg)"/>
+        <circle cx="100" cy="94" r="37" fill="#144667"/>
+        <path d="M35,250 Q35,172 100,172 Q165,172 165,250 Z" fill="#0D2F45"/>
+        <line x1="0" y1="162" x2="200" y2="162" stroke="#0D2F45" stroke-opacity="0.08" stroke-width="1"/>
+      </svg>`,
+  },
+];
+
+// === WHAT TO EXPECT (timeline-lite) ======================================
+const expect = [
+  { step: "i.",   title: "You reach out", body: "Email or the contact form. We respond within one business day." },
+  { step: "ii.",  title: "We talk for 15 minutes", body: "About your work, your audience, and what you'd like the site to do." },
+  { step: "iii.", title: "You see a real draft", body: "In your browser — not Figma — usually inside the first week." },
+  { step: "iv.",  title: "One or two rounds of revisions", body: "Async, on your time. We keep going until it feels right." },
+  { step: "v.",   title: "Launch + handoff", body: "Domain connected, hosting set up, handoff doc in your inbox." },
+];
+
+// === FAQ ==================================================================
+const faqs = [
+  {
+    q: "Do you take retainers or monthly fees?",
+    a: "No. Every engagement is a flat fee with a clear scope. If you want help after launch we'll quote that separately, but you're never locked in.",
+  },
+  {
+    q: "What if I need more than 8 pages?",
+    a: "We'll scope it as a custom project. Email us with what you have in mind and we'll send a flat quote before any work starts.",
+  },
+  {
+    q: "Who owns the site?",
+    a: "You do, completely. Standards-based code, no proprietary CMS lock-in. You can take it to any developer or host you want later.",
+  },
+  {
+    q: "Do you do logos / branding?",
+    a: "Light brand work — type, color, basic mark — comes baked into a Full Site engagement if you need it. We don't do full identity systems from scratch.",
+  },
+  {
+    q: "Where are you based, and do you work remotely?",
+    a: "Irvine, California. Most of our clients are remote — we work async over email with the occasional call. In-person meetings welcome if you're local.",
+  },
+  {
+    q: "How fast can you start?",
+    a: "Usually within a week or two of the intro call, depending on the queue. We'll be honest about timing on day one.",
+  },
+];
+---
+
+<BaseLayout
+  title="Studio — fwd."
+  description="Three people in Irvine, California, building considered websites for practices and small businesses. Forward Design Consulting LLC."
+>
+  {/* ============================== HERO ================================ */}
+  <section class="studio-hero">
+    <div class="full">
+      <div class="hero-eyebrow">
+        <span class="bar"></span>
+        <span class="num">§ 00</span>
+        <span>The studio — Irvine, California</span>
+      </div>
+      <h1 class="display studio-headline">
+        Three people, <em>one studio</em>, building the websites we wish small businesses already had.
+      </h1>
+    </div>
+  </section>
+
+  {/* =========================== MANIFESTO ============================== */}
+  <section class="section section-story">
+    <div class="full story-grid">
+      <aside class="story-side">
+        <span class="side-num">§ 01</span>
+        <span class="side-label">Why we exist</span>
+      </aside>
+      <div class="story-body">
+        {storyParas.map((p) => (
+          <p class="story-para" set:html={p}></p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ============================== VALUES =============================== */}
+  <section class="section section-values">
+    <div class="full">
+      <SectionHead title="What we <em>believe</em>." />
+      <ul class="values">
+        {values.map((v) => (
+          <li>
+            <span class="roman">{v.roman}</span>
+            <strong>{v.strong}</strong>
+            <small>{v.body}</small>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ============================== PEOPLE ============================== */}
+  <section class="section section-people">
+    <div class="full">
+      <SectionHead title="Who you'll <em>actually talk to</em>." />
+      <div class="people-grid">
+        {team.map((m) => (
+          <article
+            class="member"
+            data-tilt
+            style={`--swatch:${m.swatch};--swatch-soft:${m.swatchSoft}`}
+          >
+            <span class="member-sheen" aria-hidden="true"></span>
+            <div class="member-portrait">
+              <Fragment set:html={m.portrait} />
+              <span class="member-tag">{m.role}</span>
+            </div>
+            <div class="member-text">
+              <h3 class="member-name">{m.name}</h3>
+              <span class="member-title">{m.title}</span>
+              <p class="member-bio">{m.bio}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* =========================== HOW WE WORK ============================ */}
+  <section class="section section-expect">
+    <div class="full expect-grid">
+      <div class="expect-head">
+        <SectionHead title="What to <em>expect</em>." />
+        <p class="expect-lede">
+          Five steps from first email to live site. Predictable on purpose —
+          you should never be wondering where things stand.
+        </p>
+      </div>
+      <ol class="expect-list">
+        {expect.map((s) => (
+          <li>
+            <span class="expect-num">{s.step}</span>
+            <strong>{s.title}</strong>
+            <small>{s.body}</small>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ============================== FAQ ================================= */}
+  <section class="section section-faq">
+    <div class="full">
+      <SectionHead title="Questions, <em>asked honestly</em>." />
+      <div class="faq-list">
+        {faqs.map((f, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>
+              <span class="faq-q">{f.q}</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <p class="faq-a">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaStrip />
+</BaseLayout>
+
+<style>
+  .full { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+  .section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
+
+  /* ============================== HERO ================================ */
+  .studio-hero {
+    padding-block: clamp(4rem, 11vh, 8rem) clamp(3rem, 6vh, 5rem);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+  }
+  .hero-eyebrow .bar { width: 28px; height: 1px; background: var(--color-periwinkle); }
+  .hero-eyebrow .num { color: var(--color-blue); font-weight: 500; }
+
+  .studio-headline {
+    font-size: clamp(2.6rem, 5.2vw, 5rem);
+    max-width: 22ch;
+    margin: 0;
+  }
+
+  /* ============================ MANIFESTO ============================== */
+  .story-grid {
+    display: grid; gap: 3rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .story-grid { grid-template-columns: 200px 1fr; gap: 4rem; }
+  }
+  .story-side {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    position: sticky; top: 7rem; height: fit-content;
+  }
+  .story-side .side-num { color: var(--color-blue); font-weight: 500; }
+  .story-side .side-label { color: var(--color-fg-muted); }
+  .story-body { display: flex; flex-direction: column; gap: 1.6rem; max-width: 58ch; }
+  .story-para {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-step-2);
+    line-height: 1.35;
+    color: var(--color-fg-soft);
+    letter-spacing: -0.012em;
+    font-variation-settings: "opsz" 80, "SOFT" 50;
+    text-wrap: pretty;
+    margin: 0;
+  }
+  .story-para :global(em) {
+    font-style: italic;
+    color: var(--color-blue);
+    font-variation-settings: "opsz" 80, "SOFT" 100;
+  }
+
+  /* ============================== VALUES =============================== */
+  .values {
+    list-style: none; padding: 0; margin: 2.5rem 0 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .values li {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid var(--color-line);
+    align-items: baseline;
+  }
+  @media (min-width: 900px) {
+    .values li { grid-template-columns: 100px 1fr 1.5fr; gap: 3rem; }
+  }
+  .values .roman {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-blue);
+    font-size: var(--text-step-1);
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+  }
+  .values strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-2);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    letter-spacing: -0.01em;
+    display: block;
+  }
+  .values small {
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  /* ============================== PEOPLE =============================== */
+  .people-grid {
+    display: grid; gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 700px) { .people-grid { grid-template-columns: 1fr 1fr; gap: 1.75rem; } }
+  @media (min-width: 1000px) { .people-grid { grid-template-columns: 1fr 1fr 1fr; gap: 2rem; } }
+
+  .member {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    background: var(--color-paper);
+    transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft), border-color 360ms var(--ease-soft);
+  }
+  .member:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.22);
+    border-color: var(--swatch);
+  }
+
+  .member-sheen {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 360ms var(--ease-soft);
+    background: radial-gradient(
+      240px circle at var(--mx, 50%) var(--my, 50%),
+      var(--swatch-soft),
+      transparent 60%
+    );
+  }
+  .member:hover .member-sheen { opacity: 1; }
+
+  .member-portrait {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .member-portrait :global(svg) {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .member-tag {
+    position: absolute; left: 1rem; bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    background: rgb(255 255 255 / 0.92);
+    color: var(--color-navy);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+  }
+
+  .member-text {
+    position: relative; z-index: 1;
+    padding: 1.5rem 1.5rem 1.75rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .member-name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    margin: 0;
+    color: var(--color-navy);
+  }
+  .member-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    margin-bottom: 0.4rem;
+  }
+  .member-bio {
+    font-family: var(--font-sans);
+    font-size: var(--text-step-0);
+    color: var(--color-fg-soft);
+    line-height: 1.55;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* =========================== HOW WE WORK ============================ */
+  .section-expect { background: var(--color-bg-soft); }
+  .expect-grid {
+    display: grid; gap: 3rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 1000px) {
+    .expect-grid { grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+  }
+  .expect-head .expect-lede {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-step-1);
+    color: var(--color-fg-soft);
+    line-height: 1.5;
+    max-width: 32ch;
+    margin-top: 1.5rem;
+    text-wrap: pretty;
+    font-variation-settings: "opsz" 60, "SOFT" 60;
+  }
+  .expect-list {
+    list-style: none; padding: 0; margin: 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .expect-list li {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    align-items: baseline;
+  }
+  @media (min-width: 700px) {
+    .expect-list li { grid-template-columns: 60px 1.2fr 2fr; gap: 2.5rem; }
+  }
+  .expect-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-blue);
+    font-size: var(--text-step-1);
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+  }
+  .expect-list strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-1);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    display: block;
+  }
+  .expect-list small {
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  /* ============================== FAQ ================================== */
+  .faq-list {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .faq-item summary {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    cursor: pointer;
+    list-style: none;
+    transition: color 200ms var(--ease-soft);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-q {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+  }
+  .faq-icon {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    position: relative;
+    transition: background 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: ""; position: absolute;
+    left: 50%; top: 50%;
+    background: var(--color-fg);
+    transition: transform 320ms var(--ease-soft), background 200ms var(--ease-soft);
+  }
+  .faq-icon::before { width: 10px; height: 1px; transform: translate(-50%, -50%); }
+  .faq-icon::after  { width: 1px; height: 10px; transform: translate(-50%, -50%); }
+  .faq-item[open] .faq-icon { background: var(--color-navy); border-color: var(--color-navy); }
+  .faq-item[open] .faq-icon::before,
+  .faq-item[open] .faq-icon::after { background: var(--color-paper); }
+  .faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) scaleY(0); }
+  .faq-item:hover summary .faq-q { color: var(--color-blue); }
+  .faq-a {
+    font-family: var(--font-sans);
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.6;
+    max-width: 62ch;
+    padding: 0 0 1.75rem;
+    margin: 0;
+    text-wrap: pretty;
+  }
+</style>
