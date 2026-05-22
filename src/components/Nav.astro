@@ -7,7 +7,8 @@ const links: { href: string; label: string }[] = [
   { href: "/",        label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/work",    label: "Work" },
-  { href: "/studio",  label: "Studio" },
+  { href: "/team",    label: "Team" },
+  { href: "/about",   label: "About" },
 ];
 
 const isActive = (href: string) =>
@@ -19,7 +20,7 @@ const isActive = (href: string) =>
   class="sticky top-0 z-50 backdrop-blur-xl backdrop-saturate-150 border-b border-transparent
          bg-paper/80 transition-[border-color,background] duration-[450ms] ease-[var(--ease-soft)]"
 >
-  <div class="nav-bar flex items-center justify-between gap-6 py-1 relative">
+  <div class="container-page flex items-center justify-between gap-6 py-1 relative">
     <a href="/" class="inline-flex items-center gap-2 text-ink hover:opacity-70 transition-opacity duration-200" aria-label="fwd. — home">
       <BrandMark class="h-[78px] w-[140px] text-ink" />
     </a>
@@ -28,6 +29,7 @@ const isActive = (href: string) =>
       {links.map((link) => (
         <a
           href={link.href}
+          aria-current={isActive(link.href) ? "page" : undefined}
           class:list={[
             "nav-link relative pb-1 px-0.5 text-[length:var(--text-step--1)] font-medium tracking-[0.01em]",
             "text-fg-soft hover:text-fg transition-colors duration-200",
@@ -40,6 +42,7 @@ const isActive = (href: string) =>
 
       <a
         href="/contact"
+        aria-current={isActive("/contact") ? "page" : undefined}
         class:list={[
           "inline-flex items-center gap-1.5 rounded-full border px-[1.15rem] py-[0.6rem] text-[length:var(--text-step--1)] font-medium",
           "bg-ink border-ink text-paper hover:bg-blue hover:border-blue transition-all duration-200",
@@ -65,10 +68,7 @@ const isActive = (href: string) =>
 </header>
 
 <style>
-  .nav-bar {
-    width: 100%;
-    padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
-  }
+  /* Underline indicator on nav links */
   .nav-link::after {
     content: "";
     position: absolute;
@@ -82,11 +82,13 @@ const isActive = (href: string) =>
   .nav-link:hover::after,
   .nav-link.is-active::after { transform: scaleX(1); }
 
+  /* Scrolled state — toggled by client script */
   :global(#nav.is-scrolled) {
     border-bottom-color: var(--color-hairline);
     background: color-mix(in oklab, var(--color-paper) 92%, transparent);
   }
 
+  /* Mobile menu */
   @media (max-width: 820px) {
     .nav-links { display: none; }
     .nav-toggle { display: inline-flex; }

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Disallow nothing — public marketing site, everything is fair game.
+# If we add a /admin or /preview area later, add Disallow lines here.
+
+Sitemap: https://fwd.studio/sitemap-index.xml

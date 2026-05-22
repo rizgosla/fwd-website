@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found — fwd."
+  description="The page you were looking for took a wrong turn. Here's the way back."
+>
+  <section class="not-found">
+    <div class="container-page grid place-items-center gap-10 text-center">
+      <div class="reveal">
+        <span class="eyebrow no-rule"><span class="num">404</span> &nbsp;Page not found</span>
+        <h1 class="display lost-title">
+          This page took a <em>wrong turn</em>.
+        </h1>
+        <p class="lede max-w-[44ch] mx-auto">
+          The link you followed doesn't exist anymore — or maybe never did.
+          Try one of these instead.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
+          <a href="/" class="btn btn-primary">Back to home <span class="arrow">→</span></a>
+          <a href="/work" class="btn btn-ghost">See our work</a>
+          <a href="/contact" class="btn btn-ghost">Get in touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding-block: clamp(4rem, 12vh, 8rem);
+  }
+  .lost-title {
+    font-size: var(--text-step-5);
+    max-width: 14ch;
+    margin: 1rem auto;
+  }
+</style>

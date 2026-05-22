@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+
+const updated = "May 2026";
+---
+
+<BaseLayout
+  title="Terms — fwd."
+  description="The short, honest version of our terms of service. What you get, what we ask, and what's not included."
+>
+  <PageHero
+    eyebrow={`Last updated · ${updated}`}
+    title="The short, <em>honest version</em> of our terms."
+    lede="A plain-language summary of how we work together. For larger projects we'll send a proper SOW; for Landing and Full Site this is the working agreement."
+  />
+
+  <section class="pb-24">
+    <div class="container-page prose-page reveal">
+      <h2>1 · What you get</h2>
+      <p>
+        The deliverable described on
+        <a href="/services">our services page</a>
+        — a Landing Page or Full Site — built around your brand, with hosting
+        setup, domain connection, and the agreed number of revision rounds.
+      </p>
+
+      <h2>2 · What we need from you</h2>
+      <p>
+        Content (text, photos, logos), timely feedback during revision rounds,
+        and a working point of contact who can make decisions. We can help
+        with copy direction but cannot write your business positioning for
+        you from scratch.
+      </p>
+
+      <h2>3 · Timelines</h2>
+      <p>
+        Landing pages typically ship in one to two weeks; Full Sites in two
+        to four. Timelines assume responsive feedback. If we don't hear from
+        you for more than three weeks, the project may pause and resume at
+        our next available slot.
+      </p>
+
+      <h2>4 · Payment</h2>
+      <p>
+        50% to begin, 50% on launch. We invoice via Stripe or bank transfer.
+        Prices on the services page are flat — no hidden line items.
+      </p>
+
+      <h2>5 · Ownership</h2>
+      <p>
+        Once final payment is received, all design and code we produce for
+        your project is yours. We retain the right to show the work in our
+        portfolio unless you specifically ask us not to.
+      </p>
+
+      <h2>6 · Hosting &amp; domain</h2>
+      <p>
+        We set up hosting and a domain connection at launch. You pay the
+        providers directly (typically $5–$20/month and ~$15/year respectively)
+        — we don't mark these up. You can move the site off our recommended
+        host at any time.
+      </p>
+
+      <h2>7 · Revisions</h2>
+      <p>
+        Landing includes one revision round; Full Site includes two. A
+        revision round means a consolidated set of changes returned together,
+        not a stream of one-off requests. Out-of-scope work is quoted
+        separately and honestly.
+      </p>
+
+      <h2>8 · Not included</h2>
+      <p>
+        Logo design, copywriting from scratch, ongoing maintenance retainers,
+        e-commerce, and custom integrations are not part of the standard
+        tiers. We'll happily quote any of these as add-ons.
+      </p>
+
+      <h2>9 · Cancellation</h2>
+      <p>
+        If you decide not to proceed after kickoff, the 50% deposit is
+        non-refundable — it covers the design and research time already
+        invested. If we cancel for any reason on our end, you get a full
+        refund and any files we've produced.
+      </p>
+
+      <h2>10 · Questions</h2>
+      <p>
+        Anything unclear? Email
+        <a href="mailto:hello@fwd.studio">hello@fwd.studio</a>
+        — we'll answer in plain English.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 65ch;
+    margin-inline: auto;
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.7;
+  }
+  .prose-page h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-2);
+    color: var(--color-fg);
+    letter-spacing: -0.015em;
+    margin: 2.5rem 0 0.75rem;
+    font-variation-settings: "opsz" 80, "SOFT" 30;
+  }
+  .prose-page p {
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+  }
+  .prose-page a {
+    color: var(--color-blue);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .prose-page a:hover { border-bottom-color: var(--color-blue); }
+</style>

@@ -63,9 +63,36 @@ const faqs = [
   { q: "Need something bigger than a Full Site?",
     a: 'If your project is more than 8 pages, has e-commerce, or needs a custom integration, we\'ll quote it separately and honestly. <a href="/contact" class="text-blue underline">Reach out</a> — we\'ll tell you whether we\'re the right fit.' },
 ];
+
+// Strip any HTML from the FAQ answer for the JSON-LD schema (rich results
+// only accept plain text in `acceptedAnswer.text`).
+const stripHtml = (s: string) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: stripHtml(f.a) },
+  })),
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://fwd.studio/" },
+    { "@type": "ListItem", position: 2, name: "Services", item: "https://fwd.studio/services" },
+  ],
+};
 ---
 
-<BaseLayout title="Services & pricing — fwd." description="Two tiers. Flat pricing. No mystery line items.">
+<BaseLayout
+  title="Services &amp; pricing — fwd."
+  description="Two flat-priced tiers: Landing Page at $800, Full Site at $1,800. No mystery line items, no retainers — just clean websites that ship in weeks."
+  schema={[faqSchema, breadcrumbSchema]}
+>
   <PageHero
     eyebrow="Services & pricing"
     title="Two tiers. <em>Flat pricing.</em> No mystery line items."
@@ -73,7 +100,7 @@ const faqs = [
   />
 
   <section class="pb-24">
-    <div class="container-page grid gap-6">
+    <div class="container-page grid gap-6 reveal">
       {tiers.map((t) => (
         <article class:list={["tier", t.featured && "tier-featured"]}>
           <div class="tier-head">
@@ -98,7 +125,7 @@ const faqs = [
 
     {/* === FAQ ============================================================== */}
     <div class="container-page">
-      <section class="faq mt-24 border-t border-line">
+      <section class="faq mt-24 border-t border-line r-up">
         <SectionRule num="§" label="Frequently asked" meta="06 questions" />
         <h2 class="display section-title m-0 mb-8 max-w-none">
           Common <em>questions</em>.

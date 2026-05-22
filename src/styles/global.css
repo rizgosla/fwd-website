@@ -20,7 +20,7 @@
   /* Semantic text shades */
   --color-fg: #0d2f45;
   --color-fg-soft: #243845;
-  --color-fg-muted: #5e6b78;
+  --color-fg-muted: #4a5662;
 
   /* Hairlines */
   --color-line: rgb(7 23 34 / 0.10);
@@ -91,6 +91,51 @@
   img, svg { max-width: 100%; display: block; }
 
   ::selection { background: var(--color-navy); color: var(--color-paper); }
+
+  /* --- Focus rings ---
+     Consistent keyboard-focus treatment across all interactive elements.
+     Uses :focus-visible so mouse clicks don't show rings — only keyboard nav. */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Tighter outline-offset on already-rounded controls so it doesn't look loose */
+  .btn:focus-visible {
+    outline-offset: 3px;
+  }
+
+  /* --- Skip to content link ---
+     Invisible until keyboard focus, then slides into the top-left so a screen
+     reader / keyboard user can jump past the nav. */
+  .skip-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateY(-120%);
+    transition: transform 200ms var(--ease-soft);
+    border-bottom-right-radius: 6px;
+  }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--color-periwinkle);
+    outline-offset: -2px;
+  }
 }
 
 /* ========================================================================
@@ -258,18 +303,56 @@
     text-wrap: pretty;
   }
 
-  /* --- Reveal animation entrypoint --- */
+  /* --- Reveal animation entrypoint ---
+     Scroll-triggered: an IntersectionObserver in BaseLayout adds .is-in
+     once the element enters the viewport. Above-the-fold elements trigger
+     immediately on load. Two flavors:
+       .reveal       — staggers direct children
+       .r-up         — single element, no stagger (handy for one-shot blocks)
+     Both honor prefers-reduced-motion via the @media rule below.
+  */
   .reveal > * {
     opacity: 0;
-    transform: translateY(12px);
-    animation: revealUp 900ms var(--ease-out-expo) forwards;
+    transform: translateY(14px);
+    transition:
+      opacity 900ms var(--ease-out-expo),
+      transform 900ms var(--ease-out-expo);
+    will-change: opacity, transform;
   }
-  .reveal > *:nth-child(1) { animation-delay: 0.05s; }
-  .reveal > *:nth-child(2) { animation-delay: 0.18s; }
-  .reveal > *:nth-child(3) { animation-delay: 0.32s; }
-  .reveal > *:nth-child(4) { animation-delay: 0.46s; }
-  .reveal > *:nth-child(5) { animation-delay: 0.6s;  }
-  .reveal > *:nth-child(6) { animation-delay: 0.74s; }
+  .reveal.is-in > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal.is-in > *:nth-child(1) { transition-delay: 0.05s; }
+  .reveal.is-in > *:nth-child(2) { transition-delay: 0.18s; }
+  .reveal.is-in > *:nth-child(3) { transition-delay: 0.32s; }
+  .reveal.is-in > *:nth-child(4) { transition-delay: 0.46s; }
+  .reveal.is-in > *:nth-child(5) { transition-delay: 0.60s; }
+  .reveal.is-in > *:nth-child(6) { transition-delay: 0.74s; }
+  .reveal.is-in > *:nth-child(7) { transition-delay: 0.86s; }
+  .reveal.is-in > *:nth-child(8) { transition-delay: 0.98s; }
+
+  .r-up {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 900ms var(--ease-out-expo),
+      transform 900ms var(--ease-out-expo);
+    transition-delay: var(--r-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .r-up.is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal > *, .r-up {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
 }
 
 /* ========================================================================
