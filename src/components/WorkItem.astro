@@ -14,9 +14,7 @@ const { title, meta, href = "#", thumb } = Astro.props;
          transition-[transform,border-color,box-shadow] duration-[450ms] ease-[var(--ease-soft)]
          hover:-translate-y-[3px] hover:border-line-strong hover:shadow-[0_24px_50px_-32px_rgb(7_23_34_/0.25)]"
 >
-  <div class="work-thumb aspect-[16/11] relative overflow-hidden bg-gradient-to-br from-blue to-navy"
-       role="img"
-       aria-label={`${title} — ${meta} · concept preview`}>
+  <div class="work-thumb aspect-[16/11] relative overflow-hidden bg-gradient-to-br from-blue to-navy">
     <Fragment set:html={thumb} />
   </div>
   <div class="flex justify-between items-baseline p-6 gap-4">

@@ -11,9 +11,7 @@ const { name, role, bio, portrait } = Astro.props;
 ---
 
 <div class="member flex flex-col gap-4">
-  <div class="member-portrait aspect-[4/5] rounded-[10px] overflow-hidden relative border border-line bg-bg-soft transition-[transform,border-color] duration-[450ms] ease-[var(--ease-soft)]"
-       role="img"
-       aria-label={`Stylized portrait of ${name}, ${role}`}>
+  <div class="member-portrait aspect-[4/5] rounded-[10px] overflow-hidden relative border border-line bg-bg-soft transition-[transform,border-color] duration-[450ms] ease-[var(--ease-soft)]">
     <Fragment set:html={portrait} />
   </div>
   <h3 class="m-0 font-display font-normal text-[length:var(--text-step-2)] tracking-[-0.015em] leading-[1.1]"

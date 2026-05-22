@@ -1,6 +1,4 @@
 ---
-import BrandMark from "./BrandMark.astro";
-
 const year = new Date().getFullYear();
 
 const studioLinks = [
@@ -15,50 +13,125 @@ const serviceLinks = [
 ];
 ---
 
-<footer class="mt-[6rem] border-t border-line bg-bg-soft pt-[5rem] pb-6">
-  <div class="container-page">
-    <div class="grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] md:gap-12 mb-12">
-      <div>
-        <div class="flex items-center -ml-3 mb-6 text-ink">
-          <BrandMark class="w-[140px] h-[140px] text-ink" decorative={true} />
-        </div>
+<footer class="footer-dark">
+  <div class="container-page footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo-link" aria-label="fwd. home">
+          <img src="/assets/fwd-logo-dark.svg" alt="fwd. — small web design studio" class="footer-logo-img" width="180" height="80" />
+        </a>
+        <p class="footer-tagline">A small web design studio building clean, considered sites for practices and small businesses.</p>
       </div>
 
-      <div>
-        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Studio</h5>
-        <ul class="grid gap-2 list-none p-0 m-0">
-          {studioLinks.map((l) => (
-            <li><a href={l.href} class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">{l.label}</a></li>
-          ))}
+      <div class="footer-col">
+        <h5 class="footer-label">Studio</h5>
+        <ul>
+          {studioLinks.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
         </ul>
       </div>
 
-      <div>
-        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Services</h5>
-        <ul class="grid gap-2 list-none p-0 m-0">
-          {serviceLinks.map((l) => (
-            <li><a href={l.href} class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">{l.label}</a></li>
-          ))}
+      <div class="footer-col">
+        <h5 class="footer-label">Services</h5>
+        <ul>
+          {serviceLinks.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
         </ul>
       </div>
 
-      <div>
-        <h5 class="font-mono text-[length:var(--text-step--2)] tracking-[0.12em] uppercase text-fg-muted font-medium mb-4">Contact</h5>
-        <ul class="grid gap-2 list-none p-0 m-0">
-          <li><a href="mailto:hello@fwd.studio" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">hello@fwd.studio</a></li>
-          <li><a href="/contact" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">Start a project</a></li>
-          <li><a href="/privacy" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">Privacy</a></li>
-          <li><a href="/terms" class="text-fg-soft text-[length:var(--text-step--1)] hover:text-blue transition-colors duration-200">Terms</a></li>
+      <div class="footer-col">
+        <h5 class="footer-label">Contact</h5>
+        <ul>
+          <li><a href="mailto:hello@fwd.studio">hello@fwd.studio</a></li>
+          <li><span class="footer-static">Irvine, CA</span></li>
+          <li><a href="/contact">Start a project</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-line text-fg-muted font-mono tracking-[0.04em] text-[length:var(--text-step--2)]">
-      <span>© {year} Forward Design Consulting · All rights reserved</span>
-      <span class="font-display italic text-fg-soft tracking-normal text-[length:var(--text-step--1)]"
-            style="font-variation-settings: 'opsz' 60, 'SOFT' 100;">
-        Made in Irvine, California.
-      </span>
+    <div class="footer-bottom">
+      <span>© {year} Forward Design Consulting LLC · All rights reserved</span>
+      <span class="footer-builtby">Designed &amp; built in-house.</span>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-dark {
+    margin-top: 6rem;
+    background: var(--color-ink, #071722);
+    color: rgba(255,255,255,0.78);
+    padding: 5rem 0 1.75rem;
+    position: relative;
+  }
+  .footer-dark::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+  .footer-inner { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+  .footer-grid {
+    display: grid; gap: 2.5rem;
+    grid-template-columns: 1fr;
+    margin-bottom: 4rem;
+  }
+  @media (min-width: 800px) {
+    .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+  }
+
+  .footer-brand { display: flex; flex-direction: column; gap: 1.25rem; max-width: 32ch; }
+  .footer-logo-link { display: inline-flex; }
+  .footer-logo-img {
+    height: clamp(56px, 5.5vw, 78px);
+    width: auto;
+    display: block;
+    /* logo art is dark-on-light by default; the dark footer needs the light version (fwd-logo.svg) */
+  }
+  .footer-tagline {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-step-0);
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .footer-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+  }
+  .footer-col ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0.7rem;
+  }
+  .footer-col a, .footer-static {
+    font-family: var(--font-sans);
+    font-size: var(--text-step--1);
+    color: rgba(255,255,255,0.78);
+    transition: color 200ms cubic-bezier(0.2,0.7,0.2,1);
+  }
+  .footer-col a:hover { color: var(--color-periwinkle, #8e94b8); }
+
+  .footer-bottom {
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    align-items: center; gap: 1rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.5);
+  }
+  .footer-builtby {
+    font-family: var(--font-display);
+    font-style: italic;
+    letter-spacing: 0;
+    color: rgba(255,255,255,0.6);
+    font-size: var(--text-step--1);
+    font-variation-settings: "opsz" 60, "SOFT" 100;
+  }
+</style>

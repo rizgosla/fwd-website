@@ -6,53 +6,12 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
   description?: string;
-  /** Path to a per-page OG image, e.g. "/og/services.png". Defaults to /og-default.png. */
-  ogImage?: string;
-  /** Optional JSON-LD object(s) to inject — pass as a single object or array. */
-  schema?: object | object[];
 }
 
 const {
-  title = "fwd. — A small web design studio",
+  title = "fwd. — Websites that earn their place online",
   description = "fwd. is a small web design studio crafting clean, considered websites for practices and small businesses. Flat pricing. Honest timelines.",
-  ogImage = "/og-default.png",
-  schema,
 } = Astro.props;
-
-// Build absolute URLs — Astro.site must be set in astro.config.mjs for these
-// to resolve correctly. Falls back gracefully in dev.
-const siteOrigin = Astro.site?.origin ?? "https://fwd.studio";
-const canonical = new URL(Astro.url.pathname, siteOrigin).toString();
-const ogImageUrl = new URL(ogImage, siteOrigin).toString();
-
-// Default site-wide JSON-LD: ProfessionalService.
-// Per-page schemas (FAQPage, BreadcrumbList) come in via the `schema` prop.
-const defaultSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: "Forward Design Consulting",
-  alternateName: "fwd.",
-  url: siteOrigin,
-  logo: `${siteOrigin}/logo.png`,
-  image: ogImageUrl,
-  description:
-    "A small web design studio crafting clean, flat-priced websites for practices and small businesses.",
-  areaServed: "US",
-  priceRange: "$800–$1,800",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Irvine",
-    addressRegion: "CA",
-    addressCountry: "US",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "Customer Service",
-    email: "hello@fwd.studio",
-    availableLanguage: ["English"],
-  },
-};
-const allSchemas = schema ? [defaultSchema, ...(Array.isArray(schema) ? schema : [schema])] : [defaultSchema];
 ---
 
 <!doctype html>
@@ -63,29 +22,6 @@ const allSchemas = schema ? [defaultSchema, ...(Array.isArray(schema) ? schema :
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0D2F45" />
-
-    <!-- Canonical -->
-    <link rel="canonical" href={canonical} />
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="fwd." />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageUrl} />
-
-    <!-- Robots -->
-    <meta name="robots" content="index, follow, max-image-preview:large" />
 
     {/* Inline-SVG favicon — same mark as the original, periwinkle dot accent */}
     <link
@@ -101,23 +37,8 @@ const allSchemas = schema ? [defaultSchema, ...(Array.isArray(schema) ? schema :
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
-
-    {/* Structured data */}
-    {allSchemas.map((s) => (
-      <script type="application/ld+json" set:html={JSON.stringify(s)} />
-    ))}
-
-    {/* === Analytics ===
-        Drop in your privacy-respecting analytics provider here.
-        Plausible example (uncomment + set your domain):
-        <script defer data-domain="fwd.studio" src="https://plausible.io/js/script.js"></script>
-        Fathom example:
-        <script src="https://cdn.usefathom.com/script.js" data-site="YOUR_SITE_ID" defer></script>
-    */}
   </head>
   <body>
-    <a href="#main" class="skip-link">Skip to content</a>
-
     <Nav />
 
     <main id="main">
@@ -156,31 +77,6 @@ const allSchemas = schema ? [defaultSchema, ...(Array.isArray(schema) ? schema :
           card.style.setProperty("--my", ((e.clientY - rect.top) / rect.height) * 100 + "%");
         });
       });
-
-      // === Scroll reveal =====================================================
-      // .reveal (staggers direct children) and .r-up (single element) flip to
-      // .is-in the first time they enter the viewport. Runs once per element.
-      (function initReveal() {
-        const targets = document.querySelectorAll(".reveal, .r-up");
-        if (!targets.length) return;
-        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduce || !("IntersectionObserver" in window)) {
-          targets.forEach((el) => el.classList.add("is-in"));
-          return;
-        }
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("is-in");
-                io.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-        );
-        targets.forEach((el) => io.observe(el));
-      })();
     </script>
   </body>
 </html>
