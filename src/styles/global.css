@@ -1352,23 +1352,6 @@ main + footer.footer-dark { margin-top: 0 !important; }
   display: flex; flex-direction: column; justify-content: center;
   gap: 10px; z-index: 1;
 }
-/* Sheen that sweeps across the launch frame on a loop */
-.process-step .ps-visual-frame:has(.ps-visual-launch)::after {
-  content: "";
-  position: absolute;
-  top: 0; bottom: 0;
-  left: -40%;
-  width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(142,148,184,0.35), transparent);
-  animation: mvFrameSweep 4.5s var(--ease-soft) infinite;
-  pointer-events: none;
-  z-index: 3;
-}
-@keyframes mvFrameSweep {
-  0%   { left: -40%; }
-  60%  { left: 100%; }
-  100% { left: 100%; }
-}
 .ps-launch-url {
   display: flex; align-items: center; gap: 8px;
   background: var(--color-paper);
@@ -1411,11 +1394,11 @@ main + footer.footer-dark { margin-top: 0 !important; }
   position: absolute; inset: 0;
   background: var(--color-blue);
   transform-origin: left;
-  animation: mvLaunchFill 3s ease-out infinite;
+  animation: mvLaunchFill 7s ease-out infinite;
 }
 .ps-launch-bar:nth-child(1)::after { animation-delay: 0s; }
-.ps-launch-bar:nth-child(2)::after { animation-delay: 0.4s; background: var(--color-periwinkle); }
-.ps-launch-bar:nth-child(3)::after { animation-delay: 0.8s; }
+.ps-launch-bar:nth-child(2)::after { animation-delay: 1s; background: var(--color-periwinkle); }
+.ps-launch-bar:nth-child(3)::after { animation-delay: 2s; }
 @keyframes mvLaunchFill {
   0% { transform: scaleX(0); }
   40%, 100% { transform: scaleX(1); }
