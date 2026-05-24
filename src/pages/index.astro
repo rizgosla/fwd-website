@@ -114,7 +114,7 @@ import Marquee from "../components/Marquee.astro";
   </section>
 
   <!-- ============ SERVICES preview ============ -->
-  <section id="services" class="section">
+  <section id="services" class="section section-tiers">
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">Two ways to <em>get online</em>.</h2>
@@ -282,13 +282,15 @@ import Marquee from "../components/Marquee.astro";
   </section>
 
   
-  <section class="cta-band cta-band-logo mv-soften" data-mv-watch>
-    <div class="cta-band-bg" aria-hidden="true"></div>
-    <div class="cta-band-inner">
-      <h3 class="display">Got a practice, a product, or a <em>side project</em>?</h3>
-      <div>
-        <p>Tell us about it. We reply to every inquiry — usually within a day.</p>
-        <a href="/contact" class="btn btn-primary">Start a project <span class="arrow" aria-hidden="true">→</span></a>
+  <section class="cta-band-light mv-soften" data-mv-watch>
+    <div class="cta-band-light-bg" aria-hidden="true"></div>
+    <div class="cta-band-light-inner">
+      <h3 class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h3>
+      <div class="cta-band-light-side">
+        <p class="cta-band-light-lede">Tell us about it. We reply to every inquiry — usually within a day.</p>
+        <a href="/contact" class="btn btn-primary cta-band-light-btn">
+          Start a project <span class="arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
@@ -369,9 +371,14 @@ import Marquee from "../components/Marquee.astro";
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
-  .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
-  .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2rem, 3.5vw, 3rem); display: flex; flex-direction: column; gap: 1.5rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 560px; }
+  /* Pricing section — give it more vertical room so it doesn't feel crowded
+     against the marquee above. */
+  .section-tiers { padding-block: clamp(6rem, 11vh, 9rem); }
+  .section-tiers .section-head { margin-bottom: clamp(3rem, 6vh, 5rem); }
+
+  .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
+  .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2.5rem, 4vw, 3.75rem); display: flex; flex-direction: column; gap: 1.75rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 640px; }
   .tier-dark { --bg: var(--color-navy); --fg: #fff; --fg-soft: rgba(255,255,255,0.82); --fg-muted: rgba(255,255,255,0.55); --line: rgba(255,255,255,0.14); --accent: var(--color-periwinkle); --sheen: rgb(255 255 255 / 0.14); }
   .tier:hover { transform: translateY(-2px); box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25); }
   .tier-sheen { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; opacity: 0; transition: opacity 360ms var(--ease-soft); background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--sheen), transparent 60%); }
@@ -394,13 +401,43 @@ import Marquee from "../components/Marquee.astro";
 
   .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
   .process-step { border-bottom: 1px solid var(--color-line); transition: background 450ms var(--ease-soft); }
-  .process-step:not(.process-step-featured):hover { background: rgb(20 70 103 / 0.025); }
-  .process-step-inner { display: grid; gap: 1.5rem; padding-block: 2rem; align-items: start; }
+  .process-step-inner { display: grid; gap: 1.5rem; padding-block: clamp(3rem, 6vh, 5rem); align-items: center; }
+  @media (min-width: 800px) {
+    .process-step-inner { grid-template-columns: 130px 1.2fr 1.4fr; gap: clamp(2rem, 4vw, 4rem); }
+  }
   .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: flex; flex-direction: column; gap: 0.25rem; }
-  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-2); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; }
-  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); letter-spacing: -0.015em; line-height: 1.15; font-variation-settings: "opsz" 60; color: var(--color-fg); }
-  .ps-body { margin: 0.5rem 0 0; max-width: 55ch; color: var(--color-fg-soft); font-size: var(--text-step-0); }
-  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1rem; }
+  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-3); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; }
+  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-3); letter-spacing: -0.015em; line-height: 1.15; font-variation-settings: "opsz" 60; color: var(--color-fg); }
+  .ps-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 60; }
+  .ps-body { margin: 0.75rem 0 0; max-width: 55ch; color: var(--color-fg-soft); font-size: var(--text-step-1); line-height: 1.5; }
+  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1rem; text-transform: none; }
+
+  /* Dark variant — explicitly here because Astro scoped specificity beats
+     global .process-step-dark rules otherwise. */
+  .process-step-dark { background: var(--color-ink); border-color: rgba(255,255,255,0.08); }
+  .process-step-dark .ps-step { color: var(--color-periwinkle); }
+  .process-step-dark .ps-glyph { color: var(--color-periwinkle); }
+  .process-step-dark .ps-title { color: var(--color-paper); }
+  .process-step-dark .ps-title em { color: var(--color-periwinkle); }
+  .process-step-dark .ps-body { color: rgba(255,255,255,0.82); }
+  .process-step-dark .ps-meta { color: rgba(255,255,255,0.5); }
+
+  /* Larger visual frames so the graphics actually breathe */
+  .ps-visual { display: none; }
+  @media (min-width: 800px) {
+    .ps-visual { display: flex; align-items: center; justify-content: flex-end; }
+  }
+  .ps-visual-frame {
+    position: relative;
+    width: 100%; max-width: 380px;
+    aspect-ratio: 4/3;
+    background: var(--color-paper);
+    border-radius: 12px;
+    border: 1px solid var(--color-line);
+    overflow: hidden;
+    box-shadow: 0 20px 50px -25px rgba(7,23,34,0.25);
+  }
+  .process-step-dark .ps-visual-frame { background: var(--color-paper); border-color: rgba(255,255,255,0.12); }
 
   .process-step-featured { background: var(--color-ink); color: var(--color-paper); border-block: 0; }
   .process-step-featured-inner { display: grid; grid-template-columns: 1fr !important; gap: 2.5rem; padding-block: clamp(3rem, 6vh, 5rem) !important; align-items: center; }
@@ -428,6 +465,73 @@ import Marquee from "../components/Marquee.astro";
   .mini-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
   .mini-card { height: 70px; background: rgba(13,47,69,0.06); border: 1px dashed rgba(13,47,69,0.18); border-radius: 6px; }
   .mini-pill { width: 130px; height: 32px; background: var(--color-periwinkle); border-radius: 999px; margin-top: 8px; position: relative; }
+
+  /* ============================================================
+     LIGHT CTA BAND — homepage variant. Sits between the dark
+     process section and the dark footer, providing visual relief.
+     ============================================================ */
+  .cta-band-light {
+    position: relative;
+    background: var(--color-bg-soft);
+    color: var(--color-fg);
+    padding-block: clamp(5rem, 11vh, 8rem);
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cta-band-light-bg {
+    position: absolute; inset: 0;
+    background-image: url("/assets/fwd-logo.svg");
+    background-repeat: no-repeat;
+    background-position: right -3rem center;
+    background-size: auto 130%;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cta-band-light-inner {
+    position: relative; z-index: 1;
+    width: 100%; padding-inline: var(--pad-x);
+    display: grid; gap: 2.5rem; align-items: end;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .cta-band-light-inner { grid-template-columns: 1.6fr 1fr; gap: 3.5rem; }
+  }
+  .cta-band-light-title {
+    font-size: var(--text-step-5);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+    color: var(--color-navy);
+  }
+  .cta-band-light-title em {
+    font-style: italic;
+    color: var(--color-blue);
+  }
+  .cta-band-light-side { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+  .cta-band-light-lede {
+    margin: 0;
+    color: var(--color-fg-soft);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-step-1);
+    line-height: 1.4;
+    max-width: 36ch;
+    font-variation-settings: "opsz" 60;
+  }
+  .cta-band-light-btn {
+    background: var(--color-navy);
+    color: var(--color-paper);
+    border-color: var(--color-navy);
+  }
+  .cta-band-light-btn:hover {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+  }
 
   @media (max-width: 1000px) {
     .hero-outer { min-height: 0; padding-block: 2rem 3rem; }
