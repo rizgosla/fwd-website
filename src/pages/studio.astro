@@ -5,17 +5,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="The studio — fwd.">
-<section class="page-hero">
-    <div class="full">
-      <div class="page-hero-grid">
-        <div data-mv-watch class="mv-rise">
-          <p class="eyebrow"><span>The studio</span></p>
-          <h1 class="display">Three people. <em>One studio.</em> No project managers.</h1>
-          <p class="lede">We started fwd. because we were tired of agency websites that promised the moon and delivered a WordPress theme. We build calmer sites, with fewer people, for fairer prices.</p>
-        </div>
-        <div class="page-hero-art" aria-hidden="true">
-          <span class="ph-mark">fwd<span class="dot">.</span></span>
-        </div>
+<section class="studio-hero">
+    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="studio-hero-watermark" />
+    <div class="full studio-hero-inner">
+      <div data-mv-watch class="mv-rise">
+        <p class="studio-hero-meta">
+          <span class="num">02</span>
+          <span class="bar"></span>
+          <span class="label">The studio</span>
+        </p>
+        <h1 class="display studio-hero-title">Three people.<br /><em>One studio.</em><br />No project managers.</h1>
+        <p class="lede studio-hero-lede">We started fwd. because we were tired of agency websites that promised the moon and delivered a WordPress theme. We build calmer sites, with fewer people, for fairer prices.</p>
       </div>
     </div>
   </section>
@@ -131,6 +131,93 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
+  /* ============================================================
+     STUDIO HERO — full-bleed dark band with a huge logo watermark
+     bleeding off the left, text content stacked on the right.
+     ============================================================ */
+  .studio-hero {
+    position: relative;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    overflow: hidden;
+    padding-block: clamp(5rem, 14vh, 10rem);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .studio-hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgb(142 148 184 / 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 90% 90%, rgb(20 70 103 / 0.45), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .studio-hero-watermark {
+    position: absolute;
+    left: -10%;
+    top: 50%;
+    transform: translateY(-50%) rotate(-8deg);
+    height: 140%;
+    width: auto;
+    max-width: none;
+    opacity: 0.07;
+    filter: brightness(0) invert(1);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .studio-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: end;
+  }
+  .studio-hero-inner > div {
+    max-width: 38rem;
+    width: 100%;
+  }
+  .studio-hero-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 2.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-periwinkle);
+  }
+  .studio-hero-meta .num { color: var(--color-periwinkle); }
+  .studio-hero-meta .bar { width: 28px; height: 1px; background: rgba(255,255,255,0.4); display: inline-block; }
+  .studio-hero-meta .label { color: rgba(255,255,255,0.7); }
+  .studio-hero-title {
+    font-size: var(--text-step-6);
+    margin: 0;
+    color: var(--color-paper);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    font-variation-settings: "opsz" 144;
+    max-width: 14ch;
+  }
+  .studio-hero-title em {
+    font-style: italic;
+    color: var(--color-periwinkle);
+    font-variation-settings: "opsz" 144;
+  }
+  .studio-hero-lede {
+    margin: 2rem 0 0;
+    color: rgba(255,255,255,0.72);
+    max-width: 50ch;
+    font-size: var(--text-step-1);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-variation-settings: "opsz" 60;
+  }
+  @media (max-width: 800px) {
+    .studio-hero-inner { justify-items: stretch; }
+    .studio-hero-watermark { left: -30%; height: 110%; }
+  }
+
 .story-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
   @media (min-width: 900px) { .story-grid { grid-template-columns: 1fr 2fr; gap: clamp(2rem, 5vw, 5rem); } }
   .story-side { position: sticky; top: 100px; padding-bottom: 1rem; border-bottom: 1px solid var(--color-line); }

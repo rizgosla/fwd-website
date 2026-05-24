@@ -1485,6 +1485,28 @@ main + footer.footer-dark { margin-top: 0 !important; }
   display: inline-flex; align-items: baseline;
 }
 .ph-mark .dot { color: var(--color-periwinkle); }
+
+/* Logo-image variant of the page-hero art column */
+.page-hero-art-logo {
+  position: relative;
+  overflow: hidden;
+}
+.ph-logo {
+  width: 100%;
+  height: auto;
+  max-width: 460px;
+  opacity: 0.18;
+  filter: none;
+  margin-inline-start: auto;
+  display: block;
+}
+.page-hero-art-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 90% 50%, transparent 30%, var(--color-paper) 90%);
+  pointer-events: none;
+}
 .ph-mark::after {
   content: "";
   position: absolute;

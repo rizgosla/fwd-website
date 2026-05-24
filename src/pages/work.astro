@@ -5,18 +5,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Selected work — fwd.">
-<section class="page-hero">
-    <div class="full">
-      <div class="page-hero-grid">
-        <div data-mv-watch class="mv-rise">
-          <p class="eyebrow"><span>Selected work</span></p>
-          <h1 class="display">A small studio with <em>real numbers</em>.</h1>
-          <p class="lede">One launched case study below — laid out as an example of what every case study on this page will look like. Three more projects are in production now.</p>
-        </div>
-        <div class="page-hero-art" aria-hidden="true">
-          <span class="ph-mark">fwd<span class="dot">.</span></span>
-        </div>
+<section class="work-hero">
+    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="work-hero-stamp" />
+    <div class="full work-hero-inner">
+      <div data-mv-watch class="mv-rise work-hero-text">
+        <p class="work-hero-eyebrow">
+          <span class="num">— 03</span>
+          <span>Selected work</span>
+        </p>
+        <h1 class="display work-hero-title">A small studio with <em>real numbers</em>.</h1>
+        <p class="lede work-hero-lede">One launched case study below — laid out as an example of what every case study on this page will look like. Three more projects are in production now.</p>
       </div>
+      <ul class="work-hero-stats" aria-hidden="false">
+        <li><strong>01</strong><span>Launched</span></li>
+        <li><strong>03</strong><span>In production</span></li>
+        <li><strong>100%</strong><span>Flat-fee</span></li>
+        <li><strong>2026</strong><span>Studio year</span></li>
+      </ul>
     </div>
   </section>
 
@@ -245,6 +250,114 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
+  /* ============================================================
+     WORK HERO — editorial-style centered headline, logo as a
+     stamp in the top-right corner, stat row below.
+     ============================================================ */
+  .work-hero {
+    position: relative;
+    background: var(--color-paper);
+    padding-block: clamp(4rem, 11vh, 8rem) clamp(3rem, 7vh, 5rem);
+    border-bottom: 1px solid var(--color-line);
+    overflow: hidden;
+  }
+  .work-hero::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-line-strong), transparent);
+  }
+  .work-hero-stamp {
+    position: absolute;
+    top: clamp(2rem, 5vh, 4rem);
+    right: var(--pad-x);
+    height: clamp(60px, 8vw, 110px);
+    width: auto;
+    max-width: none;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .work-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vh, 5rem);
+  }
+  .work-hero-text {
+    text-align: center;
+    max-width: 24ch;
+    margin-inline: auto;
+  }
+  .work-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .work-hero-eyebrow .num { color: var(--color-blue); font-weight: 500; }
+  .work-hero-title {
+    font-size: var(--text-step-6);
+    margin: 0;
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    color: var(--color-navy);
+  }
+  .work-hero-title em {
+    font-style: italic;
+    color: var(--color-blue);
+  }
+  .work-hero-lede {
+    margin: 1.75rem auto 0;
+    color: var(--color-fg-soft);
+    max-width: 50ch;
+    font-size: var(--text-step-1);
+  }
+  .work-hero-stats {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+  @media (min-width: 720px) {
+    .work-hero-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  .work-hero-stats li {
+    display: flex; flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.5rem clamp(1rem, 2.5vw, 2rem);
+    border-right: 1px solid var(--color-line);
+  }
+  .work-hero-stats li:last-child { border-right: 0; }
+  @media (max-width: 719px) {
+    .work-hero-stats li:nth-child(2) { border-right: 0; }
+    .work-hero-stats li:nth-child(-n+2) { border-bottom: 1px solid var(--color-line); }
+  }
+  .work-hero-stats strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-4);
+    letter-spacing: -0.025em;
+    color: var(--color-navy);
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  .work-hero-stats span {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
 .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
   @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
