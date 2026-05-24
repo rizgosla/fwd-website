@@ -6,8 +6,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout title="The studio — fwd.">
 <section class="studio-hero">
+    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="studio-hero-watermark" />
     <div class="full studio-hero-inner">
-      <div data-mv-watch class="mv-rise studio-hero-text">
+      <div data-mv-watch class="mv-rise">
         <p class="studio-hero-meta">
           <span class="num">02</span>
           <span class="bar"></span>
@@ -16,28 +17,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <h1 class="display studio-hero-title">Three people.<br /><em>One studio.</em><br />No project managers.</h1>
         <p class="lede studio-hero-lede">We started fwd. because we were tired of agency websites that promised the moon and delivered a WordPress theme. We build calmer sites, with fewer people, for fairer prices.</p>
       </div>
-      <div class="studio-hero-stack" aria-hidden="true">
-        <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-1" />
-        <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-2" />
-        <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-3" />
-        <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-4" />
-      </div>
     </div>
   </section>
 
   <section class="section" id="values">
     <div class="full">
       <div class="story-grid">
-        <aside class="story-side">
-          <span class="story-mark" aria-hidden="true">fwd<span class="dot">.</span></span>
-          <p class="eyebrow"><span>Why we exist</span></p>
-        </aside>
         <div class="story-body mv-stagger" data-mv-watch>
+          <p class="eyebrow story-eyebrow"><span>Why we exist</span></p>
           <p class="manifesto-lede">A good website should make a small business look <em>twice its size</em>, not a third of it.</p>
           <p class="manifesto-p">For two decades the only good options were either custom — done by an agency, billed against retainers, and shipped six months late — or template, done by a freelancer in a weekend, and exactly as forgettable as the next.</p>
           <p class="manifesto-p">We are trying something in between. A small studio, fixed prices, real design work, and a turnaround measured in weeks. Most of what we ship is a single landing page. That is enough. Most businesses do not need more.</p>
           <p class="manifesto-p">We work directly with the people whose names will appear in the footer. There is no account manager, no kickoff deck, no Slack channel called <em>#engagement</em>. Just three of us, and you, and a couple of weeks of careful design.</p>
         </div>
+        <aside class="story-stack" aria-hidden="true">
+          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-1" />
+          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-2" />
+          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-3" />
+          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-4" />
+        </aside>
       </div>
     </div>
   </section>
@@ -137,9 +135,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <style>
   /* ============================================================
-     STUDIO HERO — dark full-bleed band. Text on the left, a stack
-     of four diagonally-layered logo marks on the right, each in a
-     different brand color.
+     STUDIO HERO — dark full-bleed band with a giant logo watermark
+     bleeding off the left and text content stacked on the right.
      ============================================================ */
   .studio-hero {
     position: relative;
@@ -153,8 +150,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     content: "";
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 20% 30%, rgb(142 148 184 / 0.10), transparent 70%),
-      radial-gradient(ellipse 60% 60% at 90% 90%, rgb(20 70 103 / 0.40), transparent 70%);
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgb(142 148 184 / 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 90% 90%, rgb(20 70 103 / 0.45), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .studio-hero-watermark {
+    position: absolute;
+    left: -10%;
+    top: 50%;
+    transform: translateY(-50%) rotate(-8deg);
+    height: 140%;
+    width: auto;
+    max-width: none;
+    opacity: 0.07;
+    filter: brightness(0) invert(1);
     pointer-events: none;
     z-index: 0;
   }
@@ -163,13 +173,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     z-index: 1;
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(3rem, 6vh, 5rem);
-    align-items: center;
+    justify-items: end;
   }
-  @media (min-width: 900px) {
-    .studio-hero-inner { grid-template-columns: 1.3fr 1fr; gap: clamp(3rem, 6vw, 6rem); }
-  }
-  .studio-hero-text { max-width: 38rem; }
+  .studio-hero-inner > div { max-width: 38rem; width: 100%; }
   .studio-hero-meta {
     display: inline-flex;
     align-items: center;
@@ -207,15 +213,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-weight: 300;
     font-variation-settings: "opsz" 60;
   }
+  @media (max-width: 800px) {
+    .studio-hero-inner { justify-items: stretch; }
+    .studio-hero-watermark { left: -30%; height: 110%; }
+  }
 
-  /* Stacked logo marks on the right — four copies layered diagonally,
-     each tinted via filters to drop into the brand palette. */
-  .studio-hero-stack {
+  /* ============================================================
+     STORY SECTION — manifesto text on the LEFT, a diagonal stack
+     of four logo marks (deep blue / periwinkle / paper / navy)
+     on the right.
+     ============================================================ */
+  .story-eyebrow { margin: 0 0 1.5rem; }
+  .story-stack {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    max-width: 480px;
+    max-width: 460px;
     margin-inline: auto;
+    align-self: center;
   }
   .shs-mark {
     position: absolute;
@@ -226,43 +241,34 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
   /* Layer 1 (back) — deep blue */
   .shs-mark-1 {
-    top: 0;
-    left: 0;
-    /* Tint pure black SVG to var(--color-blue) #144667 via invert/sepia chain */
+    top: 0; left: 0;
     filter: brightness(0) saturate(100%) invert(20%) sepia(38%) saturate(1400%) hue-rotate(168deg) brightness(95%) contrast(98%);
     opacity: 0.9;
   }
   /* Layer 2 — periwinkle */
   .shs-mark-2 {
-    top: 10%;
-    left: 10%;
+    top: 10%; left: 10%;
     filter: brightness(0) saturate(100%) invert(64%) sepia(11%) saturate(700%) hue-rotate(190deg) brightness(95%) contrast(90%);
     opacity: 0.95;
   }
-  /* Layer 3 — paper white */
+  /* Layer 3 — paper white (with subtle border via drop-shadow so it reads on light bg) */
   .shs-mark-3 {
-    top: 20%;
-    left: 20%;
-    filter: brightness(0) invert(1);
+    top: 20%; left: 20%;
+    filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(13,47,69,0.25));
     opacity: 1;
   }
   /* Layer 4 (front) — navy */
   .shs-mark-4 {
-    top: 30%;
-    left: 30%;
+    top: 30%; left: 30%;
     filter: brightness(0) saturate(100%) invert(13%) sepia(45%) saturate(1900%) hue-rotate(180deg) brightness(85%) contrast(95%);
     opacity: 1;
   }
-
   @media (max-width: 899px) {
-    .studio-hero-stack { max-width: 320px; aspect-ratio: 1; }
-    .studio-hero-text { max-width: none; }
+    .story-stack { max-width: 280px; }
   }
 
-.story-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
-  @media (min-width: 900px) { .story-grid { grid-template-columns: 1fr 2fr; gap: clamp(2rem, 5vw, 5rem); } }
-  .story-side { position: sticky; top: 100px; padding-bottom: 1rem; border-bottom: 1px solid var(--color-line); }
-  @media (min-width: 900px) { .story-side { border-bottom: 0; padding-bottom: 0; } }
+.story-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .story-grid { grid-template-columns: 1.5fr 1fr; gap: clamp(3rem, 6vw, 6rem); } }
   .story-body { display: flex; flex-direction: column; gap: 1.5rem; }
   .manifesto-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-3); line-height: 1.2; letter-spacing: -0.015em; color: var(--color-fg); margin: 0; max-width: 26ch; font-variation-settings: "opsz" 96; text-wrap: balance; }
   .manifesto-lede em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
