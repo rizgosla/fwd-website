@@ -1486,26 +1486,22 @@ main + footer.footer-dark { margin-top: 0 !important; }
 }
 .ph-mark .dot { color: var(--color-periwinkle); }
 
-/* Logo-image variant of the page-hero art column */
+/* Logo-image variant of the page-hero art column.
+   No background, no overlay — the SVG sits transparently on the page
+   background so it reads as an inlaid mark, not a tile. */
 .page-hero-art-logo {
   position: relative;
-  overflow: hidden;
+  background: transparent;
 }
 .ph-logo {
   width: 100%;
   height: auto;
-  max-width: 460px;
-  opacity: 0.18;
-  filter: none;
+  max-width: 420px;
+  opacity: 0.15;
   margin-inline-start: auto;
   display: block;
-}
-.page-hero-art-logo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 90% 50%, transparent 30%, var(--color-paper) 90%);
-  pointer-events: none;
+  background: transparent;
+  mix-blend-mode: multiply;
 }
 .ph-mark::after {
   content: "";
