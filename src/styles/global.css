@@ -1096,6 +1096,40 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 .cta-band-bg-track span { padding-right: 0.5em; }
 .cta-band-bg-track span::after { content: "."; color: rgba(142,148,184,0.18); }
 
+/* Outlined logo-marks variant — replaces the scrolling text marquee
+   with a row of giant outlined fwd marks scrolling across the band. */
+.cta-band-marks .cta-band-bg {
+  align-items: center;
+}
+.cta-band-bg-marks {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 6rem);
+  width: max-content;
+  animation: mvFwdScroll 36s linear infinite;
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}
+.cta-band-marks:hover .cta-band-bg-marks { animation-play-state: paused; }
+.cb-mark {
+  flex-shrink: 0;
+  height: clamp(14rem, 28vw, 26rem);
+  width: auto;
+  display: block;
+  /* Strip default fill, draw outlined paths instead. The BrandMark SVG
+     has two g-groups using fill — we override via descendant rules. */
+}
+.cb-mark g[fill] path,
+.cb-mark path {
+  fill: none !important;
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+/* Periwinkle drop-shadow layer becomes a periwinkle outline */
+.cb-mark > g:first-of-type path {
+  stroke: rgba(142,148,184,0.18) !important;
+}
+
 /* Logo-image variant of the cta-band background — replaces the scrolling
    text marquee with the fwd-logo SVG sitting behind the headline. */
 .cta-band-logo .cta-band-bg {
