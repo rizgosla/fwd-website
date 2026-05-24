@@ -77,6 +77,26 @@ const {
           card.style.setProperty("--my", ((e.clientY - rect.top) / rect.height) * 100 + "%");
         });
       });
+
+      // === Scroll-driven motion ==============================================
+      // Elements marked [data-mv-watch] are held at opacity:0 until they enter
+      // the viewport, then their .mv-* class runs. One observer for the whole
+      // page — motion stays inside the shared vocabulary in global.css.
+      const mvTargets = document.querySelectorAll("[data-mv-watch]");
+      if (mvTargets.length && "IntersectionObserver" in window) {
+        const mvIo = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-inview");
+                mvIo.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: "0px 0px -10% 0px", threshold: 0.15 }
+        );
+        mvTargets.forEach((el) => mvIo.observe(el));
+      }
     </script>
   </body>
 </html>

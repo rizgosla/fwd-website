@@ -47,6 +47,12 @@
   --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* Motion durations — the only durations any page should use */
+  --motion-dur-fast: 600ms;
+  --motion-dur-base: 900ms;
+  --motion-dur-slow: 1400ms;
+  --motion-stagger-step: 180ms;
+
   /* Layout container width */
   --container-prose: 880px;
   --container-page: 1240px;
@@ -273,7 +279,7 @@
 }
 
 /* ========================================================================
-   ANIMATIONS
+   ANIMATIONS — keyframes only. Use via the .mv-* vocabulary below.
    ======================================================================== */
 @keyframes revealUp {
   to { opacity: 1; transform: translateY(0); }
@@ -290,8 +296,104 @@
   100% { box-shadow: 0 0 0 0 rgb(43 182 115 / 0); }
 }
 
+/* The six shared moves — every page picks from this list. No improvising. */
+@keyframes mvRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes mvWipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes mvSoften {
+  from { opacity: 0; transform: scale(0.96); filter: blur(8px); }
+  to   { opacity: 1; transform: scale(1);    filter: blur(0); }
+}
+@keyframes mvSweep {
+  0%   { transform: translateX(-60%); }
+  50%  { transform: translateX( 60%); }
+  100% { transform: translateX(-60%); }
+}
+@keyframes mvPulseRing {
+  0%   { box-shadow: 0 0 0 0  rgb(142 148 184 / 0.55); }
+  70%  { box-shadow: 0 0 0 14px rgb(142 148 184 / 0); }
+  100% { box-shadow: 0 0 0 0  rgb(142 148 184 / 0); }
+}
+
 /* Whole page fades in */
 main { animation: pageIn 900ms var(--ease-out-expo) both; }
+
+/* ========================================================================
+   MOTION VOCABULARY — .mv-* utility classes.
+
+   Use one of these six moves on any element. Anything else is a ticket.
+   Each class plays on render; for scroll-triggered entries add
+   `data-mv-watch` and the IntersectionObserver in BaseLayout will hold
+   the element at opacity:0 until it scrolls into view, then play.
+   ======================================================================== */
+
+/* 01 · rise — the default entry. Use for: section enters, hero copy. */
+.mv-rise {
+  animation: mvRise var(--motion-dur-base) var(--ease-out-expo) both;
+}
+
+/* 02 · wipe — left-to-right reveal. Use for: rules, underlines, progress fills. */
+.mv-wipe {
+  animation: mvWipe var(--motion-dur-fast) var(--ease-soft) both;
+}
+
+/* 03 · soften — scale + blur in. Use sparingly: hero first paint, image-heavy entries. */
+.mv-soften {
+  animation: mvSoften var(--motion-dur-slow) var(--ease-out-expo) both;
+}
+
+/* 04 · stagger — parent class. Children rise one after the other. */
+.mv-stagger > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: mvRise var(--motion-dur-base) var(--ease-out-expo) forwards;
+}
+.mv-stagger > *:nth-child(1) { animation-delay: calc(var(--motion-stagger-step) * 0); }
+.mv-stagger > *:nth-child(2) { animation-delay: calc(var(--motion-stagger-step) * 1); }
+.mv-stagger > *:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 2); }
+.mv-stagger > *:nth-child(4) { animation-delay: calc(var(--motion-stagger-step) * 3); }
+.mv-stagger > *:nth-child(5) { animation-delay: calc(var(--motion-stagger-step) * 4); }
+.mv-stagger > *:nth-child(6) { animation-delay: calc(var(--motion-stagger-step) * 5); }
+.mv-stagger > *:nth-child(7) { animation-delay: calc(var(--motion-stagger-step) * 6); }
+.mv-stagger > *:nth-child(8) { animation-delay: calc(var(--motion-stagger-step) * 7); }
+
+/* 05 · sweep — looping sheen for live/breathing elements. Use sparingly. */
+.mv-sweep {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.mv-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgb(142 148 184 / 0.35), transparent);
+  animation: mvSweep 3.8s var(--ease-soft) infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 06 · pulse — status dot. Use only for: live signals, response-time indicators. */
+.mv-pulse {
+  animation: mvPulseRing 2s var(--ease-soft) infinite;
+}
+
+/* Scroll-driven variant — held at start state until JS adds .is-inview */
+[data-mv-watch] {
+  opacity: 0;
+}
+[data-mv-watch].is-inview.mv-rise   { opacity: 0; animation: mvRise   var(--motion-dur-base) var(--ease-out-expo) both; }
+[data-mv-watch].is-inview.mv-soften { opacity: 0; animation: mvSoften var(--motion-dur-slow) var(--ease-out-expo) both; }
+[data-mv-watch].is-inview.mv-wipe   { opacity: 1; animation: mvWipe   var(--motion-dur-fast) var(--ease-soft) both; }
+[data-mv-watch].is-inview.mv-stagger { opacity: 1; }
+[data-mv-watch].is-inview.mv-stagger > * { animation-play-state: running; }
+[data-mv-watch].mv-stagger > * { animation-play-state: paused; }
 
 /* ========================================================================
    REDUCED MOTION
@@ -302,3 +404,119 @@ main { animation: pageIn 900ms var(--ease-out-expo) both; }
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ============================================================
+   ROUND 3 — feedback additions (compact)
+   ============================================================ */
+
+/* Round 3: section-rule tags hidden site-wide (tacky/unprofessional per feedback).
+   Keep the markup so any existing pages don't break, just hide the band. */
+.section-rule { display: none; }
+
+/* Keyframes that the round-3 components rely on
+   (CtaStrip, ProcessStep, idle hero motion).
+   These are safe to add even if a page doesn't use them. */
+@keyframes mvBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes mvDrift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes mvLaunchFill {
+  0% { transform: scaleX(0); }
+  40%, 100% { transform: scaleX(1); }
+}
+@keyframes mvFwdScroll { to { transform: translateX(-50%); } }
+@keyframes mvSlowSpin { to { transform: rotate(360deg); } }
+
+
+/* ============================================================
+   ROUND 4 — feedback patch (mirrored from site/assets/styles.css)
+   ============================================================ */
+.section-rule, .page-hero-tag, .contact-ticker, .idle-cursor, .contact-decor-ring { display: none !important; }
+.cta-band { margin-top: 0 !important; margin-bottom: 0 !important; }
+.footer-dark { margin-top: 0 !important; }
+
+@keyframes mvBlink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+@keyframes mvFwdScrollFwd { to { transform: translateX(-50%); } }
+@keyframes mvFwdScrollRev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes mvSlowSpin { to { transform: rotate(360deg); } }
+
+/* Logo marquee — used on the homepage in place of the text marquee */
+.logo-marquee { position: relative; background: var(--color-paper); border-block: 1px solid var(--color-line); overflow: hidden; padding-block: 1.5rem; }
+.logo-marquee-layer {
+  display: flex; align-items: center; width: max-content; gap: 3rem;
+  font-family: var(--font-display); font-style: italic; font-weight: 350;
+  letter-spacing: -0.04em; line-height: 1;
+  font-variation-settings: "opsz" 144;
+  user-select: none; white-space: nowrap;
+}
+.logo-marquee-layer span { display: inline-flex; align-items: baseline; }
+.logo-marquee-layer .dot { color: var(--color-periwinkle); }
+.logo-marquee-layer.layer-1 { font-size: clamp(4rem, 9vw, 8rem); color: rgba(13,47,69,0.08); animation: mvFwdScrollFwd 60s linear infinite; }
+.logo-marquee-layer.layer-2 { font-size: clamp(3rem, 7vw, 6rem); color: var(--color-fg); margin-block: -0.55em; animation: mvFwdScrollRev 38s linear infinite; position: relative; z-index: 2; }
+.logo-marquee-layer.layer-3 { font-size: clamp(2.5rem, 5vw, 4rem); color: rgba(20,70,103,0.18); animation: mvFwdScrollFwd 22s linear infinite; }
+.logo-marquee:hover .logo-marquee-layer { animation-play-state: paused; }
+.logo-marquee::before, .logo-marquee::after { content: ""; position: absolute; top: 0; bottom: 0; width: 8vw; z-index: 3; pointer-events: none; }
+.logo-marquee::before { left: 0; background: linear-gradient(to right, var(--color-paper), transparent); }
+.logo-marquee::after  { right: 0; background: linear-gradient(to left, var(--color-paper), transparent); }
+
+/* Dark process step variant — for steps 02 + 04 on home */
+.process-step-dark { background: var(--color-ink); color: var(--color-paper); border-block: 0; }
+.process-step-dark .ps-step, .process-step-dark .ps-glyph { color: var(--color-periwinkle); }
+.process-step-dark .ps-title { color: var(--color-paper); }
+.process-step-dark .ps-body { color: rgba(255,255,255,0.78); }
+.process-step-dark .ps-meta { color: rgba(255,255,255,0.4); }
+.process-step-dark:hover { background: var(--color-ink); }
+.process-step-dark .ps-visual-frame { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+
+/* Studio — big fwd. mark next to the "Why we exist" eyebrow */
+.story-side .story-mark {
+  display: block; font-family: var(--font-display); font-style: italic; font-weight: 350;
+  font-size: clamp(7rem, 16vw, 14rem); letter-spacing: -0.05em; line-height: 0.85;
+  color: var(--color-navy); font-variation-settings: "opsz" 144; user-select: none;
+}
+.story-side .story-mark .dot { color: var(--color-periwinkle); }
+
+/* Contact — giant logo as the email-poster background */
+.email-poster { position: relative; overflow: hidden; }
+.email-poster-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: clamp(1rem, 4vw, 4rem); z-index: 0; user-select: none;
+}
+.email-poster-bg .mark {
+  font-family: var(--font-display); font-style: italic; font-weight: 350;
+  font-size: clamp(12rem, 28vw, 30rem); letter-spacing: -0.06em; line-height: 0.85;
+  color: rgba(13,47,69,0.06); font-variation-settings: "opsz" 144;
+}
+.email-poster-bg .mark .dot { color: rgba(142,148,184,0.45); }
+.email-poster-inner { position: relative; z-index: 1; }
+
+/* FAQ — alignment fix + animated open state */
+.faq-item summary {
+  display: flex !important; align-items: center; justify-content: space-between;
+  gap: 2rem; padding: 1.5rem 0; cursor: pointer; list-style: none; position: relative;
+}
+.faq-item summary::-webkit-details-marker, .faq-item summary::marker { display: none; content: ""; }
+.faq-item summary::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 0;
+  background: var(--color-periwinkle); transition: width 320ms var(--ease-soft);
+}
+.faq-item[open] summary::after { width: 100%; }
+.faq-a { padding: 0 0 1.75rem 0 !important; margin: 0; max-width: 65ch; }
+.faq-a p { margin: 0; padding: 0; }
+.faq-item[open] { background: rgba(20,70,103,0.025); }
+.faq-item[open] summary .faq-q { color: var(--color-blue); }
+.faq-item[open] .faq-a { position: relative; padding-left: 1.25rem !important; }
+.faq-item[open] .faq-a::before {
+  content: ""; position: absolute; left: 0; top: 0.4em; bottom: 0.4em;
+  width: 2px; background: var(--color-periwinkle); transform-origin: top;
+  animation: faqLineGrow 500ms var(--ease-out-expo);
+}
+@keyframes faqLineGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.section-faq { position: relative; overflow: hidden; }
+.section-faq::before, .section-faq::after {
+  content: ""; position: absolute; right: -10vw; top: 50%;
+  width: 50vmin; height: 50vmin; border-radius: 50%; pointer-events: none; z-index: 0;
+}
+.section-faq::before { transform: translateY(-50%); border: 1px solid var(--color-line); animation: mvSlowSpin 90s linear infinite; }
+.section-faq::after  { transform: translateY(-50%) scale(0.65); border: 1px dashed rgba(142,148,184,0.35); animation: mvSlowSpin 120s linear infinite reverse; }
+.section-faq .full { position: relative; z-index: 1; }

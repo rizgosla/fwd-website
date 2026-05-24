@@ -1,10 +1,11 @@
 ---
-const year = new Date().getFullYear();
+import BrandMark from "./BrandMark.astro";
 
+// Studio links land on real /studio sections — no redirect hops via /about or /team.
 const studioLinks = [
-  { href: "/about", label: "About" },
-  { href: "/team",  label: "Team" },
-  { href: "/work",  label: "Work" },
+  { href: "/studio#values", label: "What we believe" },
+  { href: "/studio#people", label: "The team" },
+  { href: "/work",          label: "Selected work" },
 ];
 const serviceLinks = [
   { href: "/services", label: "Landing — $800" },
@@ -13,14 +14,18 @@ const serviceLinks = [
 ];
 ---
 
-<footer class="footer-dark">
-  <div class="container-page footer-inner">
+<!--
+  Slim footer (round-3 feedback): no tagline, no copyright/version row.
+  The brand mark grows to fill the brand column. BrandMark resolves
+  to `currentColor` so it reads white-on-ink here.
+-->
+<footer class="footer-dark footer-slim">
+  <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="footer-logo-link" aria-label="fwd. home">
-          <img src="/assets/fwd-logo-dark.svg" alt="fwd. — small web design studio" class="footer-logo-img" width="180" height="80" />
+        <a href="/" class="footer-logo-link" aria-label="fwd. — home">
+          <BrandMark class="footer-mark" decorative={true} />
         </a>
-        <p class="footer-tagline">A small web design studio building clean, considered sites for practices and small businesses.</p>
       </div>
 
       <div class="footer-col">
@@ -46,20 +51,14 @@ const serviceLinks = [
         </ul>
       </div>
     </div>
-
-    <div class="footer-bottom">
-      <span>© {year} Forward Design Consulting LLC · All rights reserved</span>
-      <span class="footer-builtby">Designed &amp; built in-house.</span>
-    </div>
   </div>
 </footer>
 
 <style>
   .footer-dark {
-    margin-top: 6rem;
     background: var(--color-ink, #071722);
     color: rgba(255,255,255,0.78);
-    padding: 5rem 0 1.75rem;
+    padding: 4rem 0 3rem;
     position: relative;
   }
   .footer-dark::before {
@@ -67,32 +66,35 @@ const serviceLinks = [
     position: absolute; top: 0; left: 0; right: 0; height: 1px;
     background: rgba(255,255,255,0.08);
   }
-  .footer-inner { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+  /* G-04 — full bleed, padding via --pad-x only */
+  .footer-inner {
+    width: 100%;
+    padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
+  }
   .footer-grid {
     display: grid; gap: 2.5rem;
     grid-template-columns: 1fr;
-    margin-bottom: 4rem;
   }
   @media (min-width: 800px) {
-    .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+    .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: clamp(2rem, 4vw, 4rem); align-items: center; }
   }
 
-  .footer-brand { display: flex; flex-direction: column; gap: 1.25rem; max-width: 32ch; }
-  .footer-logo-link { display: inline-flex; }
-  .footer-logo-img {
-    height: clamp(56px, 5.5vw, 78px);
+  .footer-brand {
+    display: flex;
+    justify-content: center;
+  }
+  .footer-logo-link {
+    display: inline-flex;
+    color: var(--color-paper);
+    transition: opacity 200ms var(--ease-soft);
+    width: fit-content;
+  }
+  .footer-logo-link:hover { opacity: 0.78; }
+  /* Mark grows to fill the freed column space */
+  :global(.footer-mark) {
+    height: clamp(120px, 14vw, 200px);
     width: auto;
     display: block;
-    /* logo art is dark-on-light by default; the dark footer needs the light version (fwd-logo.svg) */
-  }
-  .footer-tagline {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-style: italic;
-    font-size: var(--text-step-0);
-    color: rgba(255,255,255,0.6);
-    line-height: 1.5;
-    margin: 0;
   }
 
   .footer-label {
@@ -112,26 +114,12 @@ const serviceLinks = [
     font-family: var(--font-sans);
     font-size: var(--text-step--1);
     color: rgba(255,255,255,0.78);
-    transition: color 200ms cubic-bezier(0.2,0.7,0.2,1);
+    transition: color 200ms var(--ease-soft);
   }
   .footer-col a:hover { color: var(--color-periwinkle, #8e94b8); }
-
-  .footer-bottom {
-    display: flex; flex-wrap: wrap; justify-content: space-between;
-    align-items: center; gap: 1rem;
-    padding-top: 1.75rem;
-    border-top: 1px solid rgba(255,255,255,0.10);
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.04em;
-    color: rgba(255,255,255,0.5);
-  }
-  .footer-builtby {
-    font-family: var(--font-display);
-    font-style: italic;
-    letter-spacing: 0;
-    color: rgba(255,255,255,0.6);
-    font-size: var(--text-step--1);
-    font-variation-settings: "opsz" 60, "SOFT" 100;
+  .footer-col a:focus-visible {
+    outline: 2px solid var(--color-periwinkle, #8e94b8);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 </style>
