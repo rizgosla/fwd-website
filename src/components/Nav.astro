@@ -40,9 +40,10 @@ const isActive = (href: string) =>
 
       <a
         href="/contact"
+        style="color: #ffffff;"
         class:list={[
-          "inline-flex items-center gap-1.5 rounded-full border px-[1.15rem] py-[0.6rem] text-[length:var(--text-step--1)] font-medium",
-          "bg-ink border-ink text-paper hover:bg-blue hover:border-blue transition-all duration-200",
+          "nav-cta-btn inline-flex items-center gap-1.5 rounded-full border px-[1.15rem] py-[0.6rem] text-[length:var(--text-step--1)] font-medium",
+          "bg-ink border-ink hover:bg-blue hover:border-blue transition-all duration-200",
           "[&_.arrow]:transition-transform [&_.arrow]:duration-200 hover:[&_.arrow]:translate-x-[3px]",
           isActive("/contact") && "bg-blue border-blue",
         ]}

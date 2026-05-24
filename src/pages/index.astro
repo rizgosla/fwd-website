@@ -2,6 +2,7 @@
 // Auto-generated from site/index.html — round 4 design.
 // Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Marquee from "../components/Marquee.astro";
 ---
 
 <BaseLayout title="fwd. — Websites that earn their place online">
@@ -85,32 +86,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </section>
 
-  <!-- ============ LOGO MARQUEE — three stacked layers ============ -->
-  <div class="logo-marquee" aria-hidden="true">
-    <div class="logo-marquee-layer layer-1">
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-    </div>
-    <div class="logo-marquee-layer layer-2">
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-    </div>
-    <div class="logo-marquee-layer layer-3">
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
-    </div>
-  </div>
+  <!-- ============ MARQUEE (reverted to original phrase Marquee component) ============ -->
+  <Marquee />
 
   <!-- ============ HERO META STRIP ============ -->
   <section class="meta-strip">
@@ -305,13 +282,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </section>
 
   
-  <section class="cta-band mv-soften" data-mv-watch>
-    <div class="cta-band-bg" aria-hidden="true">
-      <div class="cta-band-bg-track">
-        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
-        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
-      </div>
-    </div>
+  <section class="cta-band cta-band-logo mv-soften" data-mv-watch>
+    <div class="cta-band-bg" aria-hidden="true"></div>
     <div class="cta-band-inner">
       <h3 class="display">Got a practice, a product, or a <em>side project</em>?</h3>
       <div>

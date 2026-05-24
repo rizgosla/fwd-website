@@ -58,6 +58,13 @@
   --container-page: 1240px;
 }
 
+/* Global page horizontal padding — consumed by .full, .nav-bar, .footer-inner,
+   .cta-band-inner, etc. Without this defined in :root, those elements
+   collapsed to viewport edges. */
+:root {
+  --pad-x: clamp(1.5rem, 4.5vw, 4rem);
+}
+
 /* ========================================================================
    BASE — site-wide defaults
    ======================================================================== */
@@ -1089,6 +1096,22 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 .cta-band-bg-track span { padding-right: 0.5em; }
 .cta-band-bg-track span::after { content: "."; color: rgba(142,148,184,0.18); }
 
+/* Logo-image variant of the cta-band background — replaces the scrolling
+   text marquee with the fwd-logo SVG sitting behind the headline. */
+.cta-band-logo .cta-band-bg {
+  background-image: url("/assets/fwd-logo.svg");
+  background-repeat: no-repeat;
+  background-position: center right clamp(-2rem, -4vw, -6rem);
+  background-size: auto 130%;
+  opacity: 0.06;
+  filter: brightness(0) invert(1);
+}
+/* Belt-and-suspenders: remove any inherited bottom margin from the cta-band
+   so it sits flush against the dark footer with no white gap. */
+.cta-band { margin-bottom: 0 !important; }
+body > footer.footer-dark,
+main + footer.footer-dark { margin-top: 0 !important; }
+
 .cta-band-inner {
   position: relative; z-index: 2;
   width: 100%; padding-inline: var(--pad-x);
@@ -1383,15 +1406,6 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 /* ============================================================
    HERO IDLE MOTION — runs once the timeline finishes
    ============================================================ */
-.polish-layer.is-live .pl-cta::before {
-  content: "";
-  position: absolute;
-  right: 14px; top: 50%; transform: translateY(-50%);
-  width: 1.5px; height: 14px;
-  background: var(--color-paper);
-  animation: mvBlink 1s steps(1) infinite;
-  z-index: 2;
-}
 .polish-layer.is-live .pl-hours .live-dot {
   display: inline-block;
   width: 6px; height: 6px; border-radius: 50%;
