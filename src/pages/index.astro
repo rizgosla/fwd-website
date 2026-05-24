@@ -1,78 +1,23 @@
 ---
+// Auto-generated from site/index.html — round 4 design.
+// Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Marquee from "../components/Marquee.astro";
-import SectionHead from "../components/SectionHead.astro";
-import ServiceCard from "../components/ServiceCard.astro";
-import ProcessStep from "../components/ProcessStep.astro";
-import CtaStrip from "../components/CtaStrip.astro";
-import Reel from "../components/Reel.astro";
-
-const heroMeta = [
-  ["Studio size",        "Three partners"],
-  ["Typical turnaround", "2–4 weeks"],
-  ["Pricing model",      "Flat fee, no retainers"],
-  ["Hosting & domain",   "Set up & included"],
-];
-
-const HERO_STAGES = [
-  { id: "blank",   label: "01 · Blank canvas",  pct: 0.00 },
-  { id: "grid",    label: "02 · Grid system",   pct: 0.20 },
-  { id: "wires",   label: "03 · Wireframe",     pct: 0.42 },
-  { id: "content", label: "04 · Content",       pct: 0.66 },
-  { id: "polish",  label: "05 · Live site",     pct: 0.88 },
-];
-
-const tiers = [
-  { variant: "light", deliverable: "~1–2 weeks",
-    title: "Landing Page", price: "800", priceNote: "flat · one round of revisions",
-    features: [
-      "One beautifully-designed page built around your brand",
-      "Booking / contact form with instant email notifications",
-      "Mobile and desktop optimized, basic on-page SEO",
-      "Hosting setup and domain connection included",
-    ],
-    ctaLabel: "Start with Landing" },
-  { variant: "dark", deliverable: "~2–4 weeks · up to 8 pages",
-    title: "Full Site", price: "1,800", priceNote: "flat · two rounds of revisions",
-    features: [
-      "Everything in Landing Page, scaled up to 8 pages",
-      "Home, Services, About, Contact + 4 of your choice",
-      "Cohesive type, color, and component system",
-      "Handoff doc so you (or anyone) can update content later",
-    ],
-    ctaLabel: "Start with Full Site" },
-];
-
-const steps = [
-  { glyph: "i.",   step: "Step 01", title: "A short call",  body: "15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.", meta: "No prep required" },
-  { glyph: "ii.",  step: "Step 02", title: "Design draft",  body: "A first version, built around your brand and content. You see real layouts in your browser, not Figma squiggles.", meta: "Delivered in week one" },
-  { glyph: "iii.", step: "Step 03", title: "Revisions",     body: "One or two rounds depending on tier. We adjust until it feels right, then lock it.", meta: "Async, on your time" },
-  { glyph: "iv.",  step: "Step 04", title: "Launch",        body: "We connect your domain, set up hosting, and hand over a clean handoff doc you can actually read.", meta: "Live the same day" },
-];
 ---
 
-<BaseLayout>
+<BaseLayout title="fwd. — Websites that earn their place online">
+<!-- ============ HERO with idle motion baked in ============ -->
   <section class="hero-outer" id="heroOuter">
     <div class="hero">
       <div class="hero-left">
         <div class="hero-eyebrow">
           <span class="bar"></span>
-          <span class="num">§ 00</span>
           <span>fwd. — small web studio</span>
         </div>
         <h1 class="display hero-title">Your website is your new <em>storefront</em>.</h1>
         <p class="lede hero-lede">Give it the <em>respect</em> it deserves.</p>
         <div class="hero-actions">
           <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
-          <a href="/contact"  class="btn btn-ghost">Start a project</a>
-        </div>
-        <div class="hero-meta">
-          {heroMeta.map(([k, v]) => (
-            <div class="meta-cell">
-              <span class="meta-key">{k}</span>
-              <strong class="meta-val">{v}</strong>
-            </div>
-          ))}
+          <a href="/contact" class="btn btn-ghost">Start a project</a>
         </div>
       </div>
 
@@ -80,16 +25,13 @@ const steps = [
         <div class="browser">
           <div class="browser-chrome">
             <div class="dots">
-              <span style="background:#FF6058"></span>
-              <span style="background:#FFBE2E"></span>
-              <span style="background:#28C940"></span>
+              <span style="background:#FF6058"></span><span style="background:#FFBE2E"></span><span style="background:#28C940"></span>
             </div>
             <div class="urlbar"><span class="lock">●</span><span class="url" id="heroUrl">localhost:4321</span></div>
             <div class="stage-pill" id="heroStagePill">01 · Blank canvas</div>
           </div>
           <div class="browser-body">
             <div class="grid-bg" id="gridBg"></div>
-
             <div class="wf-row" id="wfRow1"><div class="wf-h1"></div></div>
             <div class="wf-row narrow" id="wfRow2">
               <div class="wf-line" style="width:78%"></div>
@@ -104,23 +46,25 @@ const steps = [
                 <div class="wf-pill"></div>
               </div>
             </div>
-
             <div class="content-layer" id="contentLayer">
               <div class="ct-eyebrow">— Family dentistry · Irvine, CA</div>
               <div class="ct-h1">A calmer kind of <em>dental visit</em>.</div>
               <div class="ct-lede">Same-day appointments, gentle care, and a team that actually remembers your name.</div>
             </div>
-
             <div class="polish-layer" id="polishLayer">
               <div class="pl-image">
                 <div class="pl-image-grad"></div>
                 <div class="pl-image-tag">[ studio photo ]</div>
               </div>
-              <div class="pl-cta">Book a visit <span>→</span></div>
+              <div class="pl-cta" id="plCta">Book a visit <span aria-hidden="true">→</span></div>
               <div class="pl-hours">
-                <div><span>Mon–Thu</span><strong>8a — 6p</strong></div>
+                <div><span><span class="live-dot"></span>Mon–Thu</span><strong>8a — 6p</strong></div>
                 <div><span>Fri</span><strong>8a — 2p</strong></div>
                 <div><span>Sat–Sun</span><strong>Closed</strong></div>
+              </div>
+              <div class="pl-stat">
+                <strong id="plStatNum">0</strong>
+                <span>booked this month</span>
               </div>
             </div>
           </div>
@@ -128,9 +72,11 @@ const steps = [
             <span class="foot-label" id="heroFootLabel">building…</span>
             <div class="track">
               <div class="fill" id="heroFill"></div>
-              {HERO_STAGES.map((s) => (
-                <div class="tick" data-pct={s.pct} style={`left:${s.pct * 100}%`}></div>
-              ))}
+              <div class="tick" data-pct="0" style="left:0%"></div>
+              <div class="tick" data-pct="0.2" style="left:20%"></div>
+              <div class="tick" data-pct="0.42" style="left:42%"></div>
+              <div class="tick" data-pct="0.66" style="left:66%"></div>
+              <div class="tick" data-pct="0.88" style="left:88%"></div>
             </div>
             <span class="foot-label right" id="heroPct">0%</span>
           </div>
@@ -139,195 +85,255 @@ const steps = [
     </div>
   </section>
 
-  <Marquee />
+  <!-- ============ LOGO MARQUEE — three stacked layers ============ -->
+  <div class="logo-marquee" aria-hidden="true">
+    <div class="logo-marquee-layer layer-1">
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+    </div>
+    <div class="logo-marquee-layer layer-2">
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+    </div>
+    <div class="logo-marquee-layer layer-3">
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+      <span>fwd<span class="dot">.</span></span><span>fwd<span class="dot">.</span></span>
+    </div>
+  </div>
 
-  <section id="services" class="section section-services">
+  <!-- ============ HERO META STRIP ============ -->
+  <section class="meta-strip">
     <div class="full">
-      <SectionHead title="Two ways to <em>get online</em>." />
-      <div class="tiers-grid">
-        {tiers.map((t) => (<ServiceCard {...t} />))}
+      <div class="meta-strip-grid mv-stagger" data-mv-watch>
+        <div class="meta-cell">
+          <span class="meta-key">Studio size</span>
+          <strong class="meta-val">Three partners</strong>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Typical turnaround</span>
+          <strong class="meta-val">2 weeks — 1 month</strong>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Pricing model</span>
+          <strong class="meta-val">Flat fee, no retainers</strong>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Hosting &amp; domain</span>
+          <strong class="meta-val">Set up &amp; included</strong>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section-process">
+  <!-- ============ SERVICES preview ============ -->
+  <section id="services" class="section">
     <div class="full">
-      <SectionHead title="A simple, <em>honest</em> process." />
-      <ol class="grid grid-cols-1 list-none p-0 m-0 border-t border-line">
-        {steps.map((s) => (<ProcessStep {...s} />))}
-      </ol>
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">Two ways to <em>get online</em>.</h2>
+        <p class="section-sub">Both flat-rate. Both shipped fast. You pick the scope; we handle every part of getting it live.</p>
+      </div>
+      <div class="tiers-grid mv-stagger" data-mv-watch>
+        <article class="tier tier-light" data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+          <div class="tier-top"><span class="tier-deliv">~1–2 weeks</span></div>
+          <h3 class="tier-title">Landing Page</h3>
+          <div class="tier-price">
+            <span class="dollar">$</span>
+            <span class="amount">800</span>
+            <span class="note">flat · one round of revisions</span>
+          </div>
+          <ul class="tier-features">
+            <li><span class="check">✓</span>One beautifully-designed page built around your brand</li>
+            <li><span class="check">✓</span>Booking / contact form with instant email notifications</li>
+            <li><span class="check">✓</span>Mobile and desktop optimized, basic on-page SEO</li>
+            <li><span class="check">✓</span>Hosting setup and domain connection included</li>
+          </ul>
+          <a href="/services" class="tier-cta">Start with Landing <span class="arrow">→</span></a>
+        </article>
+
+        <article class="tier tier-dark" data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+          <div class="tier-top"><span class="tier-deliv">~2–4 weeks · up to 8 pages</span></div>
+          <h3 class="tier-title">Full Site</h3>
+          <div class="tier-price">
+            <span class="dollar">$</span>
+            <span class="amount">1,800</span>
+            <span class="note">flat · two rounds of revisions</span>
+          </div>
+          <ul class="tier-features">
+            <li><span class="check">✓</span>Everything in Landing Page, scaled up to 8 pages</li>
+            <li><span class="check">✓</span>Home, Services, About, Contact + 4 of your choice</li>
+            <li><span class="check">✓</span>Cohesive type, color, and component system</li>
+            <li><span class="check">✓</span>Handoff doc so you (or anyone) can update content later</li>
+          </ul>
+          <a href="/services" class="tier-cta">Start with Full Site <span class="arrow">→</span></a>
+        </article>
+      </div>
     </div>
   </section>
 
-  <Reel />
+  <!-- ============ PROCESS — each step has a graphic now ============ -->
+  <section class="section section-process">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">A simple, <em>honest</em> process.</h2>
+        <p class="section-sub">Four steps. Two weeks to one month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
+      </div>
+    </div>
 
-  <div class="full mt-24" id="contact">
-    <CtaStrip
-      title="Got a practice, a product, or a <em>side project</em>?"
-      body="Tell us about it. We reply to every inquiry — usually within a day."
-    />
-  </div>
+    <ol class="process-list">
+      <!-- Step 01 — short call with animated calendar -->
+      <li class="process-step mv-rise" data-mv-watch>
+        <div class="full process-step-inner">
+          <span class="ps-step">
+            <span class="ps-glyph">i.</span>
+            Step 01
+          </span>
+          <div>
+            <h3 class="ps-title">A short call</h3>
+            <p class="ps-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.<span class="ps-meta">— No prep required</span></p>
+          </div>
+          <div class="ps-visual">
+            <div class="ps-visual-frame">
+              <div class="ps-visual-call">
+                <div class="ps-visual-call-h"><span class="month">May 2026</span><span>15 min</span></div>
+                <div class="ps-visual-call-grid">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="slot"></span><span class="picked"></span><span></span><span></span><span></span><span></span><span></span><span class="slot"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- Step 02 — design draft (dark, same size as the others) -->
+      <li class="process-step process-step-dark mv-rise" data-mv-watch>
+        <div class="full process-step-inner">
+          <span class="ps-step">
+            <span class="ps-glyph">ii.</span>
+            Step 02
+          </span>
+          <div>
+            <h3 class="ps-title">Design draft <em>in your browser</em>.</h3>
+            <p class="ps-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.<span class="ps-meta">— Delivered in week one</span></p>
+          </div>
+          <div class="ps-visual">
+            <div class="ps-visual-frame">
+              <div class="mini-browser ps-mini">
+                <div class="mini-chrome">
+                  <div class="mini-dots"><span></span><span></span><span></span></div>
+                  <div class="mini-url">draft.smithdental.com</div>
+                </div>
+                <div class="mini-body">
+                  <div class="mini-h1"></div>
+                  <div class="mini-line w-80"></div>
+                  <div class="mini-line w-65"></div>
+                  <div class="mini-line w-50"></div>
+                  <div class="mini-pill mv-sweep"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- Step 03 — revisions with redline markup -->
+      <li class="process-step mv-rise" data-mv-watch>
+        <div class="full process-step-inner">
+          <span class="ps-step">
+            <span class="ps-glyph">iii.</span>
+            Step 03
+          </span>
+          <div>
+            <h3 class="ps-title">Revisions</h3>
+            <p class="ps-body">One or two rounds depending on tier. We adjust until it feels right, then lock it.<span class="ps-meta">— Async, on your time</span></p>
+          </div>
+          <div class="ps-visual">
+            <div class="ps-visual-frame">
+              <div class="ps-visual-revisions">
+                <div class="ps-revision-line" style="width:90%"></div>
+                <div class="ps-revision-line with-comment" style="width:75%"></div>
+                <div class="ps-revision-line struck"></div>
+                <div class="ps-revision-line" style="width:85%"></div>
+                <div class="ps-revision-line with-comment" style="width:55%"></div>
+                <div class="ps-revision-line" style="width:70%"></div>
+                <div class="ps-revision-arrow">↵</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- Step 04 — launch / live (dark) -->
+      <li class="process-step process-step-dark mv-rise" data-mv-watch>
+        <div class="full process-step-inner">
+          <span class="ps-step">
+            <span class="ps-glyph">iv.</span>
+            Step 04
+          </span>
+          <div>
+            <h3 class="ps-title">Launch</h3>
+            <p class="ps-body">We connect your domain, set up hosting, and hand over a clean handoff doc you can actually read.<span class="ps-meta">— Live the same day</span></p>
+          </div>
+          <div class="ps-visual">
+            <div class="ps-visual-frame">
+              <div class="ps-visual-launch">
+                <div class="ps-launch-url"><span class="lock"></span>https://smithdental.com</div>
+                <div class="ps-launch-bars">
+                  <div class="ps-launch-bar"></div>
+                  <div class="ps-launch-bar"></div>
+                  <div class="ps-launch-bar"></div>
+                </div>
+                <div class="ps-launch-status">DNS · cert · live</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  
+  <section class="cta-band mv-soften" data-mv-watch>
+    <div class="cta-band-bg" aria-hidden="true">
+      <div class="cta-band-bg-track">
+        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
+        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
+      </div>
+    </div>
+    <div class="cta-band-inner">
+      <h3 class="display">Got a practice, a product, or a <em>side project</em>?</h3>
+      <div>
+        <p>Tell us about it. We reply to every inquiry — usually within a day.</p>
+        <a href="/contact" class="btn btn-primary">Start a project <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
-<script is:inline>
-  (() => {
-    const outer = document.getElementById('heroOuter');
-    if (!outer) return;
-    const STAGES = [
-      { id: "blank",   label: "01 · Blank canvas",  pct: 0.00, url: "localhost:4321" },
-      { id: "grid",    label: "02 · Grid system",   pct: 0.20, url: "localhost:4321" },
-      { id: "wires",   label: "03 · Wireframe",     pct: 0.42, url: "localhost:4321" },
-      { id: "content", label: "04 · Content",       pct: 0.66, url: "localhost:4321" },
-      { id: "polish",  label: "05 · Live site",     pct: 0.88, url: "smithdental.com" },
-    ];
-    const gridBg = document.getElementById('gridBg');
-    const wf1 = document.getElementById('wfRow1');
-    const wf2 = document.getElementById('wfRow2');
-    const wfG = document.getElementById('wfGrid');
-    const cl  = document.getElementById('contentLayer');
-    const pl  = document.getElementById('polishLayer');
-    const url = document.getElementById('heroUrl');
-    const pill = document.getElementById('heroStagePill');
-    const fill = document.getElementById('heroFill');
-    const pctEl = document.getElementById('heroPct');
-    const footLabel = document.getElementById('heroFootLabel');
-    const ticks = outer.querySelectorAll('.tick');
-
-    const reach = (id, idx) => idx >= STAGES.findIndex((s) => s.id === id);
-
-    const apply = (progress) => {
-      let idx = 0;
-      for (let i = 0; i < STAGES.length; i++) if (progress >= STAGES[i].pct) idx = i;
-      const stage = STAGES[idx];
-
-      gridBg.style.opacity = reach("grid", idx) ? (reach("polish", idx) ? 0 : 0.5) : 0;
-
-      const wfOn = reach("wires", idx);
-      [wf1, wf2, wfG].forEach((el, i) => {
-        el.style.opacity = wfOn ? 1 : 0;
-        el.style.transform = wfOn ? 'translateY(0)' : 'translateY(8px)';
-        el.style.transitionDelay = (i * 60) + 'ms';
-      });
-
-      cl.style.opacity = reach("content", idx) ? 1 : 0;
-      pl.style.opacity = reach("polish", idx) ? 1 : 0;
-
-      url.textContent = stage.url;
-      pill.textContent = stage.label;
-      fill.style.width = (progress * 100) + '%';
-      pctEl.textContent = Math.round(progress * 100) + '%';
-      ticks.forEach((t) => {
-        const p = parseFloat(t.dataset.pct);
-        t.style.background = progress >= p - 0.001 ? 'var(--color-periwinkle)' : 'rgba(7,23,34,0.18)';
-      });
-    };
-
-    apply(0);
-
-    // === Auto-play timeline ============================================
-    // Builds the site over ~5 seconds on page load. No scroll lock.
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      apply(1);
-      if (footLabel) footLabel.textContent = "live site";
-      return;
-    }
-
-    const DURATION = 5000; // ms
-    let raf;
-    let startedAt = null;
-
-    const tick = (ts) => {
-      if (startedAt === null) startedAt = ts;
-      const elapsed = ts - startedAt;
-      const t = Math.min(elapsed / DURATION, 1);
-      // ease-out so it lands gracefully on "live site"
-      const eased = 1 - Math.pow(1 - t, 2.2);
-      apply(eased);
-      if (footLabel) footLabel.textContent = t < 1 ? "building…" : "live site";
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-
-    // Kick off shortly after paint so the user catches the transition
-    const start = () => { startedAt = null; raf = requestAnimationFrame(tick); };
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { io.disconnect(); start(); }
-        });
-      }, { threshold: 0.2 });
-      io.observe(outer);
-    } else {
-      setTimeout(start, 300);
-    }
-  })();
-</script>
-
 <style>
-  /* ===== HERO — auto-play (no scroll lock) ===== */
-  .hero-outer {
-    position: relative;
-    min-height: calc(100vh - 100px);
-    display: flex;
-    align-items: center;
-    padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem);
-  }
-  .hero {
-    display: grid;
-    grid-template-columns: 1fr 1.15fr;
-    width: 100%;
-    align-items: center;
-    gap: clamp(2rem, 4vw, 4rem);
-  }
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-    padding-left: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
-    padding-right: 0;
-    justify-content: center;
-  }
-
+.hero-outer { position: relative; min-height: calc(100vh - 100px); display: flex; align-items: center; padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem); }
+  .hero { display: grid; grid-template-columns: 1fr 1.15fr; width: 100%; align-items: center; gap: clamp(2rem, 4vw, 4rem); }
+  .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding-left: var(--pad-x); justify-content: center; }
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .hero-eyebrow .bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
-  .hero-eyebrow .num { font-family: var(--font-mono); color: var(--color-blue); }
-
   .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 14ch; }
-  .hero-lede {
-    margin: 0;
-    font-size: var(--text-step-3);
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--color-fg-soft);
-    font-variation-settings: "opsz" 96, "SOFT" 80;
-    letter-spacing: -0.015em;
-    line-height: 1.15;
-  }
-  .hero-lede em {
-    font-style: italic;
-    color: var(--color-blue);
-    font-variation-settings: "opsz" 96, "SOFT" 100;
-  }
+  .hero-lede { margin: 0; font-size: var(--text-step-3); font-family: var(--font-display); font-weight: 300; font-style: italic; color: var(--color-fg-soft); font-variation-settings: "opsz" 96; letter-spacing: -0.015em; line-height: 1.15; }
+  .hero-lede em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  .hero-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.25rem 2rem; border-top: 1px solid var(--color-line); padding-top: 1.25rem; margin-top: 0.5rem; }
-  .meta-cell { display: flex; flex-direction: column; gap: 0.3rem; }
-  .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
-  .meta-val { font-family: var(--font-display); font-weight: 500; font-size: var(--text-step-0); font-variation-settings: "opsz" 60, "SOFT" 30; color: var(--color-fg); }
-
-  .hero-right {
-    position: relative;
-    background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%);
-    border-left: 1px solid var(--color-line);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem);
-    overflow: hidden;
-    align-self: stretch;
-    min-height: clamp(560px, 70vh, 760px);
-  }
+  .hero-right { position: relative; background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%); border-left: 1px solid var(--color-line); display: flex; align-items: center; justify-content: center; padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem); overflow: hidden; align-self: stretch; min-height: clamp(560px, 70vh, 760px); }
   .hero-right::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 38px 38px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); pointer-events: none; }
 
   .browser { width: min(820px, 100%); background: #fff; border-radius: 14px; border: 1px solid var(--color-line); box-shadow: 0 60px 120px -40px rgb(7 23 34 / 0.40), 0 16px 36px -14px rgb(7 23 34 / 0.20); overflow: hidden; position: relative; z-index: 1; }
@@ -339,7 +345,6 @@ const steps = [
   .stage-pill { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue); background: #fff; border: 1px solid var(--color-line); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
   .browser-body { position: relative; height: clamp(440px, 56vh, 560px); background: #fff; overflow: hidden; }
   .browser-body > * { transition: opacity 600ms cubic-bezier(0.2,0.7,0.2,1), transform 600ms cubic-bezier(0.2,0.7,0.2,1); }
-
   .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.12) 1px, transparent 1px); background-size: 28px 28px; opacity: 0; }
   .wf-row, .wf-grid { position: relative; padding: 32px 40px; opacity: 0; }
   .wf-row { padding-bottom: 0; }
@@ -350,23 +355,22 @@ const steps = [
   .wf-block.tall { height: 220px; background: repeating-linear-gradient(135deg, rgba(13,47,69,0.12) 0 8px, transparent 8px 16px); border: 1px dashed rgba(13,47,69,0.25); border-radius: 7px; }
   .wf-stack { display: flex; flex-direction: column; gap: 11px; }
   .wf-pill { width: 130px; height: 34px; border-radius: 999px; background: var(--color-periwinkle); margin-top: 8px; }
-
   .content-layer { position: absolute; inset: 0; padding: 44px 44px 28px; display: flex; flex-direction: column; gap: 14px; background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; }
   .ct-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--color-fg-muted); }
-  .ct-h1 { font-family: var(--font-display); font-size: clamp(2rem, 2.8vw, 2.9rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144, "SOFT" 30; margin-top: 4px; }
-  .ct-h1 em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144, "SOFT" 100; }
+  .ct-h1 { font-family: var(--font-display); font-size: clamp(2rem, 2.8vw, 2.9rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144; margin-top: 4px; }
+  .ct-h1 em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144; }
   .ct-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); max-width: 38ch; line-height: 1.35; }
-
   .polish-layer { position: absolute; inset: 0; padding: 34px 40px 24px; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr auto; gap: 18px; background: #fff; opacity: 0; }
   .pl-image { grid-row: 1 / span 2; position: relative; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, #e8eef3 0%, #c4d2dc 60%, var(--color-periwinkle) 120%); }
   .pl-image-grad { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 50%), repeating-linear-gradient(45deg, rgba(13,47,69,0.05) 0 4px, transparent 4px 12px); }
   .pl-image-tag { position: absolute; bottom: 12px; left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--color-fg-muted); background: rgba(255,255,255,0.85); padding: 4px 9px; border-radius: 4px; letter-spacing: 0.04em; }
-  .pl-cta { align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; }
+  .pl-cta { position: relative; align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 11px 38px 11px 20px; border-radius: 999px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; overflow: hidden; isolation: isolate; }
+  .pl-cta.live::after { content: ""; position: absolute; inset: 0; width: 60%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent); animation: mvSweep 3.2s var(--ease-soft) infinite; z-index: 0; pointer-events: none; }
+  .pl-cta > span { position: relative; z-index: 1; }
   .pl-hours { display: flex; flex-direction: column; gap: 7px; font-size: 13px; align-self: end; }
   .pl-hours > div { display: flex; justify-content: space-between; padding: 7px 11px; border-bottom: 1px solid var(--color-line); }
-  .pl-hours strong { font-family: var(--font-display); font-weight: 500; font-variation-settings: "opsz" 60, "SOFT" 30; }
-  .pl-hours span { color: var(--color-fg-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
-
+  .pl-hours strong { font-family: var(--font-display); font-weight: 500; font-variation-settings: "opsz" 60; }
+  .pl-hours span { color: var(--color-fg-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; }
   .browser-foot { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #fafafb; border-top: 1px solid var(--color-line); }
   .foot-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .foot-label.right { margin-left: auto; }
@@ -374,17 +378,172 @@ const steps = [
   .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; transition: width 120ms linear; width: 0; }
   .tick { position: absolute; top: -2px; width: 6px; height: 6px; border-radius: 50%; transform: translateX(-3px); transition: background 280ms cubic-bezier(0.2,0.7,0.2,1); background: rgba(7,23,34,0.18); }
 
-  .full { width: 100%; padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
-  .section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
-  .section-services { padding-top: clamp(3rem, 6vh, 5rem); }
+  .marquee { border-block: 1px solid var(--color-line); background: var(--color-paper); overflow: hidden; padding: 22px 0; }
+  .marquee-track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-row { display: flex; gap: 44px; padding-inline: 22px; white-space: nowrap; }
+  .marquee-item { font-family: var(--font-display); font-style: italic; font-weight: 350; font-size: var(--text-step-3); letter-spacing: -0.02em; color: var(--color-fg); font-variation-settings: "opsz" 144; display: inline-flex; align-items: center; gap: 22px; }
+  .marquee-dot { color: var(--color-periwinkle); font-style: normal; font-size: 0.5em; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  .meta-strip { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 4vh, 3.5rem); }
+  .meta-strip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem 2.5rem; }
+  .meta-cell { display: flex; flex-direction: column; gap: 0.35rem; }
+  .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .meta-val { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-1); font-variation-settings: "opsz" 60; color: var(--color-fg); letter-spacing: -0.01em; }
+
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 3rem; }
+  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
+  .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+
   .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
   @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+  .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2rem, 3.5vw, 3rem); display: flex; flex-direction: column; gap: 1.5rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 560px; }
+  .tier-dark { --bg: var(--color-navy); --fg: #fff; --fg-soft: rgba(255,255,255,0.82); --fg-muted: rgba(255,255,255,0.55); --line: rgba(255,255,255,0.14); --accent: var(--color-periwinkle); --sheen: rgb(255 255 255 / 0.14); }
+  .tier:hover { transform: translateY(-2px); box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25); }
+  .tier-sheen { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; opacity: 0; transition: opacity 360ms var(--ease-soft); background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--sheen), transparent 60%); }
+  .tier:hover .tier-sheen { opacity: 1; }
+  .tier > :not(.tier-sheen) { position: relative; z-index: 1; }
+  .tier-top { display: flex; align-items: center; justify-content: flex-end; }
+  .tier-deliv { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+  .tier-title { font-family: var(--font-display); font-weight: 350; font-size: clamp(2.4rem, 3.6vw, 3.6rem); line-height: 0.98; letter-spacing: -0.025em; color: var(--fg); margin: 0; font-variation-settings: "opsz" 144; }
+  .tier-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem; padding-block: 1.2rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .tier-price .dollar { font-family: var(--font-display); font-size: 1.8rem; color: var(--fg-muted); }
+  .tier-price .amount { font-family: var(--font-display); font-weight: 400; font-size: clamp(3rem, 5vw, 4.4rem); letter-spacing: -0.03em; color: var(--fg); line-height: 1; font-variation-settings: "opsz" 144; }
+  .tier-price .note { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--fg-muted); letter-spacing: 0.04em; margin-left: auto; }
+  .tier-features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.85rem; flex: 1; }
+  .tier-features li { display: flex; gap: 0.75rem; color: var(--fg-soft); font-size: var(--text-step-0); line-height: 1.45; }
+  .tier-features .check { color: var(--accent); font-weight: 600; flex-shrink: 0; }
+  .tier-cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; align-self: stretch; padding: 1rem 1.5rem; border-radius: 999px; font-family: var(--font-sans); font-size: var(--text-step--1); font-weight: 500; letter-spacing: 0.01em; border: 1px solid var(--fg); background: transparent; color: var(--fg); transition: background 280ms var(--ease-soft), color 280ms var(--ease-soft); }
+  .tier-cta:hover { background: var(--fg); color: var(--bg); }
+  .tier-cta .arrow { transition: transform 320ms var(--ease-soft); }
+  .tier-cta:hover .arrow { transform: translateX(4px); }
+
+  .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
+  .process-step { border-bottom: 1px solid var(--color-line); transition: background 450ms var(--ease-soft); }
+  .process-step:not(.process-step-featured):hover { background: rgb(20 70 103 / 0.025); }
+  .process-step-inner { display: grid; gap: 1.5rem; padding-block: 2rem; align-items: start; }
+  .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: flex; flex-direction: column; gap: 0.25rem; }
+  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-2); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; }
+  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); letter-spacing: -0.015em; line-height: 1.15; font-variation-settings: "opsz" 60; color: var(--color-fg); }
+  .ps-body { margin: 0.5rem 0 0; max-width: 55ch; color: var(--color-fg-soft); font-size: var(--text-step-0); }
+  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1rem; }
+
+  .process-step-featured { background: var(--color-ink); color: var(--color-paper); border-block: 0; }
+  .process-step-featured-inner { display: grid; grid-template-columns: 1fr !important; gap: 2.5rem; padding-block: clamp(3rem, 6vh, 5rem) !important; align-items: center; }
+  @media (min-width: 900px) {
+    .process-step-featured-inner { grid-template-columns: 1.1fr 1fr !important; gap: clamp(2rem, 5vw, 5rem) !important; }
+  }
+  .process-step-featured-text { display: flex; flex-direction: column; gap: 1.5rem; }
+  .ps-step-on-dark { color: var(--color-periwinkle); }
+  .ps-title-on-dark { color: var(--color-paper); font-size: var(--text-step-4); font-weight: 350; max-width: 14ch; font-variation-settings: "opsz" 144; line-height: 1; }
+  .ps-title-on-dark em { font-style: italic; color: var(--color-periwinkle); font-variation-settings: "opsz" 144; }
+  .ps-body-on-dark { color: rgba(255,255,255,0.78); max-width: 42ch; }
+  .ps-meta-on-dark { color: rgba(255,255,255,0.4); }
+  .mini-browser { background: var(--color-paper); border-radius: 12px; overflow: hidden; box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.55), 0 12px 28px -10px rgb(0 0 0 / 0.35); border: 1px solid rgba(255,255,255,0.08); }
+  .mini-chrome { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f4f5f7; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .mini-dots { display: flex; gap: 5px; }
+  .mini-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(0,0,0,0.12); }
+  .mini-dots span:nth-child(1) { background: #FF6058; }
+  .mini-dots span:nth-child(2) { background: #FFBE2E; }
+  .mini-dots span:nth-child(3) { background: #28C940; }
+  .mini-url { font-family: var(--font-mono); font-size: 11px; color: #888; flex: 1; background: var(--color-paper); padding: 4px 12px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.06); }
+  .mini-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 10px; }
+  .mini-h1 { height: 32px; width: 70%; background: rgba(13,47,69,0.18); border-radius: 5px; margin-bottom: 8px; }
+  .mini-line { height: 8px; background: rgba(13,47,69,0.12); border-radius: 3px; }
+  .mini-line.w-80 { width: 80%; } .mini-line.w-65 { width: 65%; } .mini-line.w-50 { width: 50%; }
+  .mini-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+  .mini-card { height: 70px; background: rgba(13,47,69,0.06); border: 1px dashed rgba(13,47,69,0.18); border-radius: 6px; }
+  .mini-pill { width: 130px; height: 32px; background: var(--color-periwinkle); border-radius: 999px; margin-top: 8px; position: relative; }
 
   @media (max-width: 1000px) {
     .hero-outer { min-height: 0; padding-block: 2rem 3rem; }
     .hero { grid-template-columns: 1fr; gap: 2.5rem; }
-    .hero-left { padding-right: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem)); }
+    .hero-left { padding-right: var(--pad-x); }
     .hero-right { border-left: 0; border-top: 1px solid var(--color-line); min-height: 480px; padding-top: 3rem; padding-bottom: 4rem; }
     .hero-title { font-size: clamp(2.6rem, 9vw, 4.5rem); }
   }
 </style>
+
+<script is:inline>
+(() => {
+    const outer = document.getElementById('heroOuter');
+    if (!outer) return;
+    const STAGES = [
+      { id: "blank", label: "01 · Blank canvas", pct: 0, url: "localhost:4321" },
+      { id: "grid", label: "02 · Grid system", pct: 0.2, url: "localhost:4321" },
+      { id: "wires", label: "03 · Wireframe", pct: 0.42, url: "localhost:4321" },
+      { id: "content", label: "04 · Content", pct: 0.66, url: "localhost:4321" },
+      { id: "polish", label: "05 · Live site", pct: 0.88, url: "smithdental.com" },
+    ];
+    const $ = (id) => document.getElementById(id);
+    const gridBg = $('gridBg'), wf1 = $('wfRow1'), wf2 = $('wfRow2'), wfG = $('wfGrid');
+    const cl = $('contentLayer'), pl = $('polishLayer'), url = $('heroUrl'), pill = $('heroStagePill');
+    const fill = $('heroFill'), pctEl = $('heroPct'), footLabel = $('heroFootLabel'), plCta = $('plCta');
+    const plStatNum = $('plStatNum');
+    const ticks = outer.querySelectorAll('.tick');
+    const reach = (id, idx) => idx >= STAGES.findIndex((s) => s.id === id);
+    const apply = (progress) => {
+      let idx = 0;
+      for (let i = 0; i < STAGES.length; i++) if (progress >= STAGES[i].pct) idx = i;
+      const stage = STAGES[idx];
+      gridBg.style.opacity = reach('grid', idx) ? (reach('polish', idx) ? 0 : 0.5) : 0;
+      const wfOn = reach('wires', idx);
+      [wf1, wf2, wfG].forEach((el, i) => {
+        el.style.opacity = wfOn ? 1 : 0;
+        el.style.transform = wfOn ? 'translateY(0)' : 'translateY(8px)';
+        el.style.transitionDelay = (i * 60) + 'ms';
+      });
+      cl.style.opacity = reach('content', idx) ? 1 : 0;
+      pl.style.opacity = reach('polish', idx) ? 1 : 0;
+      url.textContent = stage.url;
+      pill.textContent = stage.label;
+      fill.style.width = (progress * 100) + '%';
+      pctEl.textContent = Math.round(progress * 100) + '%';
+      ticks.forEach((t) => {
+        const p = parseFloat(t.dataset.pct);
+        t.style.background = progress >= p - 0.001 ? 'var(--color-periwinkle)' : 'rgba(7,23,34,0.18)';
+      });
+    };
+    apply(0);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const enterIdle = () => {
+      if (plCta) plCta.classList.add('live');
+      if (pl) pl.classList.add('is-live');
+      if (footLabel) footLabel.textContent = 'live site';
+      // Animated stat ticker — counts 0 → 23 over 1.5s
+      if (plStatNum) {
+        const target = 23;
+        const dur = 1500;
+        const start = performance.now();
+        const step = (ts) => {
+          const t = Math.min((ts - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          plStatNum.textContent = Math.round(eased * target);
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    };
+    if (reduce) { apply(1); enterIdle(); return; }
+    const DURATION = 7000;
+    let startedAt = null;
+    const tick = (ts) => {
+      if (startedAt === null) startedAt = ts;
+      const t = Math.min((ts - startedAt) / DURATION, 1);
+      const eased = 1 - Math.pow(1 - t, 2.2);
+      apply(eased);
+      if (footLabel) footLabel.textContent = t < 1 ? 'building…' : 'live site';
+      if (t < 1) requestAnimationFrame(tick);
+      else enterIdle();
+    };
+    const start = () => requestAnimationFrame(tick);
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { io.disconnect(); start(); } });
+      }, { threshold: 0.2 });
+      io.observe(outer);
+    } else setTimeout(start, 300);
+  })();
+</script>

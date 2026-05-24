@@ -1,97 +1,273 @@
 ---
+// Auto-generated from site/work.html — round 4 design.
+// Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import WorkItem from "../components/WorkItem.astro";
-
-const works = [
-  {
-    title: "Hillside Dental",
-    meta: "Landing — 2026",
-    thumb: `
-      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="wg1" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#144667"/>
-            <stop offset="100%" stop-color="#071722"/>
-          </linearGradient>
-        </defs>
-        <rect width="400" height="280" fill="url(#wg1)"/>
-        <rect x="40" y="50" width="160" height="14" rx="3" fill="#8E94B8" opacity="0.9"/>
-        <rect x="40" y="74" width="220" height="8"  rx="2" fill="#8E94B8" opacity="0.4"/>
-        <rect x="40" y="86" width="180" height="8"  rx="2" fill="#8E94B8" opacity="0.4"/>
-        <rect x="40" y="120" width="80" height="28" rx="14" fill="#8E94B8"/>
-        <rect x="240" y="50" width="120" height="180" rx="8" fill="#8E94B8" opacity="0.18"/>
-      </svg>`,
-  },
-  {
-    title: "Aster & Oak Studio",
-    meta: "Full site — 2026",
-    thumb: `
-      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="wg2" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#0D2F45"/>
-            <stop offset="100%" stop-color="#071722"/>
-          </linearGradient>
-        </defs>
-        <rect width="400" height="280" fill="url(#wg2)"/>
-        <circle cx="200" cy="120" r="62" fill="#8E94B8" opacity="0.18"/>
-        <circle cx="200" cy="120" r="32" fill="#8E94B8" opacity="0.5"/>
-        <rect x="60" y="210" width="280" height="10" rx="2" fill="#8E94B8" opacity="0.5"/>
-        <rect x="100" y="226" width="200" height="6" rx="2" fill="#8E94B8" opacity="0.3"/>
-      </svg>`,
-  },
-  {
-    title: "Birch & Wren",
-    meta: "Landing — 2026",
-    thumb: `
-      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="wg3" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#144667"/>
-            <stop offset="100%" stop-color="#0D2F45"/>
-          </linearGradient>
-        </defs>
-        <rect width="400" height="280" fill="url(#wg3)"/>
-        <rect x="40" y="40" width="320" height="200" rx="6" fill="none" stroke="#8E94B8" stroke-opacity="0.4" stroke-width="1.2"/>
-        <text x="200" y="155" text-anchor="middle" font-family="serif" font-style="italic" font-size="58" fill="#8E94B8" opacity="0.55">b&amp;w</text>
-      </svg>`,
-  },
-  {
-    title: "Tide PT & Recovery",
-    meta: "Full site — 2026",
-    thumb: `
-      <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="wg4" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#0D2F45"/>
-            <stop offset="100%" stop-color="#144667"/>
-          </linearGradient>
-        </defs>
-        <rect width="400" height="280" fill="url(#wg4)"/>
-        <g stroke="#8E94B8" stroke-opacity="0.5" stroke-width="1" fill="none">
-          <path d="M0 200 Q 100 140 200 180 T 400 160" />
-          <path d="M0 220 Q 100 160 200 200 T 400 180" />
-          <path d="M0 240 Q 100 180 200 220 T 400 200" />
-        </g>
-        <circle cx="320" cy="80" r="28" fill="#8E94B8" opacity="0.7"/>
-      </svg>`,
-  },
-];
 ---
 
-<BaseLayout title="Selected work — fwd." description="A few of the sites we've shipped.">
-  <PageHero
-    eyebrow="Selected work"
-    title="A few of the sites we've <em>shipped</em>."
-    lede="A small, growing portfolio. Click into any project to see goals, decisions, and the live site."
-  />
+<BaseLayout title="Selected work — fwd.">
+<section class="page-hero">
+    <div class="full">
+      <div class="page-hero-grid">
+        <div data-mv-watch class="mv-rise">
+          <p class="eyebrow"><span>Selected work</span></p>
+          <h1 class="display">A small studio with <em>real numbers</em>.</h1>
+          <p class="lede">One launched case study below — laid out as an example of what every case study on this page will look like. Three more projects are in production now.</p>
+        </div>
+        <div class="page-hero-art" aria-hidden="true">
+          <span class="ph-mark">fwd<span class="dot">.</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section class="pb-24">
-    <div class="container-page">
-      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 md:gap-8 reveal">
-        {works.map((w) => (<WorkItem {...w} />))}
+  <article class="case-deep">
+    <!-- DARK HERO -->
+    <header class="case-deep-hero">
+      <div class="case-deep-hero-inner">
+        <div data-mv-watch class="mv-rise">
+          <p class="cd-eyebrow">
+            <span>Case study · 01</span>
+            <span class="badge">Example layout</span>
+          </p>
+          <h1>Smith Family <em>Dental</em>.</h1>
+          <p class="cd-deck">A 30-year-old practice in Irvine that had not updated their site since 2014. We rebuilt it as a Landing in <em>9 days</em> — one page, calm visual language, real photography, and a booking flow that filed straight into their existing scheduler.</p>
+        </div>
+        <dl class="cd-aside mv-stagger" data-mv-watch>
+          <div><dt>Engagement</dt><dd>Landing · $800</dd></div>
+          <div><dt>Turnaround</dt><dd>9 business days</dd></div>
+          <div><dt>Industry</dt><dd>Healthcare · Dental</dd></div>
+          <div><dt>Location</dt><dd>Irvine, CA</dd></div>
+          <div><dt>Built with</dt><dd>Astro · Cloudflare</dd></div>
+          <div><dt>Launched</dt><dd>March 2026</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <!-- BIG SCREENSHOT FRAME -->
+    <section class="case-deep-shot mv-soften" data-mv-watch>
+      <div class="case-deep-shot-frame">
+        <div class="chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url"><span class="lock">●</span>smithdental.com</div>
+        </div>
+        <div class="cds-screen">
+          <div class="cds-hero">
+            <div>
+              <div class="eyebrow-small">— Family dentistry · Irvine, CA</div>
+              <h2>A calmer kind of <em>dental visit</em>.</h2>
+              <p>Same-day appointments, gentle care, and a team that actually remembers your name.</p>
+              <span class="cds-cta">Book a visit →</span>
+            </div>
+            <div class="cds-hero-photo" aria-hidden="true"></div>
+          </div>
+          <div class="cds-body">
+            <div class="cds-card">
+              <div class="cds-card-img"></div>
+              <div class="cds-card-h">Meet the team</div>
+              <div class="cds-card-l" style="width:80%"></div>
+              <div class="cds-card-l" style="width:60%"></div>
+            </div>
+            <div class="cds-card">
+              <div class="cds-card-img"></div>
+              <div class="cds-card-h">Hours &amp; location</div>
+              <div class="cds-card-l" style="width:70%"></div>
+              <div class="cds-card-l" style="width:55%"></div>
+            </div>
+            <div class="cds-card">
+              <div class="cds-card-img"></div>
+              <div class="cds-card-h">Services we offer</div>
+              <div class="cds-card-l" style="width:85%"></div>
+              <div class="cds-card-l" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="cds-foot">
+            <div class="cds-foot-mark">smith family dental.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRIEF / APPROACH -->
+    <section class="case-twocol">
+      <div class="case-twocol-inner">
+        <div class="col mv-stagger" data-mv-watch>
+          <h3>The brief</h3>
+          <h4>An old site that <em>buried</em> the booking flow.</h4>
+          <p>Smith Family Dental had been running the same site since 2014 — Flash-era hero, four-column 90s footer, a contact form three clicks deep. They were getting walk-ins because of word of mouth, but almost no inbound bookings from the site itself.</p>
+          <p>What they actually needed was one page, fast on a phone, with a single clear path to "book a visit" — and a tone that matched how it feels to actually be in their practice (calm, family-run, no upsells).</p>
+        </div>
+
+        <div class="col mv-stagger" data-mv-watch>
+          <h3>The approach</h3>
+          <h4>A single page, three real decisions.</h4>
+          <ul>
+            <li>Strip the structure to one page so every booking is a single tap from any device.</li>
+            <li>Replace the stock photography with three portrait shots of the real team — the practice's strongest differentiator.</li>
+            <li>Move the booking widget into the hero so it never falls below the fold, then have it post directly into their existing scheduler so they did not have to change any internal workflow.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="case-results">
+      <div class="full">
+        <div class="section-head mv-rise" data-mv-watch>
+          <h2 class="display section-title">First 30 days, in <em>real numbers</em>.</h2>
+          <p class="section-sub">Tracked against the same 30-day window from the year before. No paid promotion was added on either side.</p>
+        </div>
+
+        <div class="case-results-grid mv-stagger" data-mv-watch>
+          <div class="result-card">
+            <span class="label">Booking inquiries</span>
+            <div class="num">3.2<span class="suffix">×</span></div>
+            <span class="sub">vs. the same 30-day window in 2025.</span>
+          </div>
+          <div class="result-card">
+            <span class="label">Mobile bounce rate</span>
+            <div class="num"><span class="arrow-up">↓</span> 41<span class="suffix">%</span></div>
+            <span class="sub">From 62% down to 36% on phones.</span>
+          </div>
+          <div class="result-card">
+            <span class="label">Avg. session length</span>
+            <div class="num">1:42<span class="suffix">min</span></div>
+            <span class="sub">2.4× the previous site's average.</span>
+          </div>
+          <div class="result-card">
+            <span class="label">PageSpeed score</span>
+            <div class="num">98<span class="suffix">/100</span></div>
+            <span class="sub">Mobile, real-world LCP under 1.2s.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PULL QUOTE -->
+    <section class="case-quote">
+      <div class="case-quote-inner mv-soften" data-mv-watch>
+        <blockquote>The site finally <em>sounds like our practice</em>. New patients show up already knowing what to expect, which has changed the first-visit conversation entirely.</blockquote>
+        <span class="cite"><strong>Dr. Mei Smith</strong> · Owner, Smith Family Dental</span>
+      </div>
+    </section>
+
+    <!-- PROCESS RECAP -->
+    <section class="case-process">
+      <div class="full">
+        <div class="section-head mv-rise" data-mv-watch>
+          <h2 class="display section-title">Nine business days, <em>start to launch</em>.</h2>
+        </div>
+        <ol class="case-process-track mv-stagger" data-mv-watch>
+          <li class="cp-step done">
+            <span class="day">Day 1</span>
+            <h4 class="h">Intro call</h4>
+            <p class="p">15-minute call with Dr. Smith. Reviewed the existing site and the booking flow.</p>
+          </li>
+          <li class="cp-step done">
+            <span class="day">Day 2</span>
+            <h4 class="h">Proposal signed</h4>
+            <p class="p">Flat $800 Landing, 9-day timeline, two revision rounds included.</p>
+          </li>
+          <li class="cp-step done">
+            <span class="day">Day 3–5</span>
+            <h4 class="h">Draft live</h4>
+            <p class="p">First draft delivered as a real URL on a staging domain. Team shoot scheduled.</p>
+          </li>
+          <li class="cp-step done">
+            <span class="day">Day 6–8</span>
+            <h4 class="h">Two revision rounds</h4>
+            <p class="p">Photos integrated, tone tightened, the booking widget moved to the hero.</p>
+          </li>
+          <li class="cp-step done">
+            <span class="day">Day 9</span>
+            <h4 class="h">Live</h4>
+            <p class="p">Domain pointed, SSL provisioned, handoff doc delivered. Final invoice sent same day.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </article>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- PIPELINE — three more in progress -->
+  <section class="section" id="next">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">Three more, <em>landing soon</em>.</h2>
+        <p class="section-sub">We have kept the studio small on purpose — three to four projects a quarter, fully shipped, then written up like the one above. These are the next three in flight.</p>
+      </div>
+
+      <div class="pipeline-grid mv-stagger" data-mv-watch>
+        <article class="pipeline-card">
+          <div class="pipeline-header">
+            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-build"></span>In build</span>
+            <span class="pipeline-eta">Launches June</span>
+          </div>
+          <h3 class="pipeline-title">North &amp; Pine Books</h3>
+          <p class="pipeline-desc">Independent bookshop in Portland. Full Site — home, events, staff picks, online order.</p>
+          <span class="pipeline-meta">Full Site · $1,800</span>
+        </article>
+
+        <article class="pipeline-card">
+          <div class="pipeline-header">
+            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-design"></span>In design</span>
+            <span class="pipeline-eta">Launches July</span>
+          </div>
+          <h3 class="pipeline-title">Lila Park Therapy</h3>
+          <p class="pipeline-desc">Therapist starting her own practice. Landing — one page, gentle voice, intake form.</p>
+          <span class="pipeline-meta">Landing · $800</span>
+        </article>
+
+        <article class="pipeline-card">
+          <div class="pipeline-header">
+            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-discovery"></span>Kickoff</span>
+            <span class="pipeline-eta">Launches August</span>
+          </div>
+          <h3 class="pipeline-title">Roost Coffee</h3>
+          <p class="pipeline-desc">Two-location coffee shop. Full Site — menu, hours per location, ordering link.</p>
+          <span class="pipeline-meta">Full Site · $1,800</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDITORIAL NOTE -->
+  <section class="section section-note">
+    <div class="full">
+      <div class="container-prose note-inner mv-stagger" data-mv-watch>
+        <p class="eyebrow"><span>A note on this page</span></p>
+        <h2 class="display note-h">One real site. Three more <em>landing in months</em>.</h2>
+        <p class="note-body">When we started fwd. we agreed we would never show work that was not ours, and we would never dress up a placeholder to look like a case study. So this page will fill up slowly — one careful project at a time — each laid out in the same depth as Smith Family Dental above.</p>
+        <p class="note-body">If you would like to be case study 02, the <a class="link-arrow" href="/services">services page<span class="arrow">→</span></a> has the scope and the prices, and the <a class="link-arrow" href="/contact">contact form<span class="arrow">→</span></a> takes a minute.</p>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+.section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
+  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
+  .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+
+  .pipeline-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .pipeline-card { padding: 1.75rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-paper); display: flex; flex-direction: column; gap: 1rem; transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft); }
+  .pipeline-card:hover { border-color: var(--color-navy); transform: translateY(-2px); }
+  .pipeline-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .pipeline-status { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-blue); }
+  .pipeline-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-periwinkle); }
+  .pipeline-dot-build { background: #2bb673; animation: mvPulseRing 2.2s var(--ease-soft) infinite; }
+  .pipeline-dot-design { background: var(--color-blue); }
+  .pipeline-dot-discovery { background: var(--color-periwinkle); }
+  .pipeline-eta { color: var(--color-fg-muted); }
+  .pipeline-title { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); margin: 0; letter-spacing: -0.015em; color: var(--color-navy); font-variation-settings: "opsz" 60; }
+  .pipeline-desc { margin: 0; color: var(--color-fg-soft); font-size: var(--text-step--1); line-height: 1.5; }
+  .pipeline-meta { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.06em; padding-top: 0.5rem; border-top: 1px solid var(--color-line); }
+
+  .section-note { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); }
+  .note-inner { display: flex; flex-direction: column; gap: 1.25rem; padding-block: 1rem; }
+  .note-h { font-size: var(--text-step-3); max-width: 24ch; margin: 0.5rem 0 0; }
+  .note-body { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); line-height: 1.5; margin: 0; max-width: 58ch; font-variation-settings: "opsz" 60; }
+</style>
+
+

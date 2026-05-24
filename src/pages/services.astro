@@ -1,256 +1,397 @@
 ---
+// Auto-generated from site/services.html — round 4 design.
+// Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import SectionRule from "../components/SectionRule.astro";
-
-const tiers = [
-  {
-    num: "01",
-    title: "Landing Page",
-    price: "800",
-    terms: "Flat · ~1–2 weeks · 1 revision round",
-    intro:
-      "A single, beautifully-designed page focused on one job: getting visitors to contact, book, or call you.",
-    features: [
-      "Clean, modern landing page built around your brand",
-      "Contact / booking form with instant email notifications",
-      "Mobile and desktop optimized",
-      "Hosting setup and domain connection included",
-      "One round of revisions",
-      "Basic on-page SEO (titles, descriptions, structured headings)",
-    ],
-    bestFor:
-      "Best for new practices, pop-up locations, or anyone who needs a clean page to capture leads and get found online.",
-    ctaLabel: "Pick Landing",
-    ctaClass: "btn btn-ghost",
-    featured: false,
-  },
-  {
-    num: "02",
-    title: "Full Site",
-    price: "1,800",
-    terms: "Flat · ~2–4 weeks · up to 8 pages · 2 revision rounds",
-    intro:
-      "A complete, multi-page site with a real brand system. The kind that holds up against bigger competitors without costing what they pay.",
-    features: [
-      "Everything in Landing Page",
-      "Up to 8 pages — Home, Services, About, Contact + 4 of your choice",
-      "Two rounds of revisions instead of one",
-      "Consistent typography, color, and component system",
-      "Working contact / booking forms with email notifications",
-      "Hosting setup and domain connection included",
-      "Handoff doc so you (or anyone) can update content later",
-    ],
-    bestFor:
-      "Best for established practices ready to build a full online presence that reflects the quality of their business.",
-    ctaLabel: "Pick Full Site",
-    ctaClass: "btn btn-primary",
-    featured: true,
-  },
-];
-
-const faqs = [
-  { q: "How long does it take?",
-    a: "Landing pages typically take one to two weeks from kickoff. Full sites usually run two to four weeks, depending on how quickly we get your content. We'll give you a real timeline on our first call — not a guess." },
-  { q: "What do I need before we start?",
-    a: "Honestly, not much. A rough sense of what you do and who you serve. If you have a logo, brand colors, or copy already, great. If you don't, we'll help you figure it out." },
-  { q: "What's hosting going to cost me later?",
-    a: "We set you up on hosting that typically runs $5–$20 per month depending on traffic, plus your domain (usually $12–$20 per year). We don't mark these up — you pay the providers directly." },
-  { q: "Can I update the site myself after launch?",
-    a: "Yes. We hand over documentation and, where appropriate, a simple way to edit text and images. If you'd rather we handle ongoing changes, we offer that too — ask us." },
-  { q: "Do you do logos or brand identity?",
-    a: "Light brand work — colors, type pairings, layout — is part of every site. Full logo design isn't our main focus, but we have people we trust and can refer you out if needed." },
-  { q: "Need something bigger than a Full Site?",
-    a: 'If your project is more than 8 pages, has e-commerce, or needs a custom integration, we\'ll quote it separately and honestly. <a href="/contact" class="text-blue underline">Reach out</a> — we\'ll tell you whether we\'re the right fit.' },
-];
 ---
 
-<BaseLayout title="Services & pricing — fwd." description="Two tiers. Flat pricing. No mystery line items.">
-  <PageHero
-    eyebrow="Services & pricing"
-    title="Two tiers. <em>Flat pricing.</em> No mystery line items."
-    lede="Most small businesses don't need an enterprise build — they need a site that loads fast, looks the part, and lets people contact them. So that's what we make."
-  />
-
-  <section class="pb-24">
-    <div class="container-page grid gap-6">
-      {tiers.map((t) => (
-        <article class:list={["tier", t.featured && "tier-featured"]}>
-          <div class="tier-head">
-            <span class="eyebrow no-rule"><span class="num">{t.num}</span> &nbsp;Tier {t.num}</span>
-            <h3>{t.title}</h3>
-            <p class="price"><em>$</em>{t.price}</p>
-            <p class="terms">{t.terms}</p>
-          </div>
-          <div>
-            <p class="text-fg-soft m-0 mb-6 text-[length:var(--text-step-1)] leading-[1.55]">{t.intro}</p>
-            <ul class="list-none p-0 m-0 mb-6 grid gap-2.5">
-              {t.features.map((f) => (<li>{f}</li>))}
-            </ul>
-            <p class="tier-best">{t.bestFor}</p>
-            <a href="/contact" class={t.ctaClass}>
-              {t.ctaLabel} <span class="arrow">→</span>
-            </a>
-          </div>
-        </article>
-      ))}
+<BaseLayout title="Services & pricing — fwd.">
+<section class="page-hero">
+    <div class="full">
+      <div class="page-hero-grid">
+        <div data-mv-watch class="mv-rise">
+          <p class="eyebrow"><span>Services</span></p>
+          <h1 class="display">Two ways to <em>get online</em>. One flat fee each.</h1>
+          <p class="lede">No retainers, no scope creep, no hidden hourlies. Pick the scope, we ship on a fixed timeline, you own everything when we are done.</p>
+        </div>
+        <div class="page-hero-art" aria-hidden="true">
+          <span class="ph-mark">fwd<span class="dot">.</span></span>
+        </div>
+      </div>
     </div>
+  </section>
 
-    {/* === FAQ ============================================================== */}
-    <div class="container-page">
-      <section class="faq mt-24 border-t border-line">
-        <SectionRule num="§" label="Frequently asked" meta="06 questions" />
-        <h2 class="display section-title m-0 mb-8 max-w-none">
-          Common <em>questions</em>.
-        </h2>
+  <section class="pricing-poster mv-soften" data-mv-watch>
+    <div class="full pricing-poster-inner">
+      <div class="pp-tier">
+        <span class="pp-label">Landing</span>
+        <div class="pp-amount"><span class="pp-dollar">$</span>800</div>
+        <span class="pp-deliv">10 business days · 2 revision rounds</span>
+      </div>
+      <div class="pp-divider" aria-hidden="true"></div>
+      <div class="pp-tier">
+        <span class="pp-label">Full Site</span>
+        <div class="pp-amount"><span class="pp-dollar">$</span>1,800</div>
+        <span class="pp-deliv">20 business days · 3 revision rounds</span>
+      </div>
+    </div>
+  </section>
 
-        {faqs.map((f) => (
-          <details>
-            <summary>{f.q}</summary>
-            <p set:html={f.a}></p>
-          </details>
-        ))}
-      </section>
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- WHAT YOU GET — quick cards -->
+  <section class="section">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">What every project <em>includes</em>.</h2>
+        <p class="section-sub">Both tiers share the same foundation. The difference is page count, timeline, and the number of revision rounds.</p>
+      </div>
+
+      <div class="tiers-grid mv-stagger" data-mv-watch>
+        <article class="tier tier-light" data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+          <div class="tier-top"><span class="tier-deliv">10 business days</span></div>
+          <h3 class="tier-title">Landing Page</h3>
+          <div class="tier-price">
+            <span class="dollar">$</span>
+            <span class="amount">800</span>
+            <span class="note">flat · 2 revision rounds</span>
+          </div>
+          <ul class="tier-features">
+            <li><span class="check">✓</span>Single page, designed around your brand</li>
+            <li><span class="check">✓</span>Lead capture form with email notifications</li>
+            <li><span class="check">✓</span>Mobile optimized, every breakpoint</li>
+            <li><span class="check">✓</span>Domain connection &amp; hosting setup</li>
+            <li><span class="check">✓</span>Two rounds of revisions, async</li>
+          </ul>
+          <a href="/contact" class="tier-cta">Start with Landing <span class="arrow">→</span></a>
+        </article>
+
+        <article class="tier tier-dark" data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+          <div class="tier-top"><span class="tier-deliv">20 business days · up to 8 pages</span></div>
+          <h3 class="tier-title">Full Site</h3>
+          <div class="tier-price">
+            <span class="dollar">$</span>
+            <span class="amount">1,800</span>
+            <span class="note">flat · 3 revision rounds</span>
+          </div>
+          <ul class="tier-features">
+            <li><span class="check">✓</span>Up to 8 pages, designed cohesively</li>
+            <li><span class="check">✓</span>Lead capture form with email notifications</li>
+            <li><span class="check">✓</span>Mobile optimized, every breakpoint</li>
+            <li><span class="check">✓</span>Domain connection &amp; hosting setup</li>
+            <li><span class="check">✓</span>Three rounds of revisions, async</li>
+          </ul>
+          <a href="/contact" class="tier-cta">Start with Full Site <span class="arrow">→</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE TABLE -->
+  <section class="section" style="padding-top: 1.5rem">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">Side-by-side, no <em>asterisks</em>.</h2>
+        <p class="section-sub">Both tiers compared in one table so you can pick by what you actually need.</p>
+      </div>
+
+      <div class="compare-wrap mv-soften" data-mv-watch>
+        <div class="compare-row compare-head">
+          <div class="compare-cell tag">Feature</div>
+          <div class="compare-cell">
+            <div><span class="tier-name">Landing</span><span class="tier-price-small">$800</span></div>
+          </div>
+          <div class="compare-cell">
+            <div><span class="tier-name">Full Site</span><span class="tier-price-small">$1,800</span></div>
+          </div>
+        </div>
+
+        <div class="compare-row">
+          <div class="compare-cell tag">Pages designed &amp; built</div>
+          <div class="compare-cell"><span class="info">1 page</span></div>
+          <div class="compare-cell"><span class="info">Up to 8 pages</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Lead capture form</div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Mobile optimized</div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Domain connection</div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Hosting setup</div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Revision rounds included</div>
+          <div class="compare-cell"><span class="info">2 rounds</span></div>
+          <div class="compare-cell"><span class="info">3 rounds</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Cohesive design system (type, color, components)</div>
+          <div class="compare-cell"><span class="compare-na">—</span></div>
+          <div class="compare-cell"><span class="compare-check">✓</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell tag">Delivery timeline</div>
+          <div class="compare-cell"><span class="info">10 business days</span></div>
+          <div class="compare-cell"><span class="info">20 business days</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WALKTHROUGH — animated week-by-week -->
+  <section class="walkthrough">
+    <div class="walkthrough-inner">
+      <div class="walkthrough-head mv-rise" data-mv-watch>
+        <h2 class="walkthrough-h">What happens, <em>day by day</em>.</h2>
+        <div class="walkthrough-controls">
+          <button id="wtPrev" type="button" aria-label="Previous step">‹ Prev</button>
+          <button id="wtAuto" type="button" aria-pressed="true">Auto</button>
+          <button id="wtNext" type="button" aria-label="Next step">Next ›</button>
+        </div>
+      </div>
+
+      <div class="walkthrough-track" data-step="0" id="wtTrack">
+        <button class="walkthrough-marker" data-step="0" aria-pressed="true"><span class="day">Day 0</span><span class="lbl">Inquiry</span></button>
+        <button class="walkthrough-marker" data-step="1" aria-pressed="false"><span class="day">Day 1–2</span><span class="lbl">Intro call</span></button>
+        <button class="walkthrough-marker" data-step="2" aria-pressed="false"><span class="day">Day 3</span><span class="lbl">Proposal</span></button>
+        <button class="walkthrough-marker" data-step="3" aria-pressed="false"><span class="day">Week 1–3</span><span class="lbl">Draft &amp; revise</span></button>
+        <button class="walkthrough-marker" data-step="4" aria-pressed="false"><span class="day">Day 10/20</span><span class="lbl">Launch</span></button>
+      </div>
+
+      <div class="walkthrough-panel" id="wtPanel">
+        <div class="walkthrough-step is-active" data-step="0">
+          <span class="when">Day 0 · You send the contact form</span>
+          <h4>An inquiry comes in. <em>Jaiden replies</em>.</h4>
+          <p>One of us reads every inquiry the day it arrives. Jaiden writes back within a day with a couple of clarifying questions and a proposed time for a short call.</p>
+          <span class="deliv">— Reply within 24 hours, every day</span>
+        </div>
+        <div class="walkthrough-step" data-step="1">
+          <span class="when">Day 1–2 · The intro call</span>
+          <h4>15 minutes, <em>all three of us</em>, no slide deck.</h4>
+          <p>You meet the whole studio at once. We ask what you do, who you serve, and what the site needs to do for you. You ask whatever you need to. No follow-up sequences.</p>
+          <span class="deliv">— No prep required from you</span>
+        </div>
+        <div class="walkthrough-step" data-step="2">
+          <span class="when">Day 3 · Proposal &amp; deposit</span>
+          <h4>One-page proposal. Plain language. <em>50% deposit</em>.</h4>
+          <p>Alex sends a flat-fee proposal and the deposit invoice. There is no long contract — one page, one number, one timeline. Once the deposit lands, the clock starts.</p>
+          <span class="deliv">— Pay by card, bank transfer, or wire</span>
+        </div>
+        <div class="walkthrough-step" data-step="3">
+          <span class="when">Week 1 → Week 3 · Design, draft, revise</span>
+          <h4>First draft live in your browser by <em>end of week one</em>.</h4>
+          <p>Riz builds the first version and shares a real URL on your phone, not a Figma file. You mark up the changes you want. We revise. Landing gets two rounds, Full Site gets three. Everything stays async until you want a call.</p>
+          <span class="deliv">— Average response on revisions: 1 business day</span>
+        </div>
+        <div class="walkthrough-step" data-step="4">
+          <span class="when">Launch day · Live</span>
+          <h4>Your domain points to the new site.<em> Final invoice sent</em>.</h4>
+          <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written doc so you can update content yourself. The remaining balance invoice lands the same day. You own everything — the domain, the hosting account, the code.</p>
+          <span class="deliv">— Live in 10 business days (Landing) or 20 (Full Site)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOT INCLUDED -->
+  <section class="not-included mv-rise" data-mv-watch>
+    <div class="full">
+      <div class="section-head">
+        <h2 class="display section-title">Not included. <em>Honest about it</em>.</h2>
+        <p class="section-sub">Three things we keep out of the flat fee on purpose. Two of them can be added if you need them, billed separately so you can see exactly what they cost.</p>
+      </div>
+
+      <div class="ni-grid">
+        <article class="ni-card">
+          <span class="tag">Out of scope</span>
+          <h4>Ongoing maintenance</h4>
+          <p>Small content changes after launch are on us. Larger maintenance work — feature additions, redesigns, monthly updates — is a separate engagement.</p>
+        </article>
+
+        <article class="ni-card">
+          <span class="tag">Add-on available</span>
+          <h4>Copywriting</h4>
+          <p>By default you write the copy and we polish it. If you need us to draft from scratch — service descriptions, about page, tone — we can roll it in.</p>
+          <span class="addon">Quoted per project</span>
+        </article>
+
+        <article class="ni-card">
+          <span class="tag">Add-on available</span>
+          <h4>Photography</h4>
+          <p>If you have your own photos, we will design around them. If you do not, we coordinate a shoot with a photographer we trust, or design with carefully-sourced stock.</p>
+          <span class="addon">Quoted per project</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-faq">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">Questions we get a <em>lot</em>.</h2>
+        <p class="section-sub">If yours is not here, <a class="link-arrow" href="/contact">ask us<span class="arrow">→</span></a> — we add to this list as new ones come up.</p>
+      </div>
+
+      <div class="faq-list mv-stagger" data-mv-watch>
+        <details class="faq-item" open>
+          <summary><span class="faq-q">What if I need something between Landing and Full Site?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>Email us. About a third of our projects sit between the two tiers — usually a Landing with one or two extra pages. We quote a flat fee within a day, typically between $1,000 and $1,500.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><span class="faq-q">What counts as a "small change" after launch?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>Text fixes, photo swaps, link updates, hours changes — anything you could send us in a single email and we could ship in an afternoon. Larger changes (new sections, new pages, new features) become a new engagement at a flat fee.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><span class="faq-q">Who hosts the site after launch?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>You do. We set up hosting on a platform you own — usually Cloudflare Pages or Netlify, both free at our scale. We connect your domain, set up DNS, and walk you through how to make a content change. There is no ongoing fee to us.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><span class="faq-q">Can you redesign an existing site?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>Yes — most of our work is redesigns. The flat-fee structure stays the same. We preserve any SEO that is working, port your existing content, and keep your domain authority intact.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><span class="faq-q">How do payments work?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>50% on signed proposal, 50% on launch. Card, bank transfer, or wire — whatever is easiest. Alex sends every invoice and handles every receipt. There are no recurring charges.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary><span class="faq-q">What if I want to keep updating the site myself?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-a"><p>Full Site includes a handoff doc with screenshots and exact file paths, written so non-developers can change text, swap photos, and add new pages. For Landing, we record a 10-minute walkthrough of the parts you are most likely to want to edit.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+  
+  <section class="cta-band mv-soften" data-mv-watch>
+    <div class="cta-band-bg" aria-hidden="true">
+      <div class="cta-band-bg-track">
+        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
+        <span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span><span>fwd</span>
+      </div>
+    </div>
+    <div class="cta-band-inner">
+      <h3 class="display">Ready to <em>begin</em>?</h3>
+      <div>
+        <p>Tell us what you are working on. We will get back to you within a day with a flat-fee proposal.</p>
+        <a href="/contact" class="btn btn-primary">Start a project <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .tier {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: clamp(2rem, 4vw, 3.5rem);
-    border: 1px solid var(--color-line);
-    border-radius: 18px;
-    position: relative;
-    background: var(--color-paper);
-  }
-  @media (min-width: 800px) {
-    .tier { grid-template-columns: 0.9fr 1.4fr; gap: 3rem; }
-  }
-  .tier-featured {
-    border-color: var(--color-navy);
-    background: linear-gradient(180deg, var(--color-paper), var(--color-bg-soft));
-  }
-  .tier-featured::before {
-    content: "Most chosen";
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-paper);
-    background: var(--color-navy);
-    padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-family: var(--font-mono);
-  }
-  .tier-head { border-right: none; padding-right: 0; }
-  @media (min-width: 800px) {
-    .tier-head {
-      border-right: 1px solid var(--color-line);
-      padding-right: 3rem;
-    }
-  }
-  .tier-head h3 {
-    font-family: var(--font-display);
-    font-size: var(--text-step-3);
-    font-weight: 350;
-    margin: 0.5rem 0;
-    letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-  .tier-head .price {
-    font-family: var(--font-display);
-    font-size: var(--text-step-5);
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin: 1.5rem 0 1rem;
-  }
-  .tier-head .price em {
-    font-style: italic;
-    color: var(--color-blue);
-    font-size: 0.5em;
-    vertical-align: top;
-    margin-right: 0.1em;
-    font-variation-settings: "opsz" 60, "SOFT" 100;
-  }
-  .tier-head .terms {
-    color: var(--color-fg-muted);
-    font-size: var(--text-step--1);
-    font-family: var(--font-mono);
-    letter-spacing: 0.04em;
-    margin: 0;
-  }
-  .tier ul li {
-    position: relative;
-    padding-left: 1.6rem;
-    color: var(--color-fg-soft);
-    line-height: 1.55;
-    font-size: var(--text-step-0);
-  }
-  .tier ul li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.7em;
-    width: 14px;
-    height: 1px;
-    background: var(--color-blue);
-  }
-  .tier-best {
-    color: var(--color-fg-muted);
-    font-style: italic;
-    font-family: var(--font-display);
-    margin: 1.5rem 0;
-    font-variation-settings: "opsz" 60, "SOFT" 100;
-    font-size: var(--text-step--1);
-    border-top: 1px solid var(--color-hairline);
-    padding-top: 1.5rem;
-    text-wrap: pretty;
-  }
+.pricing-poster { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); padding-block: clamp(3rem, 8vh, 5rem); }
+  .pricing-poster-inner { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; justify-items: center; text-align: center; }
+  @media (min-width: 800px) { .pricing-poster-inner { grid-template-columns: 1fr auto 1fr; gap: clamp(2rem, 5vw, 5rem); } }
+  .pp-tier { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+  .pp-label { font-family: var(--font-mono); font-size: var(--text-step--1); letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .pp-amount { font-family: var(--font-display); font-weight: 300; font-style: italic; font-size: clamp(5rem, 13vw, 9rem); letter-spacing: -0.04em; line-height: 0.9; color: var(--color-navy); font-variation-settings: "opsz" 144; }
+  .pp-dollar { font-style: normal; font-weight: 400; font-size: 0.45em; vertical-align: top; color: var(--color-blue); margin-right: 0.05em; font-variation-settings: "opsz" 60; }
+  .pp-deliv { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .pp-divider { width: 1px; height: 200px; background: linear-gradient(to bottom, transparent, var(--color-periwinkle) 30%, var(--color-periwinkle) 70%, transparent); }
+  @media (max-width: 800px) { .pp-divider { width: 200px; height: 1px; background: linear-gradient(to right, transparent, var(--color-periwinkle) 30%, var(--color-periwinkle) 70%, transparent); } }
 
-  /* FAQ */
-  .faq details {
-    border-bottom: 1px solid var(--color-line);
-    padding-block: 1.5rem;
-  }
-  .faq summary {
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    gap: 1.5rem;
-    font-family: var(--font-display);
-    font-size: var(--text-step-1);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    font-variation-settings: "opsz" 60, "SOFT" 30;
-    padding-right: 0.5rem;
-    transition: color 200ms var(--ease-soft);
-  }
-  .faq summary::-webkit-details-marker { display: none; }
-  .faq summary:hover { color: var(--color-blue); }
-  .faq summary::after {
-    content: "+";
-    font-family: var(--font-display);
-    font-style: italic;
-    color: var(--color-blue);
-    font-size: 1.4em;
-    line-height: 1;
-    transition: transform 450ms var(--ease-soft);
-    font-variation-settings: "opsz" 60, "SOFT" 100;
-  }
-  .faq details[open] summary::after { content: "−"; }
-  .faq details > p {
-    margin-top: 1rem;
-    color: var(--color-fg-soft);
-    max-width: 65ch;
-    line-height: 1.65;
-    font-size: var(--text-step-0);
-  }
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
+  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
+  .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+
+  .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+  .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2rem, 3.5vw, 3rem); display: flex; flex-direction: column; gap: 1.5rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 540px; }
+  .tier-dark { --bg: var(--color-navy); --fg: #fff; --fg-soft: rgba(255,255,255,0.82); --fg-muted: rgba(255,255,255,0.55); --line: rgba(255,255,255,0.14); --accent: var(--color-periwinkle); --sheen: rgb(255 255 255 / 0.14); }
+  .tier:hover { transform: translateY(-2px); box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25); }
+  .tier-sheen { position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit; opacity: 0; transition: opacity 360ms var(--ease-soft); background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--sheen), transparent 60%); }
+  .tier:hover .tier-sheen { opacity: 1; }
+  .tier > :not(.tier-sheen) { position: relative; z-index: 1; }
+  .tier-top { display: flex; align-items: center; justify-content: flex-end; }
+  .tier-deliv { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+  .tier-title { font-family: var(--font-display); font-weight: 350; font-size: clamp(2.4rem, 3.6vw, 3.6rem); line-height: 0.98; letter-spacing: -0.025em; color: var(--fg); margin: 0; font-variation-settings: "opsz" 144; }
+  .tier-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem; padding-block: 1.2rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .tier-price .dollar { font-family: var(--font-display); font-size: 1.8rem; color: var(--fg-muted); }
+  .tier-price .amount { font-family: var(--font-display); font-weight: 400; font-size: clamp(3rem, 5vw, 4.4rem); letter-spacing: -0.03em; color: var(--fg); line-height: 1; font-variation-settings: "opsz" 144; }
+  .tier-price .note { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--fg-muted); letter-spacing: 0.04em; margin-left: auto; }
+  .tier-features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.85rem; flex: 1; }
+  .tier-features li { display: flex; gap: 0.75rem; color: var(--fg-soft); font-size: var(--text-step-0); line-height: 1.45; }
+  .tier-features .check { color: var(--accent); font-weight: 600; flex-shrink: 0; }
+  .tier-cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; align-self: stretch; padding: 1rem 1.5rem; border-radius: 999px; font-family: var(--font-sans); font-size: var(--text-step--1); font-weight: 500; letter-spacing: 0.01em; border: 1px solid var(--fg); background: transparent; color: var(--fg); transition: background 280ms var(--ease-soft), color 280ms var(--ease-soft); }
+  .tier-cta:hover { background: var(--fg); color: var(--bg); }
+  .tier-cta .arrow { transition: transform 320ms var(--ease-soft); }
+  .tier-cta:hover .arrow { transform: translateX(4px); }
+
+  .section-faq { background: var(--color-bg-soft); }
+  .faq-list { display: flex; flex-direction: column; border-top: 1px solid var(--color-line); }
+  .faq-item { border-bottom: 1px solid var(--color-line); overflow: hidden; }
+  .faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 1.5rem; cursor: pointer; list-style: none; transition: padding-left 280ms var(--ease-soft); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item:hover summary { padding-left: 0.5rem; }
+  .faq-q { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); color: var(--color-fg); letter-spacing: -0.015em; font-variation-settings: "opsz" 60; line-height: 1.25; text-wrap: balance; }
+  .faq-icon { flex-shrink: 0; width: 24px; height: 24px; position: relative; transition: transform 320ms var(--ease-soft); }
+  .faq-icon::before, .faq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--color-blue); transition: transform 320ms var(--ease-soft); }
+  .faq-icon::before { width: 14px; height: 1.5px; transform: translate(-50%, -50%); }
+  .faq-icon::after  { width: 1.5px; height: 14px; transform: translate(-50%, -50%); }
+  .faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+  .faq-a { padding-bottom: 1.75rem; max-width: 65ch; color: var(--color-fg-soft); font-size: var(--text-step-0); line-height: 1.6; animation: faqOpen 320ms var(--ease-out-expo); }
+  .faq-a p { margin: 0; }
+  @keyframes faqOpen { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 </style>
+
+<script is:inline>
+// Walkthrough — auto-advance + manual nav
+  (() => {
+    const track = document.getElementById('wtTrack');
+    const panel = document.getElementById('wtPanel');
+    if (!track || !panel) return;
+    const markers = track.querySelectorAll('.walkthrough-marker');
+    const steps = panel.querySelectorAll('.walkthrough-step');
+    const prevBtn = document.getElementById('wtPrev');
+    const nextBtn = document.getElementById('wtNext');
+    const autoBtn = document.getElementById('wtAuto');
+    const total = markers.length;
+    let i = 0;
+    let auto = true;
+    let timer = null;
+    let started = false;
+
+    const setStep = (n) => {
+      i = ((n % total) + total) % total;
+      track.dataset.step = i;
+      markers.forEach((m, idx) => m.setAttribute('aria-pressed', idx === i ? 'true' : 'false'));
+      steps.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
+    };
+    const scheduleNext = () => {
+      clearTimeout(timer);
+      if (!auto) return;
+      timer = setTimeout(() => { setStep(i + 1); scheduleNext(); }, 4200);
+    };
+    const stopAuto = () => { auto = false; autoBtn.setAttribute('aria-pressed', 'false'); clearTimeout(timer); };
+    const startAuto = () => { auto = true; autoBtn.setAttribute('aria-pressed', 'true'); scheduleNext(); };
+
+    markers.forEach((m) => m.addEventListener('click', () => { stopAuto(); setStep(parseInt(m.dataset.step, 10)); }));
+    prevBtn.addEventListener('click', () => { stopAuto(); setStep(i - 1); });
+    nextBtn.addEventListener('click', () => { stopAuto(); setStep(i + 1); });
+    autoBtn.addEventListener('click', () => { auto ? stopAuto() : startAuto(); });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !started) { started = true; scheduleNext(); }
+        });
+      }, { threshold: 0.3 });
+      io.observe(track);
+    } else { scheduleNext(); }
+  })();
+</script>

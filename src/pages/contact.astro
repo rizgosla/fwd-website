@@ -1,193 +1,243 @@
 ---
+// Auto-generated from site/contact.html — round 4 design.
+// Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-
-const contactInfo = [
-  { heading: "Email",         body: '<a href="mailto:hello@fwd.studio">hello@fwd.studio</a>' },
-  { heading: "Response time", body: "Within 24 hours, weekdays." },
-  { heading: "Based in",      body: "California — working with clients anywhere." },
-  { heading: "Prefer a call?", body: "Send a message first. If it sounds like a fit, we'll schedule 15 minutes." },
-];
 ---
 
-<BaseLayout title="Start a project — fwd." description="Tell us about your project.">
-  <PageHero
-    eyebrow="Start a project"
-    title="Tell us about <em>your project</em>."
-    lede="A few questions below. We read every message and reply within a day or so — usually with a real timeline and a yes/no on whether we're the right fit."
-  />
-
-  <section class="pb-24">
-    <div class="container-page">
-      <div class="contact-grid grid gap-12 grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-        <aside class="contact-aside grid gap-8 content-start">
-          {contactInfo.map((i) => (
-            <div class="item">
-              <h3>{i.heading}</h3>
-              {i.body.startsWith("<") ? (
-                <Fragment set:html={i.body} />
-              ) : (
-                <p>{i.body}</p>
-              )}
-            </div>
-          ))}
-        </aside>
-
-        <form class="form" id="contactForm" novalidate>
-          <div class="field-row">
-            <div class="field">
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" required autocomplete="name" />
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" required autocomplete="email" />
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="company">Business / Practice</label>
-              <input id="company" name="company" type="text" autocomplete="organization" />
-            </div>
-            <div class="field">
-              <label for="tier">Service</label>
-              <select id="tier" name="tier">
-                <option value="">Not sure yet</option>
-                <option value="landing">Landing Page — $800</option>
-                <option value="full">Full Site — $1,800</option>
-                <option value="other">Something else</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="message">Tell us about your project</label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              placeholder="What you do, who you serve, what you're hoping the site will do for you, and a rough timeline."
-            ></textarea>
-          </div>
-
-          <div class="flex items-center justify-between gap-6 flex-wrap mt-4">
-            <p class="text-fg-muted text-[length:var(--text-step--2)] m-0 max-w-[34ch] font-mono tracking-[0.04em]">
-              Your details are only used to respond to your inquiry. No mailing list. No resale. Ever.
-            </p>
-            <button type="submit" class="btn btn-primary">
-              Send message <span class="arrow">→</span>
-            </button>
-          </div>
-
-          <p id="formStatus" role="status" aria-live="polite" class="m-0 min-h-[1.4em] text-blue"></p>
-        </form>
+<BaseLayout title="Contact — fwd.">
+<section class="page-hero">
+    <div class="full">
+      <div class="page-hero-grid">
+        <div data-mv-watch class="mv-rise">
+          <p class="eyebrow"><span>Contact</span></p>
+          <h1 class="display">Tell us what you are <em>working on</em>.</h1>
+          <p class="lede">A flat-fee proposal back within a day. No discovery deck, no hourly estimate, no sales follow-up.</p>
+        </div>
+        <div class="page-hero-art" aria-hidden="true">
+          <span class="ph-mark">fwd<span class="dot">.</span></span>
+        </div>
       </div>
     </div>
   </section>
 
-  <script is:inline>
-    // === Contact-form placeholder handler ==================================
-    // Wire to your real backend / form service in production.
-    const form = document.getElementById("contactForm");
-    const status = document.getElementById("formStatus");
-    form?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = form.name.value.trim();
-      const email = form.email.value.trim();
-      const message = form.message.value.trim();
-      if (!name || !email || !message) {
-        status.textContent = "Please fill in your name, email, and a short message.";
-        status.style.color = "#c25b5b";
-        return;
-      }
-      status.textContent = "Thanks — we'll be in touch within a day or so.";
-      status.style.color = "var(--color-blue)";
-      form.reset();
-    });
-  </script>
+  <section class="email-poster">
+    <div class="email-poster-bg" aria-hidden="true">
+      <span class="mark">fwd<span class="dot">.</span></span>
+    </div>
+    <div class="full email-poster-inner mv-stagger" data-mv-watch>
+      <span class="eyebrow"><span>The fastest way to reach us</span></span>
+      <a href="mailto:hello@fwd.studio" class="email-display">hello@fwd.studio</a>
+      <p class="email-sub">All three of us read it. One of us replies. Usually within a day.</p>
+    </div>
+  </section>
+
+  <section class="section section-form">
+    <div class="full">
+      <div class="form-grid">
+        <div class="form-wrapper mv-rise" data-mv-watch>
+          <p class="eyebrow" style="margin-bottom: 1.5rem"><span>Or, if you would rather not write an email</span></p>
+
+          <form id="contactForm" class="contact-form" novalidate>
+            <div class="form-row">
+              <label class="field">
+                <span class="field-label">Your name</span>
+                <input type="text" name="name" required autocomplete="name" />
+              </label>
+              <label class="field">
+                <span class="field-label">Email</span>
+                <input type="email" name="email" required autocomplete="email" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Company or practice <span class="field-opt">(optional)</span></span>
+              <input type="text" name="company" autocomplete="organization" />
+            </label>
+
+            <label class="field">
+              <span class="field-label">What are you building?</span>
+              <span class="field-help">A few sentences. What is it, who is it for, and what would success look like?</span>
+              <textarea name="brief" rows="5" required></textarea>
+            </label>
+
+            <fieldset class="field field-radio">
+              <legend class="field-label">Which tier are you interested in?</legend>
+              <div class="radio-row">
+                <label class="radio">
+                  <input type="radio" name="tier" value="landing" />
+                  <span class="radio-content">
+                    <span class="radio-h">Landing — $800</span>
+                    <span class="radio-d">One page · ~1–2 weeks</span>
+                  </span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="tier" value="full" />
+                  <span class="radio-content">
+                    <span class="radio-h">Full Site — $1,800</span>
+                    <span class="radio-d">Up to 8 pages · ~2–4 weeks</span>
+                  </span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="tier" value="not-sure" checked />
+                  <span class="radio-content">
+                    <span class="radio-h">Not sure yet</span>
+                    <span class="radio-d">We will help you decide</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="field">
+              <span class="field-label">When would you like to start? <span class="field-opt">(optional)</span></span>
+              <input type="text" name="when" placeholder="e.g. June, ASAP, no rush" />
+            </label>
+
+            <div class="form-foot">
+              <button type="submit" class="btn btn-primary form-submit">
+                <span class="submit-text">Send inquiry</span>
+                <span class="submit-arrow arrow" aria-hidden="true">→</span>
+                <span class="submit-spinner" aria-hidden="true"></span>
+              </button>
+              <span class="form-meta">We reply within a day, every day.</span>
+            </div>
+          </form>
+
+          <div class="form-success" hidden>
+            <div class="success-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 24l7 7 14-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h2 class="display success-h">Got it.</h2>
+            <p class="success-p">Your inquiry is in our inbox. One of us will read it today and reply with a proposal by <strong id="successReplyBy">tomorrow afternoon</strong>.</p>
+            <p class="success-meta">A confirmation is on its way to <strong id="successEmail">your email</strong>. If you do not see it in 10 minutes, check your spam folder.</p>
+            <div class="success-actions">
+              <a href="/services" class="link-arrow">Read services in the meantime <span class="arrow">→</span></a>
+              <button type="button" id="successReset" class="link-arrow">Send another <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="form-aside mv-stagger" data-mv-watch>
+          <div class="aside-card">
+            <span class="aside-label">Response time</span>
+            <span class="aside-val">
+              <span class="status-dot mv-pulse"></span>
+              Usually within a day
+            </span>
+            <span class="aside-help">Three of us read every inquiry. If you write in over a weekend you will hear back on Monday.</span>
+          </div>
+
+          <div class="aside-card">
+            <span class="aside-label">Based in</span>
+            <span class="aside-val">Irvine, California</span>
+            <span class="aside-help">We work with clients across North America and Europe. Time zone has not been a problem yet.</span>
+          </div>
+
+          <div class="aside-card">
+            <span class="aside-label">Prefer a call?</span>
+            <span class="aside-val">15-minute intro, no obligation</span>
+            <span class="aside-help">Once you have sent the form (or an email), we will send a calendar link in the reply.</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .contact-aside .item h3 {
-    font-family: var(--font-mono);
-    font-weight: 500;
-    font-size: var(--text-step--2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
-    margin: 0 0 0.4rem;
-  }
-  .contact-aside .item p,
-  .contact-aside .item a {
-    font-family: var(--font-display);
-    font-size: var(--text-step-1);
-    color: var(--color-fg);
-    line-height: 1.35;
-    font-variation-settings: "opsz" 60, "SOFT" 30;
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-  .contact-aside .item a {
-    border-bottom: 1px solid var(--color-line);
-    padding-bottom: 1px;
-    transition: color 200ms, border-color 200ms;
-  }
-  .contact-aside .item a:hover {
-    color: var(--color-blue);
-    border-bottom-color: var(--color-blue);
-  }
-
-  .form {
-    display: grid;
-    gap: 1.5rem;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-radius: 18px;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-  }
-  .field {
-    display: grid;
-    gap: 0.4rem;
-  }
-  .field label {
-    font-size: var(--text-step--2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
-    font-weight: 500;
-    font-family: var(--font-mono);
-  }
-  .field input,
-  .field textarea,
-  .field select {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
-    color: var(--color-fg);
-    font: inherit;
-    transition: border-color 200ms var(--ease-soft), background 200ms var(--ease-soft);
-  }
-  .field input:focus,
-  .field textarea:focus,
-  .field select:focus {
-    outline: none;
-    border-color: var(--color-blue);
-    background: var(--color-paper);
-    box-shadow: 0 0 0 3px rgb(20 70 103 / 0.08);
-  }
-  .field textarea {
-    min-height: 140px;
-    resize: vertical;
-  }
-  .field-row {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 600px) {
-    .field-row { grid-template-columns: 1fr 1fr; }
-  }
+.email-poster { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); padding-block: clamp(4rem, 10vh, 6rem); position: relative; overflow: hidden; }
+  .email-poster-inner { display: flex; flex-direction: column; gap: 1.25rem; align-items: flex-start; position: relative; z-index: 1; }
+  .email-display { font-family: var(--font-display); font-weight: 350; font-style: italic; font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 1; letter-spacing: -0.025em; color: var(--color-navy); font-variation-settings: "opsz" 144; border-bottom: 2px solid transparent; transition: color 280ms var(--ease-soft), border-color 280ms var(--ease-soft); padding-bottom: 6px; display: inline-flex; align-items: baseline; }
+  .email-display:hover { color: var(--color-blue); border-bottom-color: var(--color-periwinkle); }
+  .email-sub { font-family: var(--font-display); font-weight: 300; font-style: italic; color: var(--color-fg-soft); font-size: var(--text-step-1); margin: 0; max-width: 44ch; font-variation-settings: "opsz" 60; }
+  .form-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+  @media (min-width: 1000px) { .form-grid { grid-template-columns: 1.5fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; } }
+  .contact-form { display: flex; flex-direction: column; gap: 1.75rem; transition: opacity 320ms var(--ease-soft), transform 320ms var(--ease-soft); }
+  .form-row { display: grid; grid-template-columns: 1fr; gap: 1.75rem; }
+  @media (min-width: 720px) { .form-row { grid-template-columns: 1fr 1fr; gap: 1.5rem; } }
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .field-label { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); font-weight: 500; }
+  .field-opt { font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: none; color: var(--color-fg-muted); font-size: 0.85em; }
+  .field-help { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step--1); color: var(--color-fg-muted); font-variation-settings: "opsz" 60; margin-top: -2px; }
+  .field input[type="text"], .field input[type="email"], .field textarea { font-family: var(--font-sans); font-size: var(--text-step-0); color: var(--color-fg); background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 8px; padding: 0.85rem 1rem; transition: border-color 200ms var(--ease-soft), box-shadow 200ms var(--ease-soft); }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:hover, .field textarea:hover { border-color: var(--color-line-strong); }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--color-blue); box-shadow: 0 0 0 3px rgb(20 70 103 / 0.12); }
+  .field-radio { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .radio-row { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+  @media (min-width: 800px) { .radio-row { grid-template-columns: repeat(3, 1fr); } }
+  .radio { display: flex; gap: 0.85rem; align-items: flex-start; padding: 1rem 1.1rem; border: 1px solid var(--color-line); border-radius: 10px; background: var(--color-paper); cursor: pointer; transition: border-color 200ms var(--ease-soft), background 200ms var(--ease-soft); }
+  .radio:hover { border-color: var(--color-line-strong); background: var(--color-bg-soft); }
+  .radio:has(input:checked) { border-color: var(--color-navy); background: var(--color-paper); box-shadow: 0 0 0 3px rgb(20 70 103 / 0.10); }
+  .radio input { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--color-line-strong); border-radius: 50%; position: relative; cursor: pointer; transition: border-color 200ms var(--ease-soft); }
+  .radio input:checked { border-color: var(--color-blue); }
+  .radio input:checked::after { content: ""; position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--color-blue); left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .radio-content { display: flex; flex-direction: column; gap: 0.2rem; }
+  .radio-h { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-0); color: var(--color-fg); font-variation-settings: "opsz" 60; }
+  .radio-d { font-size: var(--text-step--2); color: var(--color-fg-muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
+  .form-foot { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding-top: 0.5rem; border-top: 1px solid var(--color-line); margin-top: 0.5rem; }
+  .form-meta { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.06em; color: var(--color-fg-muted); }
+  .form-submit { position: relative; min-width: 180px; justify-content: center; }
+  .form-submit[aria-busy="true"] { background: var(--color-blue); cursor: progress; }
+  .submit-arrow, .submit-spinner { transition: opacity 200ms var(--ease-soft); }
+  .submit-spinner { opacity: 0; position: absolute; right: 1.25rem; width: 14px; height: 14px; border: 1.5px solid rgb(255 255 255 / 0.3); border-top-color: var(--color-paper); border-radius: 50%; animation: spin 700ms linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .form-success { background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 14px; padding: clamp(2rem, 4vw, 3rem); display: flex; flex-direction: column; gap: 1rem; animation: mvSoften 700ms var(--ease-out-expo) both; }
+  .success-icon { color: var(--color-blue); margin-bottom: 0.5rem; }
+  .success-h { font-size: var(--text-step-4); margin: 0; color: var(--color-navy); }
+  .success-p { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); margin: 0; line-height: 1.45; max-width: 50ch; font-variation-settings: "opsz" 60; }
+  .success-p strong { color: var(--color-fg); font-weight: 500; }
+  .success-meta { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.06em; margin: 0; }
+  .success-meta strong { color: var(--color-blue); font-weight: 500; }
+  .success-actions { display: flex; gap: 2rem; flex-wrap: wrap; padding-top: 1.5rem; margin-top: 0.5rem; border-top: 1px solid var(--color-line); }
+  .success-actions .link-arrow { background: none; border: 0; padding: 0; border-bottom: 1px solid var(--color-line-strong); }
+  .form-aside { display: flex; flex-direction: column; gap: 1rem; }
+  .aside-card { padding: 1.5rem; border: 1px solid var(--color-line); border-radius: 12px; background: var(--color-bg-soft); display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft); }
+  .aside-card:hover { border-color: var(--color-navy); transform: translateY(-2px); }
+  .aside-label { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .aside-val { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-1); color: var(--color-navy); letter-spacing: -0.01em; line-height: 1.2; font-variation-settings: "opsz" 60; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .aside-help { font-size: var(--text-step--1); color: var(--color-fg-muted); line-height: 1.5; }
+  .aside-val .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2bb673; }
 </style>
+
+<script is:inline>
+(() => {
+    const form = document.getElementById('contactForm');
+    const success = form?.nextElementSibling;
+    if (!form || !success) return;
+    const btn = form.querySelector('.form-submit');
+    const submitText = btn.querySelector('.submit-text');
+    const submitArrow = btn.querySelector('.submit-arrow');
+    const submitSpinner = btn.querySelector('.submit-spinner');
+    const successEmailEl = document.getElementById('successEmail');
+    const successResetBtn = document.getElementById('successReset');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      btn.setAttribute('aria-busy', 'true');
+      btn.disabled = true;
+      submitText.textContent = 'Sending…';
+      submitArrow.style.opacity = '0';
+      submitSpinner.style.opacity = '1';
+      setTimeout(() => {
+        const data = new FormData(form);
+        const email = data.get('email') || 'your email';
+        successEmailEl.textContent = email;
+        form.style.opacity = '0';
+        form.style.transform = 'translateY(-8px)';
+        setTimeout(() => { form.hidden = true; success.hidden = false; success.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 320);
+      }, 900);
+    });
+    successResetBtn?.addEventListener('click', () => {
+      form.reset();
+      success.hidden = true;
+      form.hidden = false;
+      form.style.opacity = '1';
+      form.style.transform = 'translateY(0)';
+      btn.removeAttribute('aria-busy');
+      btn.disabled = false;
+      submitText.textContent = 'Send inquiry';
+      submitArrow.style.opacity = '1';
+      submitSpinner.style.opacity = '0';
+    });
+  })();
+</script>
