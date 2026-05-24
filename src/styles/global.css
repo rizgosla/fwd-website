@@ -1298,22 +1298,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
   height: 6px;
   border-radius: 3px;
   background: rgba(13,47,69,0.18);
-  overflow: hidden;
 }
-/* Typing-style sweep that fills lines from left to right on a loop */
-.ps-revision-line:not(.struck)::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: var(--color-blue);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: mvLaunchFill 4.5s ease-out infinite;
-}
-.ps-revision-line:nth-child(1)::before { animation-delay: 0s; }
-.ps-revision-line:nth-child(2)::before { animation-delay: 0.4s; background: var(--color-periwinkle); }
-.ps-revision-line:nth-child(4)::before { animation-delay: 1.1s; }
-.ps-revision-line:nth-child(5)::before { animation-delay: 1.5s; background: var(--color-periwinkle); }
-.ps-revision-line:nth-child(6)::before { animation-delay: 2s; }
 .ps-revision-line.with-comment::after {
   content: "";
   position: absolute;
@@ -1368,8 +1353,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
   gap: 10px; z-index: 1;
 }
 /* Sheen that sweeps across the launch frame on a loop */
-.process-step .ps-visual-frame:has(.ps-visual-launch)::after,
-.ps-visual-frame:has(.ps-visual-revisions)::after {
+.process-step .ps-visual-frame:has(.ps-visual-launch)::after {
   content: "";
   position: absolute;
   top: 0; bottom: 0;
