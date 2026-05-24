@@ -10,10 +10,6 @@ import Marquee from "../components/Marquee.astro";
   <section class="hero-outer" id="heroOuter">
     <div class="hero">
       <div class="hero-left">
-        <div class="hero-eyebrow">
-          <span class="bar"></span>
-          <span>fwd. — small web studio</span>
-        </div>
         <h1 class="display hero-title">Your website is your new <em>storefront</em>.</h1>
         <p class="lede hero-lede">Give it the <em>respect</em> it deserves.</p>
         <div class="hero-actions">
@@ -401,16 +397,18 @@ import Marquee from "../components/Marquee.astro";
 
   .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
   .process-step { border-bottom: 1px solid var(--color-line); transition: background 450ms var(--ease-soft); }
-  .process-step-inner { display: grid; gap: 1.5rem; padding-block: clamp(3rem, 6vh, 5rem); align-items: center; }
+  .process-step:last-child { border-bottom: 0; }
+  .process-step-dark { border-bottom-color: rgba(255,255,255,0.06); }
+  .process-step-inner { display: grid; gap: 1.5rem; padding-block: clamp(2.5rem, 4.5vh, 3.75rem); align-items: center; }
   @media (min-width: 800px) {
-    .process-step-inner { grid-template-columns: 130px 1.2fr 1.4fr; gap: clamp(2rem, 4vw, 4rem); }
+    .process-step-inner { grid-template-columns: 110px 1.2fr 1.3fr; gap: clamp(1.75rem, 3vw, 3rem); }
   }
   .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: flex; flex-direction: column; gap: 0.25rem; }
-  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-3); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; }
-  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-3); letter-spacing: -0.015em; line-height: 1.15; font-variation-settings: "opsz" 60; color: var(--color-fg); }
+  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-2); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; }
+  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); letter-spacing: -0.015em; line-height: 1.15; font-variation-settings: "opsz" 60; color: var(--color-fg); }
   .ps-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 60; }
-  .ps-body { margin: 0.75rem 0 0; max-width: 55ch; color: var(--color-fg-soft); font-size: var(--text-step-1); line-height: 1.5; }
-  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1rem; text-transform: none; }
+  .ps-body { margin: 0.6rem 0 0; max-width: 55ch; color: var(--color-fg-soft); font-size: var(--text-step-0); line-height: 1.5; }
+  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 0.85rem; text-transform: none; }
 
   /* Dark variant — explicitly here because Astro scoped specificity beats
      global .process-step-dark rules otherwise. */
@@ -429,7 +427,7 @@ import Marquee from "../components/Marquee.astro";
   }
   .ps-visual-frame {
     position: relative;
-    width: 100%; max-width: 380px;
+    width: 100%; max-width: 320px;
     aspect-ratio: 4/3;
     background: var(--color-paper);
     border-radius: 12px;
@@ -474,8 +472,7 @@ import Marquee from "../components/Marquee.astro";
     position: relative;
     background: var(--color-bg-soft);
     color: var(--color-fg);
-    padding-block: clamp(5rem, 11vh, 8rem);
-    border-top: 1px solid var(--color-line);
+    padding-block: clamp(7rem, 16vh, 12rem);
     border-bottom: 1px solid var(--color-line);
     overflow: hidden;
     isolation: isolate;
@@ -484,9 +481,9 @@ import Marquee from "../components/Marquee.astro";
     position: absolute; inset: 0;
     background-image: url("/assets/fwd-logo.svg");
     background-repeat: no-repeat;
-    background-position: right -3rem center;
-    background-size: auto 130%;
-    opacity: 0.05;
+    background-position: right clamp(1rem, 4vw, 4rem) center;
+    background-size: auto 75%;
+    opacity: 0.07;
     pointer-events: none;
     z-index: 0;
   }
