@@ -32,10 +32,12 @@ import BrandMark from "../components/BrandMark.astro";
         <BrandMark class="ep-mark" decorative={true} />
       </div>
     </div>
-    <div class="full email-poster-inner mv-stagger" data-mv-watch>
-      <span class="eyebrow"><span>The fastest way to reach us</span></span>
-      <a href="mailto:hello@fwd.studio" class="email-display">hello@fwd.studio</a>
-      <p class="email-sub">All three of us read it. One of us replies. Usually within a day.</p>
+    <div class="full email-poster-wrap">
+      <div class="email-poster-inner mv-stagger" data-mv-watch>
+        <span class="eyebrow"><span>The fastest way to reach us</span></span>
+        <a href="mailto:hello@fwd.studio" class="email-display">hello@fwd.studio</a>
+        <p class="email-sub">All three of us read it. One of us replies. Usually within a day.</p>
+      </div>
     </div>
   </section>
 
@@ -189,7 +191,21 @@ import BrandMark from "../components/BrandMark.astro";
     pointer-events: none; z-index: 0;
     overflow: hidden;
   }
-  .email-poster-dark .email-poster-inner { position: relative; z-index: 1; }
+  .email-poster-dark .email-poster-wrap { position: relative; z-index: 1; }
+  .email-poster-dark .email-poster-inner {
+    /* Solid backing so the scrolling logo marks don't cut through
+       the readable text. */
+    background: var(--color-navy);
+    padding: clamp(2rem, 4vw, 3rem) clamp(1.75rem, 3.5vw, 3rem);
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.5);
+    width: fit-content;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
   .email-poster-dark .eyebrow { color: var(--color-periwinkle); }
   .email-poster-dark .eyebrow::before { background: var(--color-periwinkle); }
   .email-poster-dark .email-display {
