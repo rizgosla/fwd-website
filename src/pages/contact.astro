@@ -162,7 +162,9 @@ import BrandMark from "../components/BrandMark.astro";
   }
 
   /* Dark navy variant of the email poster — scrolling outlined fwd
-     logo marks behind a paper-colored email link. */
+     logo marks behind a paper-colored email link. The stroke styling
+     for .ep-mark paths lives in global.css (Astro scoped CSS can't
+     reach inside the BrandMark component). */
   .email-poster-dark {
     background: var(--color-navy) !important;
     color: var(--color-paper);
@@ -182,32 +184,10 @@ import BrandMark from "../components/BrandMark.astro";
   .email-poster-dark .email-poster-bg {
     position: absolute; inset: 0;
     display: flex; align-items: center;
+    justify-content: flex-start;
+    padding-right: 0;
     pointer-events: none; z-index: 0;
     overflow: hidden;
-  }
-  .email-poster-marks {
-    display: flex; align-items: center;
-    gap: clamp(2rem, 5vw, 6rem);
-    width: max-content;
-    animation: mvFwdScroll 36s linear infinite;
-    padding-inline: clamp(1rem, 3vw, 3rem);
-  }
-  .email-poster-dark:hover .email-poster-marks { animation-play-state: paused; }
-  .ep-mark {
-    flex-shrink: 0;
-    height: clamp(12rem, 22vw, 22rem);
-    width: auto;
-    display: block;
-  }
-  .ep-mark g[fill] path,
-  .ep-mark path {
-    fill: none !important;
-    stroke: rgba(255,255,255,0.18);
-    stroke-width: 0.6;
-    vector-effect: non-scaling-stroke;
-  }
-  .ep-mark > g:first-of-type path {
-    stroke: rgba(142,148,184,0.22) !important;
   }
   .email-poster-dark .email-poster-inner { position: relative; z-index: 1; }
   .email-poster-dark .eyebrow { color: var(--color-periwinkle); }

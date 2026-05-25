@@ -1130,6 +1130,35 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   stroke: rgba(142,148,184,0.18) !important;
 }
 
+/* Same outlined logo-marks scroller used inside the contact-page
+   email poster. Selector is global because Astro scoped styles can't
+   reach <path> elements that live inside the BrandMark component. */
+.email-poster-marks {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 6rem);
+  width: max-content;
+  animation: mvFwdScroll 36s linear infinite;
+  padding-inline: clamp(1rem, 3vw, 3rem);
+}
+.email-poster-dark:hover .email-poster-marks { animation-play-state: paused; }
+.ep-mark {
+  flex-shrink: 0;
+  height: clamp(12rem, 22vw, 22rem);
+  width: auto;
+  display: block;
+}
+.ep-mark g[fill] path,
+.ep-mark path {
+  fill: none !important;
+  stroke: rgba(255,255,255,0.22);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+.ep-mark > g:first-of-type path {
+  stroke: rgba(142,148,184,0.28) !important;
+}
+
 /* Logo-image variant of the cta-band background — replaces the scrolling
    text marquee with the fwd-logo SVG sitting behind the headline. */
 .cta-band-logo .cta-band-bg {
