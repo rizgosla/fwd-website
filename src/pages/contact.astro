@@ -2,6 +2,7 @@
 // Auto-generated from site/contact.html — round 4 design.
 // Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandMark from "../components/BrandMark.astro";
 ---
 
 <BaseLayout title="Contact — fwd.">
@@ -20,9 +21,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </section>
 
-  <section class="email-poster">
+  <section class="email-poster email-poster-dark">
     <div class="email-poster-bg" aria-hidden="true">
-      <img src="/assets/fwd-logo.svg" alt="" class="email-poster-mark" />
+      <div class="email-poster-marks">
+        <BrandMark class="ep-mark" decorative={true} />
+        <BrandMark class="ep-mark" decorative={true} />
+        <BrandMark class="ep-mark" decorative={true} />
+        <BrandMark class="ep-mark" decorative={true} />
+        <BrandMark class="ep-mark" decorative={true} />
+        <BrandMark class="ep-mark" decorative={true} />
+      </div>
     </div>
     <div class="full email-poster-inner mv-stagger" data-mv-watch>
       <span class="eyebrow"><span>The fastest way to reach us</span></span>
@@ -144,16 +152,76 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
-  /* Giant fwd logo behind the email poster — replaces the text mark
-     that previously sat in this slot. */
-  .email-poster-mark {
-    height: clamp(14rem, 32vw, 30rem);
+  /* Tighten the page-hero title so "Tell us what you are working on."
+     doesn't leave the period stranded on its own line. */
+  .page-hero h1.display {
+    font-size: var(--text-step-5);
+    max-width: 14ch;
+    text-wrap: balance;
+    line-height: 0.98;
+  }
+
+  /* Dark navy variant of the email poster — scrolling outlined fwd
+     logo marks behind a paper-colored email link. */
+  .email-poster-dark {
+    background: var(--color-navy) !important;
+    color: var(--color-paper);
+    border-color: rgba(255,255,255,0.08) !important;
+    position: relative;
+    overflow: hidden;
+  }
+  .email-poster-dark::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgb(142 148 184 / 0.15), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 80% 100%, rgb(7 23 34 / 0.55), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .email-poster-dark .email-poster-bg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .email-poster-marks {
+    display: flex; align-items: center;
+    gap: clamp(2rem, 5vw, 6rem);
+    width: max-content;
+    animation: mvFwdScroll 36s linear infinite;
+    padding-inline: clamp(1rem, 3vw, 3rem);
+  }
+  .email-poster-dark:hover .email-poster-marks { animation-play-state: paused; }
+  .ep-mark {
+    flex-shrink: 0;
+    height: clamp(12rem, 22vw, 22rem);
     width: auto;
-    max-width: none;
-    opacity: 0.07;
     display: block;
-    margin-inline-start: auto;
-    mix-blend-mode: multiply;
+  }
+  .ep-mark g[fill] path,
+  .ep-mark path {
+    fill: none !important;
+    stroke: rgba(255,255,255,0.18);
+    stroke-width: 0.6;
+    vector-effect: non-scaling-stroke;
+  }
+  .ep-mark > g:first-of-type path {
+    stroke: rgba(142,148,184,0.22) !important;
+  }
+  .email-poster-dark .email-poster-inner { position: relative; z-index: 1; }
+  .email-poster-dark .eyebrow { color: var(--color-periwinkle); }
+  .email-poster-dark .eyebrow::before { background: var(--color-periwinkle); }
+  .email-poster-dark .email-display {
+    color: var(--color-paper);
+    border-bottom-color: transparent;
+  }
+  .email-poster-dark .email-display:hover {
+    color: var(--color-periwinkle);
+    border-bottom-color: var(--color-periwinkle);
+  }
+  .email-poster-dark .email-sub {
+    color: rgba(255,255,255,0.72);
   }
 
 .email-poster { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); padding-block: clamp(4rem, 10vh, 6rem); position: relative; overflow: hidden; }
