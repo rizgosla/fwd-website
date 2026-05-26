@@ -164,8 +164,36 @@ const {
             { passive: true }
           );
 
+          // Auto-advance, with the user always free to take over. Any direct
+          // input pauses it; it resumes after a few idle seconds.
+          let step = 0;
+          let autoTimer = null;
+          let resumeTimer = null;
+          const stopAuto = () => {
+            clearInterval(autoTimer);
+            autoTimer = null;
+          };
+          const startAuto = () => {
+            if (reduceMotion || autoTimer || !step) return;
+            autoTimer = setInterval(
+              () => carousel.scrollBy({ left: step, behavior: "smooth" }),
+              3500
+            );
+          };
+          const pauseThenResume = () => {
+            stopAuto();
+            clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(startAuto, 5000);
+          };
+          ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) =>
+            carousel.addEventListener(ev, pauseThenResume, { passive: true })
+          );
+          carousel.addEventListener("mouseenter", stopAuto);
+          carousel.addEventListener("mouseleave", startAuto);
+
           $$(".burnt-dot", dots).forEach((btn) => {
             btn.addEventListener("click", () => {
+              pauseThenResume();
               const idx = +btn.dataset.idx;
               const cw = carousel.clientWidth;
               const center = carousel.scrollLeft + cw / 2;
@@ -185,8 +213,10 @@ const {
 
           requestAnimationFrame(() => {
             setWidth = centerOf(cards[N]) - centerOf(cards[0]);
+            step = centerOf(cards[1]) - centerOf(cards[0]);
             carousel.scrollLeft = centerOf(cards[N]) - carousel.clientWidth / 2;
             update();
+            startAuto();
           });
         }
 

@@ -29,6 +29,7 @@ const cats = [
   { img: "p-pancake-mango.jpg", count: "06 items", name: "Pancakes" },
   { img: "p-table-pink.jpg", count: "09 items", name: "Brunch Plates" },
   { img: "hero-fries.jpg", count: "07 items", name: "Sides & Sauces", pos: "object-[center_75%]" },
+  { img: "Drinks.jpg", count: "08 items", name: "Drinks" },
 ];
 
 const hot = [
@@ -229,18 +230,20 @@ const navLinks = ["Menu", "Story", "Catering", "Find Us"];
     {stages.map((s) => (
       <div class={`burnt-stage ${s.bg}`} data-folder={s.folder} data-count={s.count}>
         <div class="mx-auto flex max-w-screen-xl flex-col px-4 pb-5 pt-12 md:grid md:grid-cols-2 md:items-center md:gap-12 md:px-8 md:py-20 lg:px-12">
-          <div class="order-2 text-char md:order-1">
-            <div class="inline-flex items-center gap-2 self-end font-display text-[10.5px] font-semibold uppercase tracking-[0.2em] text-char md:mb-4">
+          {/* contents on mobile flattens this group so the scene tag can sit
+              above the image; on desktop it re-groups into the left column */}
+          <div class="contents text-char md:block md:order-1">
+            <div class="order-1 mb-3 inline-flex items-center gap-2 font-display text-[10.5px] font-semibold uppercase tracking-[0.2em] text-char md:mb-4">
               <span>{s.scene}</span>
               <span class="rounded-md bg-char px-2 py-1 font-serif text-[13px] font-medium italic text-paper">{s.chip}</span>
             </div>
-            <div class="pt-4 md:pt-0">
+            <div class="order-3 md:order-none">
               <div class="font-display text-[11px] font-medium uppercase tracking-[0.2em] text-char/70">{s.eyebrow}</div>
               <h3 class="mt-1.5 font-display text-[58px] font-bold uppercase leading-[0.9] tracking-[-0.01em] text-char md:text-[68px] [&_em]:font-serif [&_em]:italic [&_em]:font-bold [&_em]:text-ember" set:html={s.title}></h3>
               <p class="mt-2 max-w-[24ch] font-serif text-[15px] italic leading-[1.4] md:text-base">{s.sub}</p>
             </div>
           </div>
-          <div class="burnt-frames order-1 relative aspect-square w-full shrink-0 overflow-hidden rounded-[18px] shadow-[0_24px_60px_rgba(0,0,0,0.28)] md:order-2"></div>
+          <div class="burnt-frames order-2 relative aspect-square w-full shrink-0 overflow-hidden rounded-[18px] shadow-[0_24px_60px_rgba(0,0,0,0.28)] md:order-2"></div>
         </div>
       </div>
     ))}
@@ -405,10 +408,15 @@ const navLinks = ["Menu", "Story", "Catering", "Find Us"];
             </div>
           </div>
           <div class="grid grid-cols-2 border-t border-char/10">
-            <a href="tel:9495025998" class="flex items-center justify-center gap-1.5 p-4 text-center font-display text-[13px] font-semibold uppercase tracking-[0.1em] text-char">
+            <a href="tel:+19495025998" class="flex items-center justify-center gap-1.5 p-4 text-center font-display text-[13px] font-semibold uppercase tracking-[0.1em] text-char transition-colors hover:bg-char/[0.04]">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2l2 3-1 1c1 2 2 3 4 4l1-1 3 2-1 2c-5 0-10-5-10-10l2-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>Call
             </a>
-            <a href="#" class="flex items-center justify-center gap-1.5 border-l border-char/10 p-4 text-center font-display text-[13px] font-semibold uppercase tracking-[0.1em] text-char">
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=8549+Irvine+Center+Dr,+Irvine,+CA+92618"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-1.5 border-l border-char/10 p-4 text-center font-display text-[13px] font-semibold uppercase tracking-[0.1em] text-char transition-colors hover:bg-char/[0.04]"
+            >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1c-3 0-5 2-5 5 0 4 5 7 5 7s5-3 5-7c0-3-2-5-5-5zm0 7a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>Directions
             </a>
           </div>
