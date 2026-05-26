@@ -95,13 +95,20 @@ const navLinks = ["Menu", "Story", "Catering", "Find Us"];
   </header>
 
   <!-- ── Marquee ───────────────────────────────────────────────────── -->
+  {/* Two identical halves; the CSS loop translates -50% (one half), so it's
+      seamless. Each half repeats the phrases enough to exceed any desktop
+      width, otherwise a gap opens at the wrap on wide screens. */}
   <div class="overflow-hidden border-y border-paper/10 bg-ink py-[7px] text-paperdim">
     <div class="burnt-marquee-track flex gap-7 whitespace-nowrap font-display text-[11px] font-medium uppercase tracking-[0.2em]">
-      {Array.from({ length: 2 }).map(() =>
-        ["Burnt on purpose", "Scratch made daily", "Sauce by the ounce", "Spaghetti grilled cheese", "Pancakes that move"].map((t) => (
-          <span class="inline-flex items-center gap-3.5">{t}<span class="h-[5px] w-[5px] rounded-full bg-ember"></span></span>
-        ))
-      )}
+      {Array.from({ length: 2 }).map(() => (
+        <div class="flex shrink-0 gap-7">
+          {Array.from({ length: 4 }).map(() =>
+            ["Burnt on purpose", "Scratch made daily", "Sauce by the ounce", "Spaghetti grilled cheese", "Pancakes that move"].map((t) => (
+              <span class="inline-flex items-center gap-3.5">{t}<span class="h-[5px] w-[5px] rounded-full bg-ember"></span></span>
+            ))
+          )}
+        </div>
+      ))}
     </div>
   </div>
 
