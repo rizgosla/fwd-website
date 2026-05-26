@@ -1,0 +1,196 @@
+---
+import "../styles/burnt.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Burnt Crumbs · Burnt on purpose.",
+  description = "Scratch-made comfort food in Irvine, CA. Home of the spaghetti grilled cheese, soufflé pancakes, and sauce by the ounce.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0e0a07" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-paper text-char font-body">
+    <slot />
+
+    <script is:inline>
+      (() => {
+        const $ = (s, r = document) => r.querySelector(s);
+        const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+        const MEDIA = "/burntmockup/media";
+
+        // ── Stop-motion: build frames, then auto-loop at 500ms ──────────────
+        const SLIDES = {
+          burrito: range(72, 80),
+          chicken: range(39, 48),
+          pancake: range(96, 108),
+          salad: [185, 186, 187, 189, 190, 191, 192, 193, 194],
+        };
+        function range(a, b) {
+          const out = [];
+          for (let i = a; i <= b; i++) out.push(i);
+          return out;
+        }
+        function fname(n) {
+          return `GoodTimesMedia_BurntCrumbsAugust2024${String(n).padStart(3, "0")}.jpg`;
+        }
+
+        $$(".burnt-stage").forEach((stage) => {
+          const key = stage.dataset.folder;
+          const wrap = $(".burnt-frames", stage);
+          const arr = SLIDES[key] || [];
+          arr.forEach((n, i) => {
+            const img = document.createElement("img");
+            img.src = `${MEDIA}/slideshow-${key}/${fname(n)}`;
+            img.alt = "";
+            img.loading = i < 2 ? "eager" : "lazy";
+            img.decoding = "async";
+            if (i === 0) img.classList.add("on");
+            wrap.appendChild(img);
+          });
+        });
+
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        if (!reduceMotion) {
+          $$(".burnt-stage").forEach((stage) => {
+            const imgs = $$(".burnt-frames img", stage);
+            if (!imgs.length) return;
+            let idx = 0;
+            setInterval(() => {
+              imgs[idx].classList.remove("on");
+              idx = (idx + 1) % imgs.length;
+              imgs[idx].classList.add("on");
+            }, 500);
+          });
+        }
+
+        // ── Curved carousel ─────────────────────────────────────────────────
+        const carousel = $("#carousel");
+        if (carousel) {
+          const cards = $$(".burnt-card", carousel);
+          const dots = $("#carousel-dots");
+
+          cards.forEach((_, i) => {
+            const b = document.createElement("button");
+            b.className = "burnt-dot";
+            b.setAttribute("aria-label", `Go to dish ${i + 1}`);
+            b.style.cssText =
+              "width:6px;height:6px;border-radius:99px;background:rgba(245,237,224,0.25);border:0;padding:0;transition:width 200ms,background 200ms;";
+            b.dataset.idx = i;
+            dots.appendChild(b);
+          });
+
+          const update = () => {
+            const cw = carousel.clientWidth;
+            const center = carousel.scrollLeft + cw / 2;
+            let closest = 0;
+            let closestDist = Infinity;
+            cards.forEach((card, i) => {
+              const cc = card.offsetLeft + card.offsetWidth / 2;
+              const dx = cc - center;
+              const norm = dx / (cw * 0.6);
+              const clamped = Math.max(-1.4, Math.min(1.4, norm));
+              const abs = Math.abs(clamped);
+              const y = abs * abs * 50;
+              const rot = clamped * 10;
+              const scale = 1 - Math.min(0.18, abs * 0.16);
+              const opacity = 1 - Math.min(0.45, abs * 0.4);
+              card.style.transform = `translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
+              card.style.opacity = opacity;
+              card.style.zIndex = String(100 - Math.round(abs * 100));
+              if (Math.abs(dx) < closestDist) {
+                closestDist = Math.abs(dx);
+                closest = i;
+              }
+            });
+            const c = cards[closest];
+            $("#ci-num").textContent = String(closest + 1).padStart(2, "0");
+            $("#ci-name").textContent = c.dataset.name || "";
+            $("#ci-price").textContent = c.dataset.price || "";
+            $$(".burnt-dot", dots).forEach((b, i) => {
+              b.style.background =
+                i === closest ? "var(--color-ember)" : "rgba(245,237,224,0.25)";
+              b.style.width = i === closest ? "18px" : "6px";
+            });
+          };
+
+          carousel.addEventListener(
+            "scroll",
+            () => requestAnimationFrame(update),
+            { passive: true }
+          );
+          $$(".burnt-dot", dots).forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const card = cards[+btn.dataset.idx];
+              const target =
+                card.offsetLeft + card.offsetWidth / 2 - carousel.clientWidth / 2;
+              carousel.scrollTo({ left: target, behavior: "smooth" });
+            });
+          });
+
+          requestAnimationFrame(() => {
+            const first = cards[0];
+            carousel.scrollLeft =
+              first.offsetLeft + first.offsetWidth / 2 - carousel.clientWidth / 2;
+            update();
+          });
+        }
+
+        // ── Mobile menu toggle ──────────────────────────────────────────────
+        const menuBtn = $("#burnt-menu-btn");
+        const mobileMenu = $("#burnt-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          const open = mobileMenu.classList.toggle("hidden");
+          menuBtn.setAttribute("aria-expanded", String(!open));
+        });
+        $$("#burnt-mobile-menu a").forEach((a) =>
+          a.addEventListener("click", () => mobileMenu.classList.add("hidden"))
+        );
+
+        // ── Nav state + sticky CTA ──────────────────────────────────────────
+        const nav = $("#burnt-nav");
+        const sticky = $("#burnt-sticky");
+        const hero = $("#burnt-hero");
+        const onScroll = () => {
+          const y = window.scrollY || document.documentElement.scrollTop;
+          nav?.classList.toggle("shadow-lg", y > 80);
+          if (hero && sticky) {
+            const heroBottom = hero.offsetTop + hero.offsetHeight;
+            const on = y > heroBottom - 200;
+            sticky.classList.toggle("opacity-0", !on);
+            sticky.classList.toggle("translate-y-6", !on);
+            sticky.classList.toggle("pointer-events-none", !on);
+          }
+        };
+        document.addEventListener(
+          "scroll",
+          () => requestAnimationFrame(onScroll),
+          { passive: true }
+        );
+        requestAnimationFrame(onScroll);
+      })();
+    </script>
+  </body>
+</html>

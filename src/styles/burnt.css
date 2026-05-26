@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* ========================================================================
+   BURNT CRUMBS — isolated theme entry.
+   Self-contained on purpose: only the /burnt page imports this file, so it
+   carries its own palette + fonts and can be lifted into another repo with
+   the layout, page, and /public/burntmockup/media assets.
+   ======================================================================== */
+@theme {
+  --color-char: #1a1410;
+  --color-ink: #0e0a07;
+  --color-paper: #f5ede0;
+  --color-paperdim: #ebe1d0;
+  --color-paperdk: #d9cdb6;
+  --color-ember: #c5453a;
+  --color-emberlit: #e85c4d;
+  --color-amber: #e8a04e;
+  --color-mustard: #d99d35;
+  --color-butter: #f5cf5b;
+  --color-blush: #f2b6a0;
+  --color-sky: #a8cee2;
+  --color-sage: #b8c9a7;
+  --color-peach: #f0a878;
+  --color-lavender: #c8b8d8;
+
+  --font-display: "Oswald", system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-ink);
+  color: var(--color-char);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Marquee ─────────────────────────────────────────────── */
+@keyframes burnt-scroll-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.burnt-marquee-track {
+  animation: burnt-scroll-x 22s linear infinite;
+}
+
+/* ── Hero scroll hint ────────────────────────────────────── */
+@keyframes burnt-drop {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+    transform-origin: top;
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.burnt-drop-line {
+  animation: burnt-drop 1.6s ease-in-out infinite;
+}
+
+/* ── Story drop cap ──────────────────────────────────────── */
+.burnt-dropcap::first-letter {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 3.25rem;
+  line-height: 0.85;
+  float: left;
+  color: var(--color-ember);
+  padding: 0.25rem 0.4rem 0 0;
+}
+
+/* ── Stop-motion crossfade ───────────────────────────────── */
+.burnt-frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transform: scale(1.08);
+  transition: opacity 60ms linear;
+}
+.burnt-frames img.on {
+  opacity: 1;
+}
+
+/* ── Hide scrollbars on snap rows ────────────────────────── */
+.burnt-no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.burnt-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Faux-map backdrop ───────────────────────────────────── */
+.burnt-map {
+  background:
+    repeating-linear-gradient(0deg, rgb(26 20 16 / 0.06) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgb(26 20 16 / 0.06) 0 1px, transparent 1px 22px),
+    radial-gradient(80% 60% at 50% 60%, rgb(232 160 78 / 0.18), transparent 65%),
+    var(--color-paperdim);
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .burnt-marquee-track,
+  .burnt-drop-line {
+    animation: none;
+  }
+}
