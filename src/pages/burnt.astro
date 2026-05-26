@@ -185,7 +185,7 @@ const navLinks = ["Menu", "Story", "Catering", "Find Us"];
     </div>
 
     <div class="relative mt-7 h-[540px]">
-      <div id="carousel" class="burnt-no-scrollbar absolute inset-0 flex snap-x snap-mandatory gap-[18px] overflow-x-auto px-[35%] [perspective:1200px] md:px-[40%]">
+      <div id="carousel" class="burnt-no-scrollbar absolute inset-0 flex snap-x snap-mandatory gap-[18px] overflow-x-auto px-[calc(50%-110px)] [perspective:1200px]">
         {dishes.map((d) => (
           <div
             class="burnt-card relative h-[360px] flex-[0_0_220px] origin-bottom snap-center overflow-hidden rounded-[18px] bg-[#2a1d15] shadow-[0_30px_60px_rgba(0,0,0,0.4)] [will-change:transform,opacity]"

@@ -89,10 +89,23 @@ const {
         // ── Curved carousel ─────────────────────────────────────────────────
         const carousel = $("#carousel");
         if (carousel) {
+          // Clone the full set before and after the originals so swiping can
+          // wrap forever. Layout is [front clones][originals][back clones];
+          // when a clone scrolls to center we jump by one set width — the
+          // cloned card is identical, so the seam is invisible.
+          const originals = $$(".burnt-card", carousel);
+          const N = originals.length;
+          const firstOriginal = originals[0];
+          originals.forEach((o) => carousel.appendChild(o.cloneNode(true)));
+          originals.forEach((o) =>
+            carousel.insertBefore(o.cloneNode(true), firstOriginal)
+          );
+
           const cards = $$(".burnt-card", carousel);
           const dots = $("#carousel-dots");
+          let setWidth = 0;
 
-          cards.forEach((_, i) => {
+          originals.forEach((_, i) => {
             const b = document.createElement("button");
             b.className = "burnt-dot";
             b.setAttribute("aria-label", `Go to dish ${i + 1}`);
@@ -102,14 +115,15 @@ const {
             dots.appendChild(b);
           });
 
+          const centerOf = (card) => card.offsetLeft + card.offsetWidth / 2;
+
           const update = () => {
             const cw = carousel.clientWidth;
             const center = carousel.scrollLeft + cw / 2;
             let closest = 0;
             let closestDist = Infinity;
             cards.forEach((card, i) => {
-              const cc = card.offsetLeft + card.offsetWidth / 2;
-              const dx = cc - center;
+              const dx = centerOf(card) - center;
               const norm = dx / (cw * 0.6);
               const clamped = Math.max(-1.4, Math.min(1.4, norm));
               const abs = Math.abs(clamped);
@@ -125,15 +139,23 @@ const {
                 closest = i;
               }
             });
+
+            const logical = ((closest % N) + N) % N;
             const c = cards[closest];
-            $("#ci-num").textContent = String(closest + 1).padStart(2, "0");
+            $("#ci-num").textContent = String(logical + 1).padStart(2, "0");
             $("#ci-name").textContent = c.dataset.name || "";
             $("#ci-price").textContent = c.dataset.price || "";
             $$(".burnt-dot", dots).forEach((b, i) => {
               b.style.background =
-                i === closest ? "var(--color-ember)" : "rgba(245,237,224,0.25)";
-              b.style.width = i === closest ? "18px" : "6px";
+                i === logical ? "var(--color-ember)" : "rgba(245,237,224,0.25)";
+              b.style.width = i === logical ? "18px" : "6px";
             });
+
+            // Wrap: if a clone is centered, jump back into the middle set.
+            if (setWidth) {
+              if (closest < N) carousel.scrollLeft += setWidth;
+              else if (closest >= 2 * N) carousel.scrollLeft -= setWidth;
+            }
           };
 
           carousel.addEventListener(
@@ -141,19 +163,29 @@ const {
             () => requestAnimationFrame(update),
             { passive: true }
           );
+
           $$(".burnt-dot", dots).forEach((btn) => {
             btn.addEventListener("click", () => {
-              const card = cards[+btn.dataset.idx];
-              const target =
-                card.offsetLeft + card.offsetWidth / 2 - carousel.clientWidth / 2;
-              carousel.scrollTo({ left: target, behavior: "smooth" });
+              const idx = +btn.dataset.idx;
+              const cw = carousel.clientWidth;
+              const center = carousel.scrollLeft + cw / 2;
+              let best = null;
+              let bestDist = Infinity;
+              [idx, idx + N, idx + 2 * N].forEach((ci) => {
+                const cc = centerOf(cards[ci]);
+                const d = Math.abs(cc - center);
+                if (d < bestDist) {
+                  bestDist = d;
+                  best = cc;
+                }
+              });
+              carousel.scrollTo({ left: best - cw / 2, behavior: "smooth" });
             });
           });
 
           requestAnimationFrame(() => {
-            const first = cards[0];
-            carousel.scrollLeft =
-              first.offsetLeft + first.offsetWidth / 2 - carousel.clientWidth / 2;
+            setWidth = centerOf(cards[N]) - centerOf(cards[0]);
+            carousel.scrollLeft = centerOf(cards[N]) - carousel.clientWidth / 2;
             update();
           });
         }
