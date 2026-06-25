@@ -575,6 +575,31 @@ img, svg { max-width: 100%; display: block; }
   border-radius: 2px;
 }
 
+/* Skip-to-main-content link — visible when focused. Pinned top-left so a
+   keyboard user landing on the page can jump past the nav on first Tab. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-navy);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--text-step--1);
+  border-radius: 6px;
+  transition: top 200ms var(--ease-soft);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 1rem;
+  outline: 2px solid var(--color-periwinkle);
+  outline-offset: 3px;
+}
+
+main:focus { outline: none; }
+
 /* ============================================================
    TYPOGRAPHY PATTERNS
    ============================================================ */

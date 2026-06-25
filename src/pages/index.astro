@@ -18,7 +18,7 @@ import Marquee from "../components/Marquee.astro";
         </div>
       </div>
 
-      <div class="hero-right">
+      <div class="hero-right" aria-hidden="true">
         <div class="browser">
           <div class="browser-chrome">
             <div class="dots">
@@ -95,7 +95,7 @@ import Marquee from "../components/Marquee.astro";
         </div>
         <div class="meta-cell">
           <span class="meta-key">Typical turnaround</span>
-          <strong class="meta-val">2 weeks — 1 month</strong>
+          <strong class="meta-val">About 4 weeks</strong>
         </div>
         <div class="meta-cell">
           <span class="meta-key">Pricing model</span>
@@ -113,44 +113,28 @@ import Marquee from "../components/Marquee.astro";
   <section id="services" class="section section-tiers">
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
-        <h2 class="display section-title">Two ways to <em>get online</em>.</h2>
-        <p class="section-sub">Both flat-rate. Both shipped fast. You pick the scope; we handle every part of getting it live.</p>
+        <h2 class="display section-title">One way to <em>get online</em>.</h2>
+        <p class="section-sub">A flat-rate full website. You bring the brand and the words; we handle every part of designing, building, and shipping it.</p>
       </div>
-      <div class="tiers-grid mv-stagger" data-mv-watch>
-        <article class="tier tier-light" data-tilt>
-          <span class="tier-sheen" aria-hidden="true"></span>
-          <div class="tier-top"><span class="tier-deliv">~1–2 weeks</span></div>
-          <h3 class="tier-title">Landing Page</h3>
-          <div class="tier-price">
-            <span class="dollar">$</span>
-            <span class="amount">800</span>
-            <span class="note">flat · one round of revisions</span>
-          </div>
-          <ul class="tier-features">
-            <li><span class="check">✓</span>One beautifully-designed page built around your brand</li>
-            <li><span class="check">✓</span>Booking / contact form with instant email notifications</li>
-            <li><span class="check">✓</span>Mobile and desktop optimized, basic on-page SEO</li>
-            <li><span class="check">✓</span>Hosting setup and domain connection included</li>
-          </ul>
-          <a href="/services" class="tier-cta">Start with Landing <span class="arrow">→</span></a>
-        </article>
-
+      <div class="tiers-grid tiers-grid-single mv-stagger" data-mv-watch>
         <article class="tier tier-dark" data-tilt>
           <span class="tier-sheen" aria-hidden="true"></span>
-          <div class="tier-top"><span class="tier-deliv">~2–4 weeks · up to 8 pages</span></div>
+          <div class="tier-top"><span class="tier-deliv">~3–4 weeks · up to 8 pages</span></div>
           <h3 class="tier-title">Full Site</h3>
           <div class="tier-price">
             <span class="dollar">$</span>
-            <span class="amount">1,800</span>
-            <span class="note">flat · two rounds of revisions</span>
+            <span class="amount">4,000</span>
+            <span class="note">flat · three rounds of revisions</span>
           </div>
           <ul class="tier-features">
-            <li><span class="check">✓</span>Everything in Landing Page, scaled up to 8 pages</li>
-            <li><span class="check">✓</span>Home, Services, About, Contact + 4 of your choice</li>
+            <li><span class="check">✓</span>Up to 8 pages, designed cohesively around your brand</li>
             <li><span class="check">✓</span>Cohesive type, color, and component system</li>
+            <li><span class="check">✓</span>Lead capture form with instant email notifications</li>
+            <li><span class="check">✓</span>Mobile and desktop optimized, basic on-page SEO</li>
+            <li><span class="check">✓</span>Hosting setup and domain connection included</li>
             <li><span class="check">✓</span>Handoff doc so you (or anyone) can update content later</li>
           </ul>
-          <a href="/services" class="tier-cta">Start with Full Site <span class="arrow">→</span></a>
+          <a href="/services" class="tier-cta">See the full scope <span class="arrow">→</span></a>
         </article>
       </div>
     </div>
@@ -161,7 +145,7 @@ import Marquee from "../components/Marquee.astro";
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">A simple, <em>honest</em> process.</h2>
-        <p class="section-sub">Four steps. Two weeks to one month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
+        <p class="section-sub">Four steps. About a month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
       </div>
     </div>
 
@@ -177,7 +161,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">A short call</h3>
             <p class="ps-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.<span class="ps-meta">— No prep required</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-call">
                 <div class="ps-visual-call-h"><span class="month">May 2026</span><span>15 min</span></div>
@@ -201,7 +185,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Design draft <em>in your browser</em>.</h3>
             <p class="ps-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.<span class="ps-meta">— Delivered in week one</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="mini-browser ps-mini">
                 <div class="mini-chrome">
@@ -232,7 +216,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Revisions</h3>
             <p class="ps-body">One or two rounds depending on tier. We adjust until it feels right, then lock it.<span class="ps-meta">— Async, on your time</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-revisions">
                 <div class="ps-revision-line" style="width:90%"></div>
@@ -259,7 +243,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Launch</h3>
             <p class="ps-body">We connect your domain, set up hosting, and hand over a clean handoff doc you can actually read.<span class="ps-meta">— Live the same day</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-launch">
                 <div class="ps-launch-url"><span class="lock"></span>https://smithdental.com</div>
@@ -278,10 +262,10 @@ import Marquee from "../components/Marquee.astro";
   </section>
 
   
-  <section class="cta-band-light mv-soften" data-mv-watch>
+  <section class="cta-band-light mv-soften" data-mv-watch aria-labelledby="home-cta-title">
     <div class="cta-band-light-bg" aria-hidden="true"></div>
     <div class="cta-band-light-inner">
-      <h3 class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h3>
+      <h2 id="home-cta-title" class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h2>
       <div class="cta-band-light-side">
         <p class="cta-band-light-lede">Tell us about it. We reply to every inquiry — usually within a day.</p>
         <a href="/contact" class="btn btn-primary cta-band-light-btn">
@@ -373,7 +357,8 @@ import Marquee from "../components/Marquee.astro";
   .section-tiers .section-head { margin-bottom: clamp(3rem, 6vh, 5rem); }
 
   .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
+  .tiers-grid-single { max-width: 720px; margin-inline: auto; }
+  @media (min-width: 900px) { .tiers-grid:not(.tiers-grid-single) { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
   .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2.5rem, 4vw, 3.75rem); display: flex; flex-direction: column; gap: 1.75rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 640px; }
   .tier-dark { --bg: var(--color-navy); --fg: #fff; --fg-soft: rgba(255,255,255,0.82); --fg-muted: rgba(255,255,255,0.55); --line: rgba(255,255,255,0.14); --accent: var(--color-periwinkle); --sheen: rgb(255 255 255 / 0.14); }
   .tier:hover { transform: translateY(-2px); box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25); }

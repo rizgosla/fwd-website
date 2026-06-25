@@ -1,11 +1,24 @@
 ---
-// Auto-generated from site/work.html — round 4 design.
-// Edit page-level markup here; shared components live in src/components.
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const all = await getCollection("work");
+const live = all
+  .filter((e) => e.data.status === "live")
+  .sort((a, b) => a.data.order - b.data.order);
+const upcoming = all
+  .filter((e) => e.data.status !== "live")
+  .sort((a, b) => a.data.order - b.data.order);
+
+const statusLabel = {
+  build: "In build",
+  design: "In design",
+  discovery: "Kickoff",
+};
 ---
 
 <BaseLayout title="Selected work — fwd.">
-<section class="work-hero">
+  <section class="work-hero">
     <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="work-hero-stamp" />
     <div class="full work-hero-inner">
       <div data-mv-watch class="mv-rise work-hero-text">
@@ -13,247 +26,103 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <span class="num">— 03</span>
           <span>Selected work</span>
         </p>
-        <h1 class="display work-hero-title">A small studio with <em>real numbers</em>.</h1>
-        <p class="lede work-hero-lede">One launched case study below — laid out as an example of what every case study on this page will look like. Three more projects are in production now.</p>
+        <h1 class="display work-hero-title">A small studio. <em>Real projects</em>.</h1>
+        <p class="lede work-hero-lede">Every site we ship gets a short write-up — what we built, why, and how it performed once it went live. New entries land as projects launch.</p>
       </div>
-      <ul class="work-hero-stats" aria-hidden="false">
-        <li><strong>01</strong><span>Launched</span></li>
-        <li><strong>03</strong><span>In production</span></li>
+      <ul class="work-hero-stats">
+        <li><strong>{live.length.toString().padStart(2, "0")}</strong><span>Launched</span></li>
+        <li><strong>{upcoming.length.toString().padStart(2, "0")}</strong><span>In production</span></li>
         <li><strong>100%</strong><span>Flat-fee</span></li>
         <li><strong>2026</strong><span>Studio year</span></li>
       </ul>
     </div>
   </section>
 
-  <article class="case-deep">
-    <!-- DARK HERO -->
-    <header class="case-deep-hero">
-      <div class="case-deep-hero-inner">
-        <div data-mv-watch class="mv-rise">
-          <p class="cd-eyebrow">
-            <span>Case study · 01</span>
-            <span class="badge">Example layout</span>
-          </p>
-          <h1>Smith Family <em>Dental</em>.</h1>
-          <p class="cd-deck">A 30-year-old practice in Irvine that had not updated their site since 2014. We rebuilt it as a Landing in <em>9 days</em> — one page, calm visual language, real photography, and a booking flow that filed straight into their existing scheduler.</p>
-        </div>
-        <dl class="cd-aside mv-stagger" data-mv-watch>
-          <div><dt>Engagement</dt><dd>Landing · $800</dd></div>
-          <div><dt>Turnaround</dt><dd>9 business days</dd></div>
-          <div><dt>Industry</dt><dd>Healthcare · Dental</dd></div>
-          <div><dt>Location</dt><dd>Irvine, CA</dd></div>
-          <div><dt>Built with</dt><dd>Astro · Cloudflare</dd></div>
-          <div><dt>Launched</dt><dd>March 2026</dd></div>
-        </dl>
-      </div>
-    </header>
-
-    <!-- BIG SCREENSHOT FRAME -->
-    <section class="case-deep-shot mv-soften" data-mv-watch>
-      <div class="case-deep-shot-frame">
-        <div class="chrome">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <div class="url"><span class="lock">●</span>smithdental.com</div>
-        </div>
-        <div class="cds-screen">
-          <div class="cds-hero">
-            <div>
-              <div class="eyebrow-small">— Family dentistry · Irvine, CA</div>
-              <h2>A calmer kind of <em>dental visit</em>.</h2>
-              <p>Same-day appointments, gentle care, and a team that actually remembers your name.</p>
-              <span class="cds-cta">Book a visit →</span>
-            </div>
-            <div class="cds-hero-photo" aria-hidden="true"></div>
-          </div>
-          <div class="cds-body">
-            <div class="cds-card">
-              <div class="cds-card-img"></div>
-              <div class="cds-card-h">Meet the team</div>
-              <div class="cds-card-l" style="width:80%"></div>
-              <div class="cds-card-l" style="width:60%"></div>
-            </div>
-            <div class="cds-card">
-              <div class="cds-card-img"></div>
-              <div class="cds-card-h">Hours &amp; location</div>
-              <div class="cds-card-l" style="width:70%"></div>
-              <div class="cds-card-l" style="width:55%"></div>
-            </div>
-            <div class="cds-card">
-              <div class="cds-card-img"></div>
-              <div class="cds-card-h">Services we offer</div>
-              <div class="cds-card-l" style="width:85%"></div>
-              <div class="cds-card-l" style="width:50%"></div>
-            </div>
-          </div>
-          <div class="cds-foot">
-            <div class="cds-foot-mark">smith family dental.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BRIEF / APPROACH -->
-    <section class="case-twocol">
-      <div class="case-twocol-inner">
-        <div class="col mv-stagger" data-mv-watch>
-          <h3>The brief</h3>
-          <h4>An old site that <em>buried</em> the booking flow.</h4>
-          <p>Smith Family Dental had been running the same site since 2014 — Flash-era hero, four-column 90s footer, a contact form three clicks deep. They were getting walk-ins because of word of mouth, but almost no inbound bookings from the site itself.</p>
-          <p>What they actually needed was one page, fast on a phone, with a single clear path to "book a visit" — and a tone that matched how it feels to actually be in their practice (calm, family-run, no upsells).</p>
-        </div>
-
-        <div class="col mv-stagger" data-mv-watch>
-          <h3>The approach</h3>
-          <h4>A single page, three real decisions.</h4>
-          <ul>
-            <li>Strip the structure to one page so every booking is a single tap from any device.</li>
-            <li>Replace the stock photography with three portrait shots of the real team — the practice's strongest differentiator.</li>
-            <li>Move the booking widget into the hero so it never falls below the fold, then have it post directly into their existing scheduler so they did not have to change any internal workflow.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESULTS -->
-    <section class="case-results">
+  {live.length > 0 && (
+    <section class="section section-work-grid">
       <div class="full">
         <div class="section-head mv-rise" data-mv-watch>
-          <h2 class="display section-title">First 30 days, in <em>real numbers</em>.</h2>
-          <p class="section-sub">Tracked against the same 30-day window from the year before. No paid promotion was added on either side.</p>
+          <h2 class="display section-title">Launched <em>projects</em>.</h2>
+          <p class="section-sub">Tap any card to read the full case study — brief, approach, results, and a process recap.</p>
         </div>
 
-        <div class="case-results-grid mv-stagger" data-mv-watch>
-          <div class="result-card">
-            <span class="label">Booking inquiries</span>
-            <div class="num">3.2<span class="suffix">×</span></div>
-            <span class="sub">vs. the same 30-day window in 2025.</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Mobile bounce rate</span>
-            <div class="num"><span class="arrow-up">↓</span> 41<span class="suffix">%</span></div>
-            <span class="sub">From 62% down to 36% on phones.</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Avg. session length</span>
-            <div class="num">1:42<span class="suffix">min</span></div>
-            <span class="sub">2.4× the previous site's average.</span>
-          </div>
-          <div class="result-card">
-            <span class="label">PageSpeed score</span>
-            <div class="num">98<span class="suffix">/100</span></div>
-            <span class="sub">Mobile, real-world LCP under 1.2s.</span>
-          </div>
-        </div>
+        <ul class="work-grid mv-stagger" data-mv-watch>
+          {live.map((entry) => (
+            <li class="work-card">
+              <a href={`/work/${entry.id}`} class="work-card-link">
+                <span class="work-card-stripe" aria-hidden="true"></span>
+                <div class="work-card-body">
+                  <div class="work-card-meta">
+                    {entry.data.industry && <span>{entry.data.industry}</span>}
+                    {entry.data.location && <span class="sep" aria-hidden="true">·</span>}
+                    {entry.data.location && <span>{entry.data.location}</span>}
+                  </div>
+                  <h3 class="work-card-title">{entry.data.title}</h3>
+                  <p class="work-card-summary">{entry.data.summary}</p>
+                  {entry.data.results.length > 0 && (
+                    <dl class="work-card-results">
+                      {entry.data.results.slice(0, 2).map((r) => (
+                        <div>
+                          <dt>{r.label}</dt>
+                          <dd>{r.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                </div>
+                <div class="work-card-foot">
+                  <span class="work-card-scope">{entry.data.scope} · ${entry.data.price.toLocaleString()}</span>
+                  <span class="work-card-cta">Read case study <span class="arrow" aria-hidden="true">→</span></span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
+  )}
 
-    <!-- PULL QUOTE -->
-    <section class="case-quote">
-      <div class="case-quote-inner mv-soften" data-mv-watch>
-        <blockquote>The site finally <em>sounds like our practice</em>. New patients show up already knowing what to expect, which has changed the first-visit conversation entirely.</blockquote>
-        <span class="cite"><strong>Dr. Mei Smith</strong> · Owner, Smith Family Dental</span>
-      </div>
-    </section>
-
-    <!-- PROCESS RECAP -->
-    <section class="case-process">
+  {upcoming.length > 0 && (
+    <section class="section section-upcoming" id="next">
       <div class="full">
         <div class="section-head mv-rise" data-mv-watch>
-          <h2 class="display section-title">Nine business days, <em>start to launch</em>.</h2>
+          <h2 class="display section-title">In <em>production</em>.</h2>
+          <p class="section-sub">We keep the studio small on purpose — three to four projects a quarter, fully shipped, then written up like the ones above.</p>
         </div>
-        <ol class="case-process-track mv-stagger" data-mv-watch>
-          <li class="cp-step done">
-            <span class="day">Day 1</span>
-            <h4 class="h">Intro call</h4>
-            <p class="p">15-minute call with Dr. Smith. Reviewed the existing site and the booking flow.</p>
-          </li>
-          <li class="cp-step done">
-            <span class="day">Day 2</span>
-            <h4 class="h">Proposal signed</h4>
-            <p class="p">Flat $800 Landing, 9-day timeline, two revision rounds included.</p>
-          </li>
-          <li class="cp-step done">
-            <span class="day">Day 3–5</span>
-            <h4 class="h">Draft live</h4>
-            <p class="p">First draft delivered as a real URL on a staging domain. Team shoot scheduled.</p>
-          </li>
-          <li class="cp-step done">
-            <span class="day">Day 6–8</span>
-            <h4 class="h">Two revision rounds</h4>
-            <p class="p">Photos integrated, tone tightened, the booking widget moved to the hero.</p>
-          </li>
-          <li class="cp-step done">
-            <span class="day">Day 9</span>
-            <h4 class="h">Live</h4>
-            <p class="p">Domain pointed, SSL provisioned, handoff doc delivered. Final invoice sent same day.</p>
-          </li>
-        </ol>
+
+        <ul class="pipeline-grid mv-stagger" data-mv-watch>
+          {upcoming.map((entry) => (
+            <li class="pipeline-card">
+              <div class="pipeline-header">
+                <span class="pipeline-status">
+                  <span class={`pipeline-dot pipeline-dot-${entry.data.status}`} aria-hidden="true"></span>
+                  {statusLabel[entry.data.status as "build" | "design" | "discovery"]}
+                </span>
+                {entry.data.launchesIn && <span class="pipeline-eta">Launches {entry.data.launchesIn}</span>}
+              </div>
+              <h3 class="pipeline-title">{entry.data.title}</h3>
+              <p class="pipeline-desc">{entry.data.summary}</p>
+              <span class="pipeline-meta">{entry.data.scope} · ${entry.data.price.toLocaleString()}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
-  </article>
+  )}
 
-  <div class="section-divider" aria-hidden="true"></div>
-
-  <!-- PIPELINE — three more in progress -->
-  <section class="section" id="next">
-    <div class="full">
-      <div class="section-head mv-rise" data-mv-watch>
-        <h2 class="display section-title">Three more, <em>landing soon</em>.</h2>
-        <p class="section-sub">We have kept the studio small on purpose — three to four projects a quarter, fully shipped, then written up like the one above. These are the next three in flight.</p>
-      </div>
-
-      <div class="pipeline-grid mv-stagger" data-mv-watch>
-        <article class="pipeline-card">
-          <div class="pipeline-header">
-            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-build"></span>In build</span>
-            <span class="pipeline-eta">Launches June</span>
-          </div>
-          <h3 class="pipeline-title">North &amp; Pine Books</h3>
-          <p class="pipeline-desc">Independent bookshop in Portland. Full Site — home, events, staff picks, online order.</p>
-          <span class="pipeline-meta">Full Site · $1,800</span>
-        </article>
-
-        <article class="pipeline-card">
-          <div class="pipeline-header">
-            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-design"></span>In design</span>
-            <span class="pipeline-eta">Launches July</span>
-          </div>
-          <h3 class="pipeline-title">Lila Park Therapy</h3>
-          <p class="pipeline-desc">Therapist starting her own practice. Landing — one page, gentle voice, intake form.</p>
-          <span class="pipeline-meta">Landing · $800</span>
-        </article>
-
-        <article class="pipeline-card">
-          <div class="pipeline-header">
-            <span class="pipeline-status"><span class="pipeline-dot pipeline-dot-discovery"></span>Kickoff</span>
-            <span class="pipeline-eta">Launches August</span>
-          </div>
-          <h3 class="pipeline-title">Roost Coffee</h3>
-          <p class="pipeline-desc">Two-location coffee shop. Full Site — menu, hours per location, ordering link.</p>
-          <span class="pipeline-meta">Full Site · $1,800</span>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- EDITORIAL NOTE -->
   <section class="section section-note">
     <div class="full">
       <div class="container-prose note-inner mv-stagger" data-mv-watch>
         <p class="eyebrow"><span>A note on this page</span></p>
-        <h2 class="display note-h">One real site. Three more <em>landing in months</em>.</h2>
-        <p class="note-body">When we started fwd. we agreed we would never show work that was not ours, and we would never dress up a placeholder to look like a case study. So this page will fill up slowly — one careful project at a time — each laid out in the same depth as Smith Family Dental above.</p>
-        <p class="note-body">If you would like to be case study 02, the <a class="link-arrow" href="/services">services page<span class="arrow">→</span></a> has the scope and the prices, and the <a class="link-arrow" href="/contact">contact form<span class="arrow">→</span></a> takes a minute.</p>
+        <h2 class="display note-h">Real projects, written up <em>as they ship</em>.</h2>
+        <p class="note-body">When we started fwd. we agreed we would never show work that was not ours, and we would never dress up a placeholder to look like a case study. So this page fills up slowly — one careful project at a time.</p>
+        <p class="note-body">If you would like the next slot, the <a class="link-arrow" href="/services">services page<span class="arrow">→</span></a> has the scope and the price, and the <a class="link-arrow" href="/contact">contact form<span class="arrow">→</span></a> takes a minute.</p>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  /* ============================================================
-     WORK HERO — editorial-style centered headline, logo as a
-     stamp in the top-right corner, stat row below.
-     ============================================================ */
   .work-hero {
     position: relative;
     background: var(--color-paper);
@@ -274,59 +143,35 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     right: var(--pad-x);
     height: clamp(60px, 8vw, 110px);
     width: auto;
-    max-width: none;
     opacity: 0.25;
     pointer-events: none;
   }
   .work-hero-inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
     gap: clamp(3rem, 7vh, 5rem);
   }
-  .work-hero-text {
-    text-align: center;
-    max-width: 60ch;
-    margin-inline: auto;
-  }
+  .work-hero-text { text-align: center; max-width: 60ch; margin-inline: auto; }
   .work-hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
+    display: inline-flex; align-items: center; gap: 0.75rem;
     margin: 0 0 2rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-fg-muted);
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-fg-muted);
   }
   .work-hero-eyebrow .num { color: var(--color-blue); font-weight: 500; }
   .work-hero-title {
-    font-size: var(--text-step-5);
-    margin: 0;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--color-navy);
-    max-width: 18ch;
-    margin-inline: auto;
-    text-wrap: balance;
+    font-size: var(--text-step-5); margin: 0; line-height: 1;
+    letter-spacing: -0.03em; color: var(--color-navy);
+    max-width: 18ch; margin-inline: auto; text-wrap: balance;
   }
-  .work-hero-title em {
-    font-style: italic;
-    color: var(--color-blue);
-  }
+  .work-hero-title em { font-style: italic; color: var(--color-blue); }
   .work-hero-lede {
-    margin: 1.75rem auto 0;
-    color: var(--color-fg-soft);
-    max-width: 50ch;
-    font-size: var(--text-step-1);
+    margin: 1.75rem auto 0; color: var(--color-fg-soft);
+    max-width: 50ch; font-size: var(--text-step-1);
   }
   .work-hero-stats {
     list-style: none; padding: 0; margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr);
     border-top: 1px solid var(--color-line);
     border-bottom: 1px solid var(--color-line);
   }
@@ -334,8 +179,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .work-hero-stats { grid-template-columns: repeat(4, 1fr); }
   }
   .work-hero-stats li {
-    display: flex; flex-direction: column;
-    gap: 0.35rem;
+    display: flex; flex-direction: column; gap: 0.35rem;
     padding: 1.5rem clamp(1rem, 2.5vw, 2rem);
     border-right: 1px solid var(--color-line);
   }
@@ -345,34 +189,127 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     .work-hero-stats li:nth-child(-n+2) { border-bottom: 1px solid var(--color-line); }
   }
   .work-hero-stats strong {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: var(--text-step-4);
-    letter-spacing: -0.025em;
-    color: var(--color-navy);
-    line-height: 1;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-4); letter-spacing: -0.025em;
+    color: var(--color-navy); line-height: 1;
     font-variation-settings: "opsz" 144;
   }
   .work-hero-stats span {
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--color-fg-muted);
   }
 
-.section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
   @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
-  .pipeline-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-  .pipeline-card { padding: 1.75rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-paper); display: flex; flex-direction: column; gap: 1rem; transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft); }
-  .pipeline-card:hover { border-color: var(--color-navy); transform: translateY(-2px); }
-  .pipeline-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
+  /* ---------- launched grid ---------- */
+  .work-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  }
+  .work-card { display: flex; }
+  .work-card-link {
+    flex: 1;
+    display: flex; flex-direction: column;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft), box-shadow 280ms var(--ease-soft);
+  }
+  .work-card-link:hover,
+  .work-card-link:focus-visible {
+    border-color: var(--color-navy);
+    transform: translateY(-2px);
+    box-shadow: 0 24px 50px -28px rgb(7 23 34 / 0.30);
+  }
+  .work-card-link:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 3px; }
+  .work-card-stripe {
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-blue), var(--color-periwinkle));
+  }
+  .work-card-body {
+    padding: 1.75rem 1.75rem 1.5rem;
+    display: flex; flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+  }
+  .work-card-meta {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .work-card-meta .sep { color: var(--color-line-strong); }
+  .work-card-title {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-3); margin: 0;
+    letter-spacing: -0.02em; color: var(--color-navy);
+    font-variation-settings: "opsz" 144;
+    line-height: 1.05;
+  }
+  .work-card-summary {
+    margin: 0; color: var(--color-fg-soft);
+    font-size: var(--text-step-0); line-height: 1.5;
+  }
+  .work-card-results {
+    margin: auto 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .work-card-results div { display: flex; flex-direction: column; gap: 0.25rem; }
+  .work-card-results dt {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .work-card-results dd {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-2); color: var(--color-navy);
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 60;
+  }
+  .work-card-foot {
+    padding: 1rem 1.75rem;
+    border-top: 1px solid var(--color-line);
+    background: var(--color-bg-soft);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .work-card-scope {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.06em; color: var(--color-fg-muted);
+  }
+  .work-card-cta {
+    font-family: var(--font-sans); font-size: var(--text-step--1);
+    font-weight: 500; color: var(--color-blue);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .work-card-cta .arrow { transition: transform 280ms var(--ease-soft); }
+  .work-card-link:hover .work-card-cta .arrow,
+  .work-card-link:focus-visible .work-card-cta .arrow { transform: translateX(4px); }
+
+  /* ---------- upcoming pipeline ---------- */
+  .pipeline-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .pipeline-card { padding: 1.75rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-paper); display: flex; flex-direction: column; gap: 1rem; }
+  .pipeline-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); gap: 0.75rem; flex-wrap: wrap; }
   .pipeline-status { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-blue); }
   .pipeline-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-periwinkle); }
-  .pipeline-dot-build { background: #2bb673; animation: mvPulseRing 2.2s var(--ease-soft) infinite; }
+  .pipeline-dot-build { background: #2bb673; }
   .pipeline-dot-design { background: var(--color-blue); }
   .pipeline-dot-discovery { background: var(--color-periwinkle); }
   .pipeline-eta { color: var(--color-fg-muted); }
@@ -382,8 +319,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .section-note { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); }
   .note-inner { display: flex; flex-direction: column; gap: 1.25rem; padding-block: 1rem; }
-  .note-h { font-size: var(--text-step-3); max-width: 24ch; margin: 0.5rem 0 0; }
+  .note-h { font-size: var(--text-step-3); max-width: 26ch; margin: 0.5rem 0 0; }
   .note-body { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); line-height: 1.5; margin: 0; max-width: 58ch; font-variation-settings: "opsz" 60; }
 </style>
-
-
