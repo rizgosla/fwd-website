@@ -39,9 +39,11 @@ const {
     />
   </head>
   <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
     <Nav />
 
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
 
@@ -57,6 +59,7 @@ const {
       toggle?.addEventListener("click", () => {
         const open = links.classList.toggle("is-open");
         toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       });
 
       // === Sticky-nav scrolled state =========================================

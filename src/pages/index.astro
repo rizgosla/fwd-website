@@ -18,7 +18,7 @@ import Marquee from "../components/Marquee.astro";
         </div>
       </div>
 
-      <div class="hero-right">
+      <div class="hero-right" aria-hidden="true">
         <div class="browser">
           <div class="browser-chrome">
             <div class="dots">
@@ -95,7 +95,7 @@ import Marquee from "../components/Marquee.astro";
         </div>
         <div class="meta-cell">
           <span class="meta-key">Typical turnaround</span>
-          <strong class="meta-val">2 weeks — 1 month</strong>
+          <strong class="meta-val">About 4 weeks</strong>
         </div>
         <div class="meta-cell">
           <span class="meta-key">Pricing model</span>
@@ -145,7 +145,7 @@ import Marquee from "../components/Marquee.astro";
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">A simple, <em>honest</em> process.</h2>
-        <p class="section-sub">Four steps. Two weeks to one month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
+        <p class="section-sub">Four steps. About a month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
       </div>
     </div>
 
@@ -161,7 +161,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">A short call</h3>
             <p class="ps-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.<span class="ps-meta">— No prep required</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-call">
                 <div class="ps-visual-call-h"><span class="month">May 2026</span><span>15 min</span></div>
@@ -185,7 +185,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Design draft <em>in your browser</em>.</h3>
             <p class="ps-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.<span class="ps-meta">— Delivered in week one</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="mini-browser ps-mini">
                 <div class="mini-chrome">
@@ -216,7 +216,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Revisions</h3>
             <p class="ps-body">One or two rounds depending on tier. We adjust until it feels right, then lock it.<span class="ps-meta">— Async, on your time</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-revisions">
                 <div class="ps-revision-line" style="width:90%"></div>
@@ -243,7 +243,7 @@ import Marquee from "../components/Marquee.astro";
             <h3 class="ps-title">Launch</h3>
             <p class="ps-body">We connect your domain, set up hosting, and hand over a clean handoff doc you can actually read.<span class="ps-meta">— Live the same day</span></p>
           </div>
-          <div class="ps-visual">
+          <div class="ps-visual" aria-hidden="true">
             <div class="ps-visual-frame">
               <div class="ps-visual-launch">
                 <div class="ps-launch-url"><span class="lock"></span>https://smithdental.com</div>
@@ -262,10 +262,10 @@ import Marquee from "../components/Marquee.astro";
   </section>
 
   
-  <section class="cta-band-light mv-soften" data-mv-watch>
+  <section class="cta-band-light mv-soften" data-mv-watch aria-labelledby="home-cta-title">
     <div class="cta-band-light-bg" aria-hidden="true"></div>
     <div class="cta-band-light-inner">
-      <h3 class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h3>
+      <h2 id="home-cta-title" class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h2>
       <div class="cta-band-light-side">
         <p class="cta-band-light-lede">Tell us about it. We reply to every inquiry — usually within a day.</p>
         <a href="/contact" class="btn btn-primary cta-band-light-btn">

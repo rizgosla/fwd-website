@@ -47,15 +47,17 @@ import BrandMark from "../components/BrandMark.astro";
         <div class="form-wrapper mv-rise" data-mv-watch>
           <p class="eyebrow" style="margin-bottom: 1.5rem"><span>Or, if you would rather not write an email</span></p>
 
+          <p class="field-required-hint"><span aria-hidden="true" class="req-marker">*</span> indicates a required field</p>
+
           <form id="contactForm" class="contact-form" novalidate>
             <div class="form-row">
               <label class="field">
-                <span class="field-label">Your name</span>
-                <input type="text" name="name" required autocomplete="name" />
+                <span class="field-label">Your name <span aria-hidden="true" class="req-marker">*</span></span>
+                <input type="text" name="name" required aria-required="true" autocomplete="name" />
               </label>
               <label class="field">
-                <span class="field-label">Email</span>
-                <input type="email" name="email" required autocomplete="email" />
+                <span class="field-label">Email <span aria-hidden="true" class="req-marker">*</span></span>
+                <input type="email" name="email" required aria-required="true" autocomplete="email" />
               </label>
             </div>
 
@@ -65,9 +67,9 @@ import BrandMark from "../components/BrandMark.astro";
             </label>
 
             <label class="field">
-              <span class="field-label">What are you building?</span>
-              <span class="field-help">A few sentences. What is it, who is it for, and what would success look like?</span>
-              <textarea name="brief" rows="5" required></textarea>
+              <span class="field-label">What are you building? <span aria-hidden="true" class="req-marker">*</span></span>
+              <span class="field-help" id="brief-help">A few sentences. What is it, who is it for, and what would success look like?</span>
+              <textarea name="brief" rows="5" required aria-required="true" aria-describedby="brief-help"></textarea>
             </label>
 
             <fieldset class="field field-radio">
@@ -112,7 +114,7 @@ import BrandMark from "../components/BrandMark.astro";
             </div>
           </form>
 
-          <div class="form-success" hidden>
+          <div class="form-success" hidden role="status" aria-live="polite">
             <div class="success-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 24l7 7 14-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -234,6 +236,8 @@ import BrandMark from "../components/BrandMark.astro";
   .field-label { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); font-weight: 500; }
   .field-opt { font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: none; color: var(--color-fg-muted); font-size: 0.85em; }
   .field-help { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step--1); color: var(--color-fg-muted); font-variation-settings: "opsz" 60; margin-top: -2px; }
+  .field-required-hint { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.06em; margin: 0 0 1.5rem; }
+  .req-marker { color: var(--color-blue); margin-left: 0.15em; }
   .field input[type="text"], .field input[type="email"], .field textarea { font-family: var(--font-sans); font-size: var(--text-step-0); color: var(--color-fg); background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 8px; padding: 0.85rem 1rem; transition: border-color 200ms var(--ease-soft), box-shadow 200ms var(--ease-soft); }
   .field textarea { resize: vertical; min-height: 110px; }
   .field input:hover, .field textarea:hover { border-color: var(--color-line-strong); }

@@ -54,9 +54,11 @@ const isActive = (href: string) =>
 
     <button
       id="navToggle"
+      type="button"
       class="nav-toggle hidden h-10 w-10 items-center justify-center rounded-lg"
       aria-label="Open menu"
       aria-expanded="false"
+      aria-controls="navLinks"
     >
       <span class="block h-[1.5px] w-[18px] bg-fg relative
                    before:content-[''] before:absolute before:left-0 before:-top-[6px] before:w-[18px] before:h-[1.5px] before:bg-fg
