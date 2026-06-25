@@ -1,0 +1,354 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const all = await getCollection("work");
+  return all
+    .filter((e) => e.data.status === "live")
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<BaseLayout title={`${d.title} — fwd.`}>
+  <article class="case-deep">
+    <header class="case-deep-hero">
+      <div class="case-deep-hero-inner">
+        <div data-mv-watch class="mv-rise">
+          <p class="cd-eyebrow">
+            <a href="/work" class="cd-back">
+              <span aria-hidden="true">←</span> All work
+            </a>
+            <span class="badge">Case study</span>
+          </p>
+          <h1>{d.title}.</h1>
+          {d.deck && <p class="cd-deck" set:html={d.deck} />}
+        </div>
+        <dl class="cd-aside mv-stagger" data-mv-watch>
+          <div><dt>Engagement</dt><dd>{d.scope} · ${d.price.toLocaleString()}</dd></div>
+          {d.turnaround && <div><dt>Turnaround</dt><dd>{d.turnaround}</dd></div>}
+          {d.industry && <div><dt>Industry</dt><dd>{d.industry}</dd></div>}
+          {d.location && <div><dt>Location</dt><dd>{d.location}</dd></div>}
+          {d.launched && <div><dt>Launched</dt><dd>{d.launched}</dd></div>}
+          {d.url && (
+            <div>
+              <dt>Live at</dt>
+              <dd><a href={d.url} target="_blank" rel="noopener">{d.url.replace(/^https?:\/\//, "")}</a></dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    </header>
+
+    {(d.brief || d.approach) && (
+      <section class="case-twocol">
+        <div class="case-twocol-inner">
+          {d.brief && (
+            <div class="col mv-stagger" data-mv-watch>
+              <h2 class="col-kicker">The brief</h2>
+              <h3 class="col-h" set:html={d.brief.h} />
+              {d.brief.body.map((p) => <p>{p}</p>)}
+            </div>
+          )}
+          {d.approach && (
+            <div class="col mv-stagger" data-mv-watch>
+              <h2 class="col-kicker">The approach</h2>
+              <h3 class="col-h" set:html={d.approach.h} />
+              <ul>
+                {d.approach.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+
+    {d.results.length > 0 && (
+      <section class="case-results">
+        <div class="full">
+          <div class="section-head mv-rise" data-mv-watch>
+            <h2 class="display section-title">In <em>real numbers</em>.</h2>
+            {d.launched && <p class="section-sub">Tracked against the same window from the year before. No paid promotion was added on either side.</p>}
+          </div>
+          <ul class="case-results-grid mv-stagger" data-mv-watch>
+            {d.results.map((r) => (
+              <li class="result-card">
+                <span class="result-label">{r.label}</span>
+                <div class="result-num">{r.value}</div>
+                {r.sub && <span class="result-sub">{r.sub}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    {d.quote && (
+      <section class="case-quote">
+        <div class="case-quote-inner mv-soften" data-mv-watch>
+          <blockquote set:html={d.quote.text} />
+          <span class="cite">
+            <strong>{d.quote.cite}</strong>
+            {d.quote.role && <> · {d.quote.role}</>}
+          </span>
+        </div>
+      </section>
+    )}
+
+    {d.process.length > 0 && (
+      <section class="case-process">
+        <div class="full">
+          <div class="section-head mv-rise" data-mv-watch>
+            <h2 class="display section-title">{d.turnaround ? `${d.turnaround}, ` : ""}<em>start to launch</em>.</h2>
+          </div>
+          <ol class="case-process-track mv-stagger" data-mv-watch>
+            {d.process.map((step) => (
+              <li class="cp-step">
+                <span class="day">{step.day}</span>
+                <h3 class="h">{step.title}</h3>
+                {step.body && <p class="p">{step.body}</p>}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )}
+
+    <section class="case-body">
+      <div class="full case-body-inner">
+        <div class="container-prose"><Content /></div>
+      </div>
+    </section>
+  </article>
+
+  <section class="section section-note">
+    <div class="full">
+      <div class="container-prose note-inner mv-stagger" data-mv-watch>
+        <p class="eyebrow"><span>Up next</span></p>
+        <h2 class="display note-h">Want the next case study to be <em>yours</em>?</h2>
+        <p class="note-body">
+          The <a class="link-arrow" href="/services">services page<span class="arrow">→</span></a> has the scope and the price.
+          The <a class="link-arrow" href="/contact">contact form<span class="arrow">→</span></a> takes a minute.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* hero */
+  .case-deep-hero {
+    background: var(--color-navy);
+    color: var(--color-paper);
+    padding-block: clamp(4rem, 9vh, 7rem);
+  }
+  .case-deep-hero-inner {
+    width: 100%;
+    padding-inline: var(--pad-x);
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .case-deep-hero-inner { grid-template-columns: 1.4fr 1fr; align-items: end; }
+  }
+  .cd-eyebrow {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 0 0 1.5rem;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .cd-back {
+    color: var(--color-periwinkle);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    text-decoration: none;
+  }
+  .cd-back:hover, .cd-back:focus-visible { color: var(--color-paper); }
+  .cd-eyebrow .badge {
+    margin-left: auto;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .case-deep-hero h1 {
+    font-family: var(--font-display); font-weight: 350;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.96; letter-spacing: -0.035em;
+    margin: 0 0 1.25rem; color: var(--color-paper);
+    font-variation-settings: "opsz" 144;
+    text-wrap: balance;
+  }
+  .cd-deck {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: var(--text-step-2); line-height: 1.35;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 50ch; margin: 0;
+    font-variation-settings: "opsz" 60;
+  }
+  .cd-deck :global(em) { font-style: italic; color: var(--color-periwinkle); }
+  .cd-aside {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1.5rem;
+    padding: 1.5rem; margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .cd-aside dt {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0 0 0.25rem;
+  }
+  .cd-aside dd {
+    margin: 0;
+    font-family: var(--font-display); font-size: var(--text-step-0);
+    color: var(--color-paper);
+    font-variation-settings: "opsz" 60;
+  }
+  .cd-aside a { color: var(--color-periwinkle); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* two-col */
+  .case-twocol {
+    padding-block: clamp(3.5rem, 9vh, 6rem);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .case-twocol-inner {
+    width: 100%; padding-inline: var(--pad-x);
+    display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 5vw, 4rem);
+  }
+  @media (min-width: 900px) {
+    .case-twocol-inner { grid-template-columns: 1fr 1fr; }
+  }
+  .case-twocol .col-kicker {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-blue);
+    margin: 0 0 1.5rem; font-weight: 500;
+  }
+  .case-twocol .col-h {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-3); margin: 0 0 1.25rem;
+    color: var(--color-navy); letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144;
+    text-wrap: balance;
+    line-height: 1.1;
+  }
+  .case-twocol .col-h :global(em) { font-style: italic; color: var(--color-blue); }
+  .case-twocol p { color: var(--color-fg-soft); line-height: 1.6; margin: 0 0 1rem; max-width: 50ch; }
+  .case-twocol ul { padding-left: 1.2rem; color: var(--color-fg-soft); line-height: 1.6; }
+  .case-twocol li { margin-bottom: 0.5rem; }
+
+  /* results */
+  .case-results { padding-block: clamp(3.5rem, 9vh, 6rem); }
+  .case-results .section-head { width: 100%; padding-inline: var(--pad-x); margin-bottom: 2.5rem; }
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; }
+  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
+  .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+  .case-results-grid {
+    list-style: none; padding: 0 var(--pad-x); margin: 0;
+    display: grid; gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .result-card {
+    padding: 1.75rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .result-label {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .result-num {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-5); letter-spacing: -0.035em;
+    color: var(--color-navy); line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  .result-sub { color: var(--color-fg-soft); font-size: var(--text-step--1); line-height: 1.5; }
+
+  /* quote */
+  .case-quote {
+    background: var(--color-bg-soft);
+    padding-block: clamp(3.5rem, 9vh, 6rem);
+    border-block: 1px solid var(--color-line);
+  }
+  .case-quote-inner {
+    width: 100%; padding-inline: var(--pad-x);
+    max-width: 60rem; margin-inline: auto;
+    text-align: center;
+  }
+  .case-quote blockquote {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 350;
+    font-style: italic;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.25; color: var(--color-navy);
+    font-variation-settings: "opsz" 144;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .case-quote blockquote :global(em) { color: var(--color-blue); font-style: italic; }
+  .case-quote .cite {
+    display: block; margin-top: 1.5rem;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* process */
+  .case-process { padding-block: clamp(3.5rem, 9vh, 6rem); }
+  .case-process .section-head { width: 100%; padding-inline: var(--pad-x); margin-bottom: 2.5rem; }
+  .case-process-track {
+    list-style: none; padding: 0 var(--pad-x); margin: 0;
+    display: grid; gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .cp-step {
+    padding: 1.5rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    display: flex; flex-direction: column; gap: 0.65rem;
+  }
+  .cp-step .day {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-blue);
+  }
+  .cp-step .h {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-1); color: var(--color-navy);
+    letter-spacing: -0.015em;
+    font-variation-settings: "opsz" 60;
+  }
+  .cp-step .p { margin: 0; color: var(--color-fg-soft); font-size: var(--text-step--1); line-height: 1.5; }
+
+  /* body markdown */
+  .case-body { padding-block: clamp(3rem, 7vh, 5rem); border-top: 1px solid var(--color-line); }
+  .case-body-inner { padding-inline: var(--pad-x); }
+  .container-prose { max-width: 65ch; margin-inline: auto; color: var(--color-fg); }
+  .container-prose :global(h2) {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-3); letter-spacing: -0.02em;
+    color: var(--color-navy); margin: 2rem 0 1rem;
+    font-variation-settings: "opsz" 144;
+  }
+  .container-prose :global(p) { line-height: 1.6; margin: 0 0 1rem; color: var(--color-fg-soft); }
+
+  .section-note { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); }
+  .note-inner { display: flex; flex-direction: column; gap: 1.25rem; padding-block: 1rem; }
+  .note-h { font-size: var(--text-step-3); max-width: 26ch; margin: 0.5rem 0 0; }
+  .note-body { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); line-height: 1.5; margin: 0; max-width: 58ch; font-variation-settings: "opsz" 60; }
+</style>
