@@ -71,24 +71,24 @@ import BrandMark from "../components/BrandMark.astro";
             </label>
 
             <fieldset class="field field-radio">
-              <legend class="field-label">Which tier are you interested in?</legend>
+              <legend class="field-label">What kind of project is it?</legend>
               <div class="radio-row">
                 <label class="radio">
-                  <input type="radio" name="tier" value="landing" />
+                  <input type="radio" name="scope" value="full" checked />
                   <span class="radio-content">
-                    <span class="radio-h">Landing — $800</span>
-                    <span class="radio-d">One page · ~1–2 weeks</span>
+                    <span class="radio-h">Full Site — $4,000</span>
+                    <span class="radio-d">Up to 8 pages · ~3–4 weeks</span>
                   </span>
                 </label>
                 <label class="radio">
-                  <input type="radio" name="tier" value="full" />
+                  <input type="radio" name="scope" value="smaller" />
                   <span class="radio-content">
-                    <span class="radio-h">Full Site — $1,800</span>
-                    <span class="radio-d">Up to 8 pages · ~2–4 weeks</span>
+                    <span class="radio-h">Something smaller</span>
+                    <span class="radio-d">A single landing page or microsite — we'll quote it</span>
                   </span>
                 </label>
                 <label class="radio">
-                  <input type="radio" name="tier" value="not-sure" checked />
+                  <input type="radio" name="scope" value="not-sure" />
                   <span class="radio-content">
                     <span class="radio-h">Not sure yet</span>
                     <span class="radio-d">We will help you decide</span>

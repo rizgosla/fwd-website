@@ -113,44 +113,28 @@ import Marquee from "../components/Marquee.astro";
   <section id="services" class="section section-tiers">
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
-        <h2 class="display section-title">Two ways to <em>get online</em>.</h2>
-        <p class="section-sub">Both flat-rate. Both shipped fast. You pick the scope; we handle every part of getting it live.</p>
+        <h2 class="display section-title">One way to <em>get online</em>.</h2>
+        <p class="section-sub">A flat-rate full website. You bring the brand and the words; we handle every part of designing, building, and shipping it.</p>
       </div>
-      <div class="tiers-grid mv-stagger" data-mv-watch>
-        <article class="tier tier-light" data-tilt>
-          <span class="tier-sheen" aria-hidden="true"></span>
-          <div class="tier-top"><span class="tier-deliv">~1–2 weeks</span></div>
-          <h3 class="tier-title">Landing Page</h3>
-          <div class="tier-price">
-            <span class="dollar">$</span>
-            <span class="amount">800</span>
-            <span class="note">flat · one round of revisions</span>
-          </div>
-          <ul class="tier-features">
-            <li><span class="check">✓</span>One beautifully-designed page built around your brand</li>
-            <li><span class="check">✓</span>Booking / contact form with instant email notifications</li>
-            <li><span class="check">✓</span>Mobile and desktop optimized, basic on-page SEO</li>
-            <li><span class="check">✓</span>Hosting setup and domain connection included</li>
-          </ul>
-          <a href="/services" class="tier-cta">Start with Landing <span class="arrow">→</span></a>
-        </article>
-
+      <div class="tiers-grid tiers-grid-single mv-stagger" data-mv-watch>
         <article class="tier tier-dark" data-tilt>
           <span class="tier-sheen" aria-hidden="true"></span>
-          <div class="tier-top"><span class="tier-deliv">~2–4 weeks · up to 8 pages</span></div>
+          <div class="tier-top"><span class="tier-deliv">~3–4 weeks · up to 8 pages</span></div>
           <h3 class="tier-title">Full Site</h3>
           <div class="tier-price">
             <span class="dollar">$</span>
-            <span class="amount">1,800</span>
-            <span class="note">flat · two rounds of revisions</span>
+            <span class="amount">4,000</span>
+            <span class="note">flat · three rounds of revisions</span>
           </div>
           <ul class="tier-features">
-            <li><span class="check">✓</span>Everything in Landing Page, scaled up to 8 pages</li>
-            <li><span class="check">✓</span>Home, Services, About, Contact + 4 of your choice</li>
+            <li><span class="check">✓</span>Up to 8 pages, designed cohesively around your brand</li>
             <li><span class="check">✓</span>Cohesive type, color, and component system</li>
+            <li><span class="check">✓</span>Lead capture form with instant email notifications</li>
+            <li><span class="check">✓</span>Mobile and desktop optimized, basic on-page SEO</li>
+            <li><span class="check">✓</span>Hosting setup and domain connection included</li>
             <li><span class="check">✓</span>Handoff doc so you (or anyone) can update content later</li>
           </ul>
-          <a href="/services" class="tier-cta">Start with Full Site <span class="arrow">→</span></a>
+          <a href="/services" class="tier-cta">See the full scope <span class="arrow">→</span></a>
         </article>
       </div>
     </div>
@@ -373,7 +357,8 @@ import Marquee from "../components/Marquee.astro";
   .section-tiers .section-head { margin-bottom: clamp(3rem, 6vh, 5rem); }
 
   .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-  @media (min-width: 900px) { .tiers-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
+  .tiers-grid-single { max-width: 720px; margin-inline: auto; }
+  @media (min-width: 900px) { .tiers-grid:not(.tiers-grid-single) { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
   .tier { position: relative; overflow: hidden; isolation: isolate; --bg: #fff; --sheen: rgb(13 47 69 / 0.10); --fg: var(--color-navy); --fg-soft: var(--color-fg-soft); --fg-muted: var(--color-fg-muted); --line: var(--color-line); --accent: var(--color-blue); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: clamp(2.5rem, 4vw, 3.75rem); display: flex; flex-direction: column; gap: 1.75rem; transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft); min-height: 640px; }
   .tier-dark { --bg: var(--color-navy); --fg: #fff; --fg-soft: rgba(255,255,255,0.82); --fg-muted: rgba(255,255,255,0.55); --line: rgba(255,255,255,0.14); --accent: var(--color-periwinkle); --sheen: rgb(255 255 255 / 0.14); }
   .tier:hover { transform: translateY(-2px); box-shadow: 0 30px 60px -28px rgb(7 23 34 / 0.25); }
