@@ -350,7 +350,7 @@ import Marquee from "../components/Marquee.astro";
                   <div class="ps-rev-comment offset">
                     <div class="ps-rev-avatar alt">F</div>
                     <div class="ps-rev-bubble">
-                      <div class="ps-rev-meta"><span class="ps-rev-name">fwd</span><span class="ps-rev-time">just now</span></div>
+                      <div class="ps-rev-meta"><span class="ps-rev-name">forward</span><span class="ps-rev-time">just now</span></div>
                       <div class="ps-rev-text">Updated ✓</div>
                     </div>
                   </div>
@@ -730,44 +730,50 @@ import Marquee from "../components/Marquee.astro";
     max-width: 32ch;
   }
 
-  .section-process .section-head { display: flex; flex-direction: column; gap: 1rem; padding-bottom: clamp(2rem, 5vh, 4rem); }
+  .section-process .section-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+    text-align: left;
+  }
+  .section-process .section-head .section-title { text-align: left; max-width: 22ch; }
+  .section-process .section-head .section-sub { text-align: left; max-width: 52ch; }
   .section-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
   .section-eyebrow-bar { width: 24px; height: 1px; background: var(--color-blue); }
 
-  .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); counter-reset: ps; }
+  .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
   .process-step { border-bottom: 1px solid var(--color-line); transition: background 450ms var(--ease-soft); position: relative; }
   .process-step:last-child { border-bottom: 0; }
   .process-step-dark { border-bottom-color: rgba(255,255,255,0.06); }
 
+  /* Side-by-side layout, alternating left/right */
   .process-step-inner {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(2rem, 5vw, 3.5rem);
-    padding-block: clamp(3.5rem, 8vh, 6rem);
-    align-items: stretch;
-  }
-  /* Alternating zigzag: even steps put the visual on top */
-  .process-step:nth-child(even) .process-step-inner { flex-direction: column-reverse; }
-
-  .ps-text {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
-    align-items: start;
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-block: clamp(3rem, 7vh, 5.5rem);
+    align-items: center;
   }
-  @media (min-width: 800px) {
-    .ps-text {
-      grid-template-columns: minmax(140px, 200px) 1fr;
-      gap: clamp(2rem, 5vw, 4rem);
+  @media (min-width: 900px) {
+    .process-step-inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: clamp(2.5rem, 6vw, 5rem);
     }
+    /* Pattern: step 1 text-left, step 2 text-right, step 3 text-left, step 4 text-right */
+    .process-step:nth-child(even) .ps-text { order: 2; }
+    .process-step:nth-child(even) .ps-visual { order: 1; }
   }
-  .ps-text-body { max-width: 56ch; }
 
-  .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.4rem; }
-  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-4); line-height: 0.9; color: var(--color-blue); font-variation-settings: "opsz" 144; letter-spacing: -0.02em; }
+  .ps-text { display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; max-width: 52ch; }
+  .ps-text-body { display: flex; flex-direction: column; }
+
+  .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: inline-flex; align-items: baseline; gap: 0.75rem; }
+  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-3); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; letter-spacing: -0.02em; }
   .ps-title { margin: 0; font-family: var(--font-display); font-weight: 350; font-size: var(--text-step-4); letter-spacing: -0.02em; line-height: 1.02; font-variation-settings: "opsz" 144; color: var(--color-fg); }
   .ps-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144; }
-  .ps-body { margin: 1rem 0 0; color: var(--color-fg-soft); font-size: var(--text-step-1); line-height: 1.45; font-family: var(--font-display); font-weight: 300; }
+  .ps-body { margin: 0.85rem 0 0; color: var(--color-fg-soft); font-size: var(--text-step-1); line-height: 1.45; font-family: var(--font-display); font-weight: 300; max-width: 42ch; }
   .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1.25rem; text-transform: none; }
 
   .process-step-dark { background: var(--color-ink); border-color: rgba(255,255,255,0.08); }
@@ -778,20 +784,19 @@ import Marquee from "../components/Marquee.astro";
   .process-step-dark .ps-body { color: rgba(255,255,255,0.82); }
   .process-step-dark .ps-meta { color: rgba(255,255,255,0.5); }
 
-  /* Big, centered visual frames — full width with generous max */
-  .ps-visual { display: flex; align-items: center; justify-content: center; }
+  /* Visual frame — sized for the visual column */
+  .ps-visual { display: flex; align-items: center; justify-content: center; min-width: 0; }
   .ps-visual-frame {
     position: relative;
     width: 100%;
-    max-width: 980px;
-    margin: 0 auto;
+    max-width: 620px;
     background: var(--color-paper);
-    border-radius: 18px;
+    border-radius: 16px;
     border: 1px solid var(--color-line);
     overflow: hidden;
     box-shadow:
-      0 50px 120px -50px rgba(7,23,34,0.30),
-      0 18px 40px -18px rgba(7,23,34,0.18);
+      0 40px 100px -45px rgba(7,23,34,0.28),
+      0 16px 36px -16px rgba(7,23,34,0.16);
     transition: transform 420ms var(--ease-soft);
   }
   .process-step:hover .ps-visual-frame { transform: translateY(-4px); }
@@ -799,8 +804,8 @@ import Marquee from "../components/Marquee.astro";
     background: var(--color-paper);
     border-color: rgba(255,255,255,0.10);
     box-shadow:
-      0 60px 140px -50px rgba(0,0,0,0.55),
-      0 20px 50px -20px rgba(0,0,0,0.35);
+      0 50px 120px -45px rgba(0,0,0,0.55),
+      0 18px 44px -18px rgba(0,0,0,0.35);
   }
 
   .process-step-featured { background: var(--color-ink); color: var(--color-paper); border-block: 0; }
