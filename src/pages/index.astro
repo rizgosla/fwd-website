@@ -3,11 +3,12 @@
 // Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Marquee from "../components/Marquee.astro";
+import HeroShowcase from "../components/HeroShowcase.astro";
 ---
 
 <BaseLayout title="fwd. — Websites that earn their place online">
 <!-- ============ HERO with idle motion baked in ============ -->
-  <section class="hero-outer" id="heroOuter">
+  <section class="hero-outer">
     <div class="hero">
       <div class="hero-left">
         <h1 class="display hero-title">Your website is your new <em>storefront</em>.</h1>
@@ -18,66 +19,8 @@ import Marquee from "../components/Marquee.astro";
         </div>
       </div>
 
-      <div class="hero-right" aria-hidden="true">
-        <div class="browser">
-          <div class="browser-chrome">
-            <div class="dots">
-              <span style="background:#FF6058"></span><span style="background:#FFBE2E"></span><span style="background:#28C940"></span>
-            </div>
-            <div class="urlbar"><span class="lock">●</span><span class="url" id="heroUrl">localhost:4321</span></div>
-            <div class="stage-pill" id="heroStagePill">01 · Blank canvas</div>
-          </div>
-          <div class="browser-body">
-            <div class="grid-bg" id="gridBg"></div>
-            <div class="wf-row" id="wfRow1"><div class="wf-h1"></div></div>
-            <div class="wf-row narrow" id="wfRow2">
-              <div class="wf-line" style="width:78%"></div>
-              <div class="wf-line" style="width:62%"></div>
-            </div>
-            <div class="wf-grid" id="wfGrid">
-              <div class="wf-block tall"></div>
-              <div class="wf-stack">
-                <div class="wf-line" style="width:85%"></div>
-                <div class="wf-line" style="width:70%"></div>
-                <div class="wf-line" style="width:55%"></div>
-                <div class="wf-pill"></div>
-              </div>
-            </div>
-            <div class="content-layer" id="contentLayer">
-              <div class="ct-eyebrow">— Family dentistry · Irvine, CA</div>
-              <div class="ct-h1">A calmer kind of <em>dental visit</em>.</div>
-              <div class="ct-lede">Same-day appointments, gentle care, and a team that actually remembers your name.</div>
-            </div>
-            <div class="polish-layer" id="polishLayer">
-              <div class="pl-image">
-                <div class="pl-image-grad"></div>
-                <div class="pl-image-tag">[ studio photo ]</div>
-              </div>
-              <div class="pl-cta" id="plCta">Book a visit <span aria-hidden="true">→</span></div>
-              <div class="pl-hours">
-                <div><span><span class="live-dot"></span>Mon–Thu</span><strong>8a — 6p</strong></div>
-                <div><span>Fri</span><strong>8a — 2p</strong></div>
-                <div><span>Sat–Sun</span><strong>Closed</strong></div>
-              </div>
-              <div class="pl-stat">
-                <strong id="plStatNum">0</strong>
-                <span>booked this month</span>
-              </div>
-            </div>
-          </div>
-          <div class="browser-foot">
-            <span class="foot-label" id="heroFootLabel">building…</span>
-            <div class="track">
-              <div class="fill" id="heroFill"></div>
-              <div class="tick" data-pct="0" style="left:0%"></div>
-              <div class="tick" data-pct="0.2" style="left:20%"></div>
-              <div class="tick" data-pct="0.42" style="left:42%"></div>
-              <div class="tick" data-pct="0.66" style="left:66%"></div>
-              <div class="tick" data-pct="0.88" style="left:88%"></div>
-            </div>
-            <span class="foot-label right" id="heroPct">0%</span>
-          </div>
-        </div>
+      <div class="hero-right">
+        <HeroShowcase />
       </div>
     </div>
   </section>
@@ -429,50 +372,9 @@ import Marquee from "../components/Marquee.astro";
   .hero-lede em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  .hero-right { position: relative; background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%); border-left: 1px solid var(--color-line); display: flex; align-items: center; justify-content: center; padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem); overflow: hidden; align-self: stretch; min-height: clamp(560px, 70vh, 760px); }
-  .hero-right::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 38px 38px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); pointer-events: none; }
-
-  .browser { width: min(820px, 100%); background: #fff; border-radius: 14px; border: 1px solid var(--color-line); box-shadow: 0 60px 120px -40px rgb(7 23 34 / 0.40), 0 16px 36px -14px rgb(7 23 34 / 0.20); overflow: hidden; position: relative; z-index: 1; }
-  .browser-chrome { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #f5f6f8; border-bottom: 1px solid var(--color-line); }
-  .dots { display: flex; gap: 7px; }
-  .dots span { width: 12px; height: 12px; border-radius: 50%; }
-  .urlbar { flex: 1; height: 30px; border-radius: 7px; background: #fff; border: 1px solid var(--color-line); display: flex; align-items: center; gap: 9px; padding: 0 14px; font-family: var(--font-mono); font-size: 12px; color: var(--color-fg-muted); }
-  .urlbar .lock { color: var(--color-blue); font-size: 9px; }
-  .stage-pill { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue); background: #fff; border: 1px solid var(--color-line); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
-  .browser-body { position: relative; height: clamp(440px, 56vh, 560px); background: #fff; overflow: hidden; }
-  .browser-body > * { transition: opacity 600ms cubic-bezier(0.2,0.7,0.2,1), transform 600ms cubic-bezier(0.2,0.7,0.2,1); }
-  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.12) 1px, transparent 1px); background-size: 28px 28px; opacity: 0; }
-  .wf-row, .wf-grid { position: relative; padding: 32px 40px; opacity: 0; }
-  .wf-row { padding-bottom: 0; }
-  .wf-row.narrow { padding-top: 14px; }
-  .wf-h1 { height: 56px; width: 60%; background: rgba(13,47,69,0.18); border-radius: 5px; }
-  .wf-line { height: 11px; background: rgba(13,47,69,0.14); border-radius: 3px; margin-bottom: 9px; }
-  .wf-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 22px; margin-top: 10px; }
-  .wf-block.tall { height: 220px; background: repeating-linear-gradient(135deg, rgba(13,47,69,0.12) 0 8px, transparent 8px 16px); border: 1px dashed rgba(13,47,69,0.25); border-radius: 7px; }
-  .wf-stack { display: flex; flex-direction: column; gap: 11px; }
-  .wf-pill { width: 130px; height: 34px; border-radius: 999px; background: var(--color-periwinkle); margin-top: 8px; }
-  .content-layer { position: absolute; inset: 0; padding: 44px 44px 28px; display: flex; flex-direction: column; gap: 14px; background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; }
-  .ct-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--color-fg-muted); }
-  .ct-h1 { font-family: var(--font-display); font-size: clamp(2rem, 2.8vw, 2.9rem); font-weight: 350; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-navy); font-variation-settings: "opsz" 144; margin-top: 4px; }
-  .ct-h1 em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144; }
-  .ct-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); max-width: 38ch; line-height: 1.35; }
-  .polish-layer { position: absolute; inset: 0; padding: 34px 40px 24px; display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: 1fr auto; gap: 18px; background: #fff; opacity: 0; }
-  .pl-image { grid-row: 1 / span 2; position: relative; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, #e8eef3 0%, #c4d2dc 60%, var(--color-periwinkle) 120%); }
-  .pl-image-grad { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 50%), repeating-linear-gradient(45deg, rgba(13,47,69,0.05) 0 4px, transparent 4px 12px); }
-  .pl-image-tag { position: absolute; bottom: 12px; left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--color-fg-muted); background: rgba(255,255,255,0.85); padding: 4px 9px; border-radius: 4px; letter-spacing: 0.04em; }
-  .pl-cta { position: relative; align-self: start; justify-self: end; background: var(--color-navy); color: #fff; padding: 11px 38px 11px 20px; border-radius: 999px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; overflow: hidden; isolation: isolate; }
-  .pl-cta.live::after { content: ""; position: absolute; inset: 0; width: 60%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent); animation: mvSweep 3.2s var(--ease-soft) infinite; z-index: 0; pointer-events: none; }
-  .pl-cta > span { position: relative; z-index: 1; }
-  .pl-hours { display: flex; flex-direction: column; gap: 7px; font-size: 13px; align-self: end; }
-  .pl-hours > div { display: flex; justify-content: space-between; padding: 7px 11px; border-bottom: 1px solid var(--color-line); }
-  .pl-hours strong { font-family: var(--font-display); font-weight: 500; font-variation-settings: "opsz" 60; }
-  .pl-hours span { color: var(--color-fg-muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; }
-  .browser-foot { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: #fafafb; border-top: 1px solid var(--color-line); }
-  .foot-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
-  .foot-label.right { margin-left: auto; }
-  .track { flex: 1; height: 2px; background: rgba(7,23,34,0.08); border-radius: 2px; position: relative; }
-  .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; transition: width 120ms linear; width: 0; }
-  .tick { position: absolute; top: -2px; width: 6px; height: 6px; border-radius: 50%; transform: translateX(-3px); transition: background 280ms cubic-bezier(0.2,0.7,0.2,1); background: rgba(7,23,34,0.18); }
+  /* Right column is now the HeroShowcase component, which owns its own
+     gridded panel + browser styling. This is just the stretch wrapper. */
+  .hero-right { display: flex; align-self: stretch; }
 
   .marquee { border-block: 1px solid var(--color-line); background: var(--color-paper); overflow: hidden; padding: 22px 0; }
   .marquee-track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
@@ -889,7 +791,6 @@ import Marquee from "../components/Marquee.astro";
     .hero-outer { min-height: 0; padding-block: 2rem 3rem; }
     .hero { grid-template-columns: 1fr; gap: 2.5rem; }
     .hero-left { padding-right: var(--pad-x); }
-    .hero-right { border-left: 0; border-top: 1px solid var(--color-line); min-height: 480px; padding-top: 3rem; padding-bottom: 4rem; }
     .hero-title { font-size: clamp(2.6rem, 9vw, 4.5rem); }
   }
 </style>
@@ -921,84 +822,5 @@ import Marquee from "../components/Marquee.astro";
       }, { threshold: 0.4 });
       io.observe(el);
     } else { run(); }
-  })();
-(() => {
-    const outer = document.getElementById('heroOuter');
-    if (!outer) return;
-    const STAGES = [
-      { id: "blank", label: "01 · Blank canvas", pct: 0, url: "localhost:4321" },
-      { id: "grid", label: "02 · Grid system", pct: 0.2, url: "localhost:4321" },
-      { id: "wires", label: "03 · Wireframe", pct: 0.42, url: "localhost:4321" },
-      { id: "content", label: "04 · Content", pct: 0.66, url: "localhost:4321" },
-      { id: "polish", label: "05 · Live site", pct: 0.88, url: "smithdental.com" },
-    ];
-    const $ = (id) => document.getElementById(id);
-    const gridBg = $('gridBg'), wf1 = $('wfRow1'), wf2 = $('wfRow2'), wfG = $('wfGrid');
-    const cl = $('contentLayer'), pl = $('polishLayer'), url = $('heroUrl'), pill = $('heroStagePill');
-    const fill = $('heroFill'), pctEl = $('heroPct'), footLabel = $('heroFootLabel'), plCta = $('plCta');
-    const plStatNum = $('plStatNum');
-    const ticks = outer.querySelectorAll('.tick');
-    const reach = (id, idx) => idx >= STAGES.findIndex((s) => s.id === id);
-    const apply = (progress) => {
-      let idx = 0;
-      for (let i = 0; i < STAGES.length; i++) if (progress >= STAGES[i].pct) idx = i;
-      const stage = STAGES[idx];
-      gridBg.style.opacity = reach('grid', idx) ? (reach('polish', idx) ? 0 : 0.5) : 0;
-      const wfOn = reach('wires', idx);
-      [wf1, wf2, wfG].forEach((el, i) => {
-        el.style.opacity = wfOn ? 1 : 0;
-        el.style.transform = wfOn ? 'translateY(0)' : 'translateY(8px)';
-        el.style.transitionDelay = (i * 60) + 'ms';
-      });
-      cl.style.opacity = reach('content', idx) ? 1 : 0;
-      pl.style.opacity = reach('polish', idx) ? 1 : 0;
-      url.textContent = stage.url;
-      pill.textContent = stage.label;
-      fill.style.width = (progress * 100) + '%';
-      pctEl.textContent = Math.round(progress * 100) + '%';
-      ticks.forEach((t) => {
-        const p = parseFloat(t.dataset.pct);
-        t.style.background = progress >= p - 0.001 ? 'var(--color-periwinkle)' : 'rgba(7,23,34,0.18)';
-      });
-    };
-    apply(0);
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const enterIdle = () => {
-      if (plCta) plCta.classList.add('live');
-      if (pl) pl.classList.add('is-live');
-      if (footLabel) footLabel.textContent = 'live site';
-      // Animated stat ticker — counts 0 → 23 over 1.5s
-      if (plStatNum) {
-        const target = 23;
-        const dur = 1500;
-        const start = performance.now();
-        const step = (ts) => {
-          const t = Math.min((ts - start) / dur, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
-          plStatNum.textContent = Math.round(eased * target);
-          if (t < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-    };
-    if (reduce) { apply(1); enterIdle(); return; }
-    const DURATION = 7000;
-    let startedAt = null;
-    const tick = (ts) => {
-      if (startedAt === null) startedAt = ts;
-      const t = Math.min((ts - startedAt) / DURATION, 1);
-      const eased = 1 - Math.pow(1 - t, 2.2);
-      apply(eased);
-      if (footLabel) footLabel.textContent = t < 1 ? 'building…' : 'live site';
-      if (t < 1) requestAnimationFrame(tick);
-      else enterIdle();
-    };
-    const start = () => requestAnimationFrame(tick);
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { io.disconnect(); start(); } });
-      }, { threshold: 0.2 });
-      io.observe(outer);
-    } else setTimeout(start, 300);
   })();
 </script>

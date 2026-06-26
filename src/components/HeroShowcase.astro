@@ -1,0 +1,324 @@
+---
+/* ----------------------------------------------------------------------------
+   HeroShowcase — the home-page hero's right panel.
+   A browser frame that auto-cycles through every real site in
+   src/data/showcase.ts. Adding a site is a one-entry change in that file;
+   the carousel, URL bar, dots and auto-advance all scale to N entries.
+   -------------------------------------------------------------------------- */
+import { showcase } from "../data/showcase";
+import SitePreview from "./showcase/SitePreview.astro";
+
+const total = showcase.length;
+const pad = (n: number) => n.toString().padStart(2, "0");
+---
+
+<div class="sc-panel" id="heroShowcase" data-total={total}>
+  <div class="browser">
+    {/* chrome — dots, live URL bar, stage pill */}
+    <div class="browser-chrome">
+      <div class="dots">
+        <span style="background:#FF6058"></span><span style="background:#FFBE2E"></span><span style="background:#28C940"></span>
+      </div>
+      <div class="urlbar">
+        <span class="lock" aria-hidden="true">●</span>
+        <span class="url" id="scUrl">{showcase[0]?.domain}</span>
+      </div>
+      <div class="stage-pill" id="scPill">
+        <span class="live-dot" aria-hidden="true"></span>
+        Live · <span id="scIndex">{pad(1)}</span> / {pad(total)}
+      </div>
+    </div>
+
+    {/* stacked slides — only the active one is visible */}
+    <div class="browser-body">
+      {showcase.map((site, i) => (
+        <a
+          class="sc-slide"
+          href={site.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-idx={i}
+          data-domain={site.domain}
+          data-name={site.name}
+          data-industry={site.industry}
+          aria-label={`Visit ${site.name} (${site.domain})`}
+          aria-hidden={i === 0 ? "false" : "true"}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <SitePreview site={site} />
+        </a>
+      ))}
+    </div>
+
+    {/* footer — project label, auto-advance progress, dot nav */}
+    <div class="browser-foot">
+      <span class="foot-label" id="scLabel">{showcase[0]?.name}</span>
+      <span class="foot-sep" aria-hidden="true">·</span>
+      <span class="foot-industry" id="scIndustry">{showcase[0]?.industry}</span>
+      <div class="sc-dots" role="tablist" aria-label="Choose a project to preview">
+        {showcase.map((site, i) => (
+          <button
+            class="sc-dot"
+            data-idx={i}
+            role="tab"
+            aria-selected={i === 0 ? "true" : "false"}
+            aria-label={site.name}
+          >
+            <span class="sc-dot-fill"></span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sc-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%);
+    border-left: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem);
+    overflow: hidden;
+    align-self: stretch;
+    min-height: clamp(560px, 70vh, 760px);
+  }
+  .sc-panel::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px);
+    background-size: 38px 38px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .browser {
+    width: min(820px, 100%);
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--color-line);
+    box-shadow: 0 60px 120px -40px rgb(7 23 34 / 0.40), 0 16px 36px -14px rgb(7 23 34 / 0.20);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .browser-chrome {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: #f5f6f8;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; }
+  .urlbar {
+    flex: 1; height: 30px; border-radius: 7px;
+    background: #fff; border: 1px solid var(--color-line);
+    display: flex; align-items: center; gap: 9px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--color-fg-muted);
+    overflow: hidden;
+  }
+  .urlbar .url { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .urlbar .lock { color: var(--color-blue); font-size: 9px; }
+  .stage-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue);
+    background: #fff; border: 1px solid var(--color-line);
+    padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .stage-pill .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #28C940;
+    box-shadow: 0 0 0 0 rgba(40,201,64,0.55);
+    animation: scLive 2.4s var(--ease-soft) infinite;
+  }
+  @keyframes scLive {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(40,201,64,0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(40,201,64,0); }
+  }
+
+  .browser-body {
+    position: relative;
+    height: clamp(440px, 56vh, 560px);
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .sc-slide {
+    position: absolute; inset: 0;
+    display: block;
+    text-decoration: none;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity 700ms var(--ease-soft), transform 900ms var(--ease-soft);
+    pointer-events: none;
+  }
+  .sc-slide.is-active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+  .sc-slide:focus-visible { outline: 3px solid var(--color-blue); outline-offset: -3px; }
+
+  .browser-foot {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    background: #fafafb;
+    border-top: 1px solid var(--color-line);
+  }
+  .foot-label {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg);
+    white-space: nowrap;
+  }
+  .foot-sep { color: var(--color-line-strong); }
+  .foot-industry {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em; color: var(--color-fg-muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sc-dots { display: flex; gap: 7px; margin-left: auto; }
+  .sc-dot {
+    position: relative;
+    width: 26px; height: 6px; border-radius: 999px;
+    background: rgba(7,23,34,0.12);
+    overflow: hidden;
+    transition: background 280ms var(--ease-soft);
+    padding: 0;
+  }
+  .sc-dot:hover { background: rgba(7,23,34,0.22); }
+  .sc-dot-fill {
+    position: absolute; inset: 0;
+    transform-origin: left;
+    transform: scaleX(0);
+    background: var(--color-periwinkle);
+    border-radius: inherit;
+  }
+  .sc-dot[aria-selected="true"] { background: rgba(7,23,34,0.12); }
+  .sc-dot[aria-selected="true"] .sc-dot-fill { background: var(--color-blue); }
+
+  @media (max-width: 1000px) {
+    .sc-panel {
+      border-left: 0;
+      border-top: 1px solid var(--color-line);
+      min-height: 480px;
+      padding-top: 3rem; padding-bottom: 4rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sc-slide { transition: opacity 200ms linear; transform: none; }
+    .sc-slide.is-active { transform: none; }
+    .stage-pill .live-dot { animation: none; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const root = document.getElementById("heroShowcase");
+    if (!root) return;
+    const slides = Array.from(root.querySelectorAll(".sc-slide"));
+    const dots = Array.from(root.querySelectorAll(".sc-dot"));
+    const total = slides.length;
+    if (total === 0) return;
+
+    const urlEl = document.getElementById("scUrl");
+    const idxEl = document.getElementById("scIndex");
+    const labelEl = document.getElementById("scLabel");
+    const industryEl = document.getElementById("scIndustry");
+
+    const pad = (n) => String(n).padStart(2, "0");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const HOLD = 5000; // ms each slide stays up
+
+    let current = -1;
+    let timer = null;
+    let progressRAF = null;
+    let paused = false;
+
+    const setProgress = (dot, pct) => {
+      const fill = dot.querySelector(".sc-dot-fill");
+      if (fill) fill.style.transform = `scaleX(${pct})`;
+    };
+
+    const show = (next) => {
+      if (next === current) return;
+      const n = ((next % total) + total) % total;
+      slides.forEach((s, i) => {
+        const active = i === n;
+        s.classList.toggle("is-active", active);
+        s.setAttribute("aria-hidden", active ? "false" : "true");
+        s.setAttribute("tabindex", active ? "0" : "-1");
+      });
+      dots.forEach((d, i) => {
+        d.setAttribute("aria-selected", i === n ? "true" : "false");
+        if (i !== n) setProgress(d, 0);
+      });
+      const data = slides[n].dataset;
+      if (urlEl) urlEl.textContent = data.domain || "";
+      if (idxEl) idxEl.textContent = pad(n + 1);
+      if (labelEl) labelEl.textContent = data.name || "";
+      if (industryEl) industryEl.textContent = data.industry || "";
+      current = n;
+    };
+
+    const stopProgress = () => {
+      if (progressRAF) cancelAnimationFrame(progressRAF);
+      progressRAF = null;
+    };
+
+    const runProgress = () => {
+      stopProgress();
+      if (reduce || total < 2) return;
+      const dot = dots[current];
+      const start = performance.now();
+      const step = (ts) => {
+        if (paused) { progressRAF = requestAnimationFrame(step); return; }
+        const t = Math.min((ts - start) / HOLD, 1);
+        if (dot) setProgress(dot, t);
+        if (t < 1) progressRAF = requestAnimationFrame(step);
+        else show(current + 1);
+      };
+      progressRAF = requestAnimationFrame(step);
+    };
+
+    const go = (next) => {
+      show(next);
+      runProgress();
+    };
+
+    // Dot clicks jump to a slide and restart the timer.
+    dots.forEach((d) =>
+      d.addEventListener("click", () => go(parseInt(d.dataset.idx, 10) || 0))
+    );
+
+    // Pause auto-advance on hover/focus so people can read.
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    root.addEventListener("mouseenter", pause);
+    root.addEventListener("mouseleave", resume);
+    root.addEventListener("focusin", pause);
+    root.addEventListener("focusout", resume);
+
+    // Kick off when the panel scrolls into view.
+    const start = () => go(0);
+    if ("IntersectionObserver" in window && !reduce) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { io.disconnect(); start(); }
+        });
+      }, { threshold: 0.2 });
+      io.observe(root);
+    } else {
+      start();
+    }
+  })();
+</script>
