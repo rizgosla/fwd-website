@@ -30,11 +30,14 @@ const {
       href={`data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D2F45'/><text x='50%25' y='58%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='16' fill='white'>n</text><circle cx='22' cy='22' r='2' fill='%238E94B8'/></svg>`}
     />
 
-    {/* Fonts: Fraunces (display serif) + Inter Tight (body) */}
+    {/* Fonts: Fraunces (display serif) + Inter Tight (body).
+        Oswald + Lora are loaded too — the hero showcase renders shipped sites
+        in their *own* type (e.g. Burnt Crumbs uses Oswald display + Lora serif)
+        so each preview reads like the real, live site. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
       rel="stylesheet"
     />
   </head>

@@ -8,9 +8,13 @@
    reads like a real, shrunk-down webpage rather than reflowing type.
 
    Two layouts:
-     • overlay → text over a full-bleed photo (visual brands / restaurants)
+     • overlay → a full top-of-page render: dark nav (+ optional marquee ribbon)
+                 over a full-bleed photo hero. This mirrors restaurants / visual
+                 brands like Burnt Crumbs almost exactly — same nav, same
+                 marquee, same Oswald/Lora type, same #ScratchMade serif line.
      • split   → editorial text + an optional signature widget (services)
-   All colour comes in as inline CSS vars so each card carries its own palette.
+   All colour + type comes in as inline CSS vars so each card carries its own
+   palette and fonts — the preview reads like the real, live site.
    -------------------------------------------------------------------------- */
 import type { ShowcaseSite } from "../../data/showcase";
 
@@ -25,52 +29,102 @@ const vars = [
   `--sp-muted:${site.muted}`,
   `--sp-accent:${site.accent}`,
   `--sp-on-accent:${site.onAccent ?? "#fff"}`,
+  `--sp-display:${site.displayFont ?? 'var(--font-display)'}`,
+  `--sp-serif:${site.serifFont ?? 'var(--font-display)'}`,
 ].join(";");
+
+const emClass = `sp-em-${site.emStyle ?? "caps"}`;
+const navLinks = site.navLinks ?? [];
 ---
 
-<div class={`sp sp-${site.layout} sp-display-${site.display}`} style={vars}>
-  {site.layout === "overlay" && site.image && (
-    <img class="sp-photo" src={site.image} alt="" loading="lazy" decoding="async" />
-  )}
-  <div class="sp-scrim" aria-hidden="true"></div>
-
-  {/* faux nav */}
-  <div class="sp-nav">
-    {site.logo
-      ? <img class="sp-logo" src={site.logo} alt={site.name} loading="lazy" />
-      : <span class="sp-logo-text">{site.name}</span>}
-    <span class="sp-nav-links" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </span>
-    <span class="sp-nav-cta">{site.cta}</span>
-  </div>
-
-  <div class="sp-body">
-    <div class="sp-copy">
-      <span class="sp-eyebrow"><span class="sp-dot" aria-hidden="true"></span>{site.eyebrow}</span>
-      <h3 class="sp-headline" set:html={site.headline}></h3>
-      <p class="sp-sub">{site.sub}</p>
-      <span class="sp-cta">{site.cta}<span class="sp-arrow" aria-hidden="true">→</span></span>
-    </div>
-
-    {site.layout === "split" && (
-      <div class="sp-side" aria-hidden="true">
-        {site.widget ? (
-          <div class="sp-widget">
-            <span class="sp-widget-label">{site.widget.label}</span>
-            <ul class="sp-widget-rows">
-              {site.widget.rows.map((r) => (
-                <li><span>{r.k}</span><strong>{r.v}</strong></li>
-              ))}
-            </ul>
-            {site.widget.note && <span class="sp-widget-note">{site.widget.note}</span>}
-          </div>
+<div class={`sp sp-${site.layout} sp-display-${site.display} ${emClass}`} style={vars}>
+  {site.layout === "overlay" ? (
+    <>
+      {/* dark nav — logo + real links + order pill, just like the live site */}
+      <div class="sp-bar">
+        {site.logo
+          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="lazy" />
+          : <span class="sp-logo-text">{site.name}</span>}
+        {navLinks.length > 0 ? (
+          <nav class="sp-bar-nav" aria-hidden="true">
+            {navLinks.map((l) => <span>{l}</span>)}
+          </nav>
         ) : (
-          <div class="sp-imgblock"></div>
+          <span class="sp-nav-links" aria-hidden="true"><span></span><span></span><span></span></span>
         )}
+        <span class="sp-bar-cta">Order</span>
       </div>
-    )}
-  </div>
+
+      {/* tagline ribbon */}
+      {site.marquee && site.marquee.length > 0 && (
+        <div class="sp-marquee" aria-hidden="true">
+          <div class="sp-marquee-track">
+            {[0, 1].map(() => (
+              <div class="sp-marquee-row">
+                {site.marquee!.concat(site.marquee!).map((t) => (
+                  <span class="sp-marquee-item">{t}<span class="sp-marquee-dot"></span></span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* photo hero */}
+      <div class="sp-hero">
+        {site.image && (
+          <img class="sp-photo" src={site.image} alt="" loading="lazy" decoding="async" />
+        )}
+        <div class="sp-scrim" aria-hidden="true"></div>
+        <div class="sp-hero-copy">
+          <span class="sp-eyebrow"><span class="sp-dot" aria-hidden="true"></span>{site.eyebrow}</span>
+          <h3 class="sp-headline" set:html={site.headline}></h3>
+          <p class="sp-sub">{site.sub}</p>
+          <span class="sp-cta">{site.cta}<span class="sp-arrow" aria-hidden="true">→</span></span>
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      <div class="sp-scrim" aria-hidden="true"></div>
+
+      {/* faux nav */}
+      <div class="sp-nav">
+        {site.logo
+          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="lazy" />
+          : <span class="sp-logo-text">{site.name}</span>}
+        <span class="sp-nav-links" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="sp-nav-cta">{site.cta}</span>
+      </div>
+
+      <div class="sp-body">
+        <div class="sp-copy">
+          <span class="sp-eyebrow"><span class="sp-dot" aria-hidden="true"></span>{site.eyebrow}</span>
+          <h3 class="sp-headline" set:html={site.headline}></h3>
+          <p class="sp-sub">{site.sub}</p>
+          <span class="sp-cta">{site.cta}<span class="sp-arrow" aria-hidden="true">→</span></span>
+        </div>
+
+        <div class="sp-side" aria-hidden="true">
+          {site.widget ? (
+            <div class="sp-widget">
+              <span class="sp-widget-label">{site.widget.label}</span>
+              <ul class="sp-widget-rows">
+                {site.widget.rows.map((r) => (
+                  <li><span>{r.k}</span><strong>{r.v}</strong></li>
+                ))}
+              </ul>
+              {site.widget.note && <span class="sp-widget-note">{site.widget.note}</span>}
+            </div>
+          ) : (
+            <div class="sp-imgblock"></div>
+          )}
+        </div>
+      </div>
+    </>
+  )}
 </div>
 
 <style>
@@ -85,6 +139,122 @@ const vars = [
     flex-direction: column;
   }
 
+  /* ============================================================
+     OVERLAY — full top-of-page render (Burnt Crumbs et al.)
+     ============================================================ */
+
+  /* ---- dark nav bar ---- */
+  .sp-bar {
+    position: relative;
+    z-index: 3;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 22px 56px;
+    background: var(--sp-bg);
+    border-bottom: 1px solid color-mix(in srgb, var(--sp-fg) 10%, transparent);
+  }
+  .sp-bar .sp-logo { height: 44px; width: auto; }
+  .sp-bar-nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-left: 12px;
+  }
+  .sp-bar-nav span {
+    font-family: var(--sp-display);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sp-muted);
+  }
+  .sp-bar-cta {
+    margin-left: auto;
+    font-family: var(--sp-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sp-on-accent);
+    background: var(--sp-accent);
+    padding: 12px 22px;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--sp-accent) 45%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+
+  /* ---- tagline ribbon ---- */
+  .sp-marquee {
+    position: relative;
+    z-index: 3;
+    flex: none;
+    overflow: hidden;
+    background: var(--sp-bg);
+    border-bottom: 1px solid color-mix(in srgb, var(--sp-fg) 10%, transparent);
+    padding: 9px 0;
+  }
+  .sp-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: spMarquee 22s linear infinite;
+  }
+  .sp-marquee-row { display: flex; flex: none; gap: 28px; padding-right: 28px; }
+  .sp-marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--sp-display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sp-muted);
+    white-space: nowrap;
+  }
+  .sp-marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sp-accent); }
+  @keyframes spMarquee { to { transform: translateX(-50%); } }
+
+  /* ---- photo hero ---- */
+  .sp-hero {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .sp-hero .sp-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 60%;
+    transform: scale(1.05);
+  }
+  /* Left-to-right scrim so the copy stays legible — matches the live site. */
+  .sp-hero .sp-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--sp-bg) 85%, transparent) 0%,
+      color-mix(in srgb, var(--sp-bg) 45%, transparent) 45%,
+      transparent 75%);
+  }
+  .sp-hero-copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+    max-width: 600px;
+    padding: 0 56px;
+  }
+
+  /* ============================================================
+     SPLIT — editorial text + side widget (services)
+     ============================================================ */
   .sp-photo {
     position: absolute;
     inset: 0;
@@ -93,21 +263,8 @@ const vars = [
     object-fit: cover;
     object-position: 50% 58%;
   }
-  /* Overlay sites get a left/bottom scrim so text stays legible. */
-  .sp-overlay .sp-scrim {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg,
-        color-mix(in srgb, var(--sp-bg) 86%, transparent) 0%,
-        color-mix(in srgb, var(--sp-bg) 40%, transparent) 50%,
-        transparent 80%),
-      linear-gradient(0deg,
-        color-mix(in srgb, var(--sp-bg) 78%, transparent) 0%, transparent 42%);
-  }
   .sp-split .sp-scrim { display: none; }
 
-  /* ---- faux nav ---- */
   .sp-nav {
     position: relative;
     z-index: 2;
@@ -118,7 +275,7 @@ const vars = [
   }
   .sp-logo { height: 48px; width: auto; }
   .sp-logo-text {
-    font-family: var(--font-display);
+    font-family: var(--sp-display);
     font-weight: 500;
     font-size: 30px;
     letter-spacing: -0.01em;
@@ -142,7 +299,6 @@ const vars = [
   }
   .sp-split .sp-nav-cta { margin-left: auto; box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--sp-accent) 60%, transparent); }
 
-  /* ---- body ---- */
   .sp-body {
     position: relative;
     z-index: 2;
@@ -152,24 +308,27 @@ const vars = [
     gap: 40px;
     padding: 24px 56px 56px;
   }
-  .sp-overlay .sp-body { align-items: flex-end; }
   .sp-copy { max-width: 660px; display: flex; flex-direction: column; gap: 22px; }
   .sp-display-caps .sp-copy { max-width: 880px; }
   .sp-split .sp-copy { max-width: 520px; }
 
+  /* ============================================================
+     SHARED COPY — eyebrow / headline / sub / cta
+     ============================================================ */
   .sp-eyebrow {
     display: inline-flex; align-items: center; gap: 14px;
-    font-family: var(--font-sans);
+    font-family: var(--sp-display);
     font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
+    font-weight: 500;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--sp-muted);
   }
   .sp-dot {
-    width: 12px; height: 12px; border-radius: 50%;
+    width: 9px; height: 9px; border-radius: 50%;
     background: var(--sp-accent);
     flex: none;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--sp-accent) 90%, transparent);
   }
 
   .sp-headline {
@@ -179,15 +338,15 @@ const vars = [
     overflow-wrap: break-word;
   }
   .sp-display-caps .sp-headline {
-    font-family: var(--font-display);
+    font-family: var(--sp-display);
     font-weight: 700;
     text-transform: uppercase;
     font-size: 92px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     white-space: nowrap; /* keep each line (incl. #ScratchMade) unbroken */
   }
   .sp-display-serif .sp-headline {
-    font-family: var(--font-display);
+    font-family: var(--sp-serif);
     font-weight: 350;
     font-size: 68px;
     letter-spacing: -0.02em;
@@ -197,18 +356,31 @@ const vars = [
   .sp-headline :global(em) {
     font-style: italic;
     color: var(--sp-accent);
+  }
+  /* Default caps em: same condensed face, just italic + accent. */
+  .sp-em-caps.sp-display-caps .sp-headline :global(em) {
+    display: block;
     font-variation-settings: "opsz" 144;
   }
-  .sp-display-caps .sp-headline :global(em) { display: block; }
+  /* Serif em: editorial serif-italic line under the headline — Burnt's
+     "#ScratchMade" treatment. */
+  .sp-em-serif .sp-headline :global(em) {
+    display: block;
+    font-family: var(--sp-serif);
+    font-weight: 700;
+    font-size: 68px;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
 
   .sp-sub {
     margin: 0;
     max-width: 440px;
-    font-family: var(--font-display);
+    font-family: var(--sp-serif);
     font-style: italic;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 26px;
-    line-height: 1.35;
+    line-height: 1.4;
     color: var(--sp-muted);
   }
 
@@ -216,19 +388,23 @@ const vars = [
     align-self: flex-start;
     display: inline-flex; align-items: center; gap: 12px;
     margin-top: 6px;
-    font-family: var(--font-sans);
-    font-size: 17px;
+    font-family: var(--sp-display);
+    font-size: 16px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--sp-on-accent);
     background: var(--sp-accent);
-    padding: 18px 34px;
+    padding: 17px 32px;
     border-radius: 999px;
+    box-shadow: 0 6px 24px color-mix(in srgb, var(--sp-accent) 45%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.18);
   }
-  .sp-arrow { font-size: 0.9em; }
+  .sp-arrow { font-size: 0.95em; }
 
-  /* ---- split side widget ---- */
+  /* ============================================================
+     SPLIT side widget
+     ============================================================ */
   .sp-side { flex: 1; display: flex; justify-content: flex-end; }
   .sp-widget {
     width: 100%;
@@ -255,9 +431,9 @@ const vars = [
   }
   .sp-widget-rows li:last-child { border-bottom: 0; padding-bottom: 0; }
   .sp-widget-rows span { color: var(--sp-muted); }
-  .sp-widget-rows strong { font-family: var(--font-display); font-weight: 500; color: var(--sp-fg); }
+  .sp-widget-rows strong { font-family: var(--sp-serif); font-weight: 500; color: var(--sp-fg); }
   .sp-widget-note {
-    font-family: var(--font-display); font-style: italic; font-weight: 300;
+    font-family: var(--sp-serif); font-style: italic; font-weight: 400;
     font-size: 17px; color: var(--sp-muted); line-height: 1.3;
   }
   .sp-imgblock {
@@ -266,5 +442,9 @@ const vars = [
     background:
       radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--sp-accent) 30%, transparent), transparent 60%),
       color-mix(in srgb, var(--sp-fg) 8%, var(--sp-bg));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sp-marquee-track { animation: none; }
   }
 </style>
