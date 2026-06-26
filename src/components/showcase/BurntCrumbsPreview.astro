@@ -1,0 +1,188 @@
+---
+/* ----------------------------------------------------------------------------
+   BurntCrumbsPreview — pixel-faithful mini of the live burntcrumbs.com hero.
+
+   Mirrors the real site (burntdemo repo): Oswald/Lora/DM Sans type, the
+   ink/ember palette, the full nav (Menu · Story · Catering · Merch · Careers +
+   socials + Order), the #ScratchMade marquee, and the photo hero. Sized in
+   fixed px against the 1000×620 .sc-stage so HeroShowcase can scale it to fit.
+
+   This is the "bespoke" path referenced by showcase.ts → component: "burnt".
+   -------------------------------------------------------------------------- */
+const navLinks = ["Menu", "Story", "Catering", "Merch", "Careers"];
+const marquee = [
+  "Keeping it #ScratchMade",
+  "Scratch made daily",
+  "Sauce by the ounce",
+  "Spaghetti grilled cheese",
+  "Pancakes that move",
+];
+---
+
+<div class="sc-site bc">
+  {/* ── Nav ── */}
+  <div class="bc-nav">
+    <img class="bc-logo" src="/showcase/burnt-crumbs/logo.png" alt="Burnt Crumbs" loading="lazy" />
+    <nav class="bc-links">
+      {navLinks.map((l) => <span>{l}</span>)}
+    </nav>
+    <div class="bc-socials" aria-hidden="true">
+      <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="4" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.4"/><circle cx="13.5" cy="4.5" r="0.9" fill="currentColor"/></svg>
+      <svg viewBox="0 0 18 18" fill="none"><path d="M11 6V4.5c0-.6.4-1 1-1h1V1h-2c-1.7 0-3 1.3-3 3v2H6v2h2v7h3V8h2l.5-2H11z" fill="currentColor"/></svg>
+    </div>
+    <span class="bc-order">Order</span>
+  </div>
+
+  {/* ── Marquee ── */}
+  <div class="bc-marquee">
+    <div class="bc-marquee-track">
+      {[0, 1].map(() => (
+        <div class="bc-marquee-half">
+          {marquee.map((t) => (
+            <span>{t}<i></i></span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* ── Hero ── */}
+  <div class="bc-hero">
+    <img class="bc-photo" src="/showcase/burnt-crumbs/hero.jpg" alt="" loading="lazy" decoding="async" />
+    <div class="bc-scrim" aria-hidden="true"></div>
+    <div class="bc-hero-inner">
+      <span class="bc-eyebrow"><i class="bc-dot"></i>Irvine, CA &nbsp;·&nbsp; Est. 2010 &nbsp;·&nbsp; #scratchmade</span>
+      <h3 class="bc-h1">Keeping it<em>#ScratchMade</em></h3>
+      <p class="bc-sub">Scratch-made comfort bites and a modern, casual dining experience.</p>
+      <span class="bc-cta">Order Online <span aria-hidden="true">→</span></span>
+    </div>
+    <div class="bc-scroll" aria-hidden="true"><span>SCROLL</span><i></i></div>
+  </div>
+</div>
+
+<style>
+  /* Real Burnt Crumbs tokens — kept local so the preview matches the live site
+     regardless of the surrounding fwd. theme. */
+  .bc {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    background: #0e0a07;
+    color: #f5ede0;
+    font-family: "DM Sans", system-ui, sans-serif;
+    overflow: hidden;
+    --ember: #c5453a;
+    --paper: #f5ede0;
+    --paperdim: #ebe1d0;
+  }
+
+  /* ── Nav ── */
+  .bc-nav {
+    display: flex; align-items: center; gap: 30px;
+    padding: 0 44px; height: 70px;
+    background: #0e0a07;
+    flex: none;
+  }
+  .bc-logo { height: 44px; width: auto; }
+  .bc-links { display: flex; gap: 26px; }
+  .bc-links span {
+    font-family: "Oswald", sans-serif;
+    font-size: 14px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: rgba(235,225,208,0.82);
+  }
+  .bc-socials { display: flex; gap: 6px; margin-left: auto; color: rgba(235,225,208,0.7); }
+  .bc-socials svg { width: 18px; height: 18px; }
+  .bc-order {
+    font-family: "Oswald", sans-serif;
+    font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--paper);
+    background: var(--ember);
+    padding: 11px 22px; border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(197,69,58,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+
+  /* ── Marquee ── */
+  .bc-marquee {
+    flex: none; height: 36px; overflow: hidden;
+    background: #0e0a07;
+    border-block: 1px solid rgba(245,237,224,0.10);
+    display: flex; align-items: center;
+  }
+  .bc-marquee-track { display: flex; width: max-content; animation: bcScroll 22s linear infinite; }
+  .bc-marquee-half { display: flex; gap: 28px; padding-right: 28px; }
+  .bc-marquee-half span {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: "Oswald", sans-serif;
+    font-size: 12px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.2em;
+    color: rgba(235,225,208,0.78); white-space: nowrap;
+  }
+  .bc-marquee-half i { width: 5px; height: 5px; border-radius: 50%; background: var(--ember); }
+  @keyframes bcScroll { to { transform: translateX(-50%); } }
+
+  /* ── Hero ── */
+  .bc-hero { position: relative; flex: 1; overflow: hidden; }
+  .bc-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; transform: scale(1.04); }
+  .bc-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(26,20,16,0.88) 0%, rgba(26,20,16,0.5) 45%, rgba(26,20,16,0) 75%);
+  }
+  .bc-hero-inner {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 16px; padding: 0 56px; max-width: 620px;
+  }
+  .bc-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: "Oswald", sans-serif;
+    font-size: 13px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.2em;
+    color: rgba(235,225,208,0.9);
+  }
+  .bc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 12px var(--ember); flex: none; }
+  .bc-h1 {
+    margin: 4px 0 0;
+    font-family: "Oswald", sans-serif;
+    font-weight: 700; text-transform: uppercase;
+    font-size: 82px; line-height: 0.9; letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+  .bc-h1 em {
+    display: block;
+    font-family: "Lora", Georgia, serif;
+    font-style: italic; font-weight: 700;
+    font-size: 60px; line-height: 0.92; letter-spacing: -0.02em;
+    color: var(--ember);
+  }
+  .bc-sub {
+    margin: 8px 0 0;
+    font-family: "Lora", Georgia, serif;
+    font-style: italic; font-size: 22px; line-height: 1.4;
+    color: rgba(235,225,208,0.85); max-width: 30ch;
+  }
+  .bc-cta {
+    margin-top: 22px; align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: "Oswald", sans-serif;
+    font-size: 14px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--paper); background: var(--ember);
+    padding: 16px 30px; border-radius: 999px;
+    box-shadow: 0 6px 24px rgba(197,69,58,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .bc-scroll {
+    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    writing-mode: vertical-rl;
+    font-family: "Oswald", sans-serif;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em;
+    color: rgba(245,237,224,0.7);
+  }
+  .bc-scroll i { width: 1px; height: 40px; background: rgba(245,237,224,0.7); animation: bcDrop 1.6s ease-in-out infinite; transform-origin: top; }
+  @keyframes bcDrop { 0%,100% { transform: scaleY(0.4); opacity: 0.5; } 50% { transform: scaleY(1); opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bc-marquee-track, .bc-scroll i { animation: none; }
+  }
+</style>

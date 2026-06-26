@@ -40,6 +40,12 @@ export interface ShowcaseSite {
    *  (great for services / practices with no hero photo). */
   layout: ShowcaseLayout;
 
+  /** Optional bespoke preview component for pixel-faithful sites. When set,
+   *  HeroShowcase renders that component instead of the generic SitePreview —
+   *  use it when a site needs its own fonts/nav/marquee to truly match.
+   *  Leave unset to use the data-driven generic preview above. */
+  component?: "burnt";
+
   /** Colour tokens lifted from the real site. */
   bg: string;
   fg: string;
@@ -79,6 +85,7 @@ export const showcase: ShowcaseSite[] = [
     url: "https://burntcrumbs.com",
     industry: "Restaurant · Irvine, CA",
     layout: "overlay",
+    component: "burnt",
     bg: "#1a1410",
     fg: "#f5ede0",
     muted: "rgba(245,237,224,0.72)",

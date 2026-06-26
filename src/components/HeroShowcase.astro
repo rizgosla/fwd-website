@@ -12,10 +12,22 @@
    -------------------------------------------------------------------------- */
 import { showcase } from "../data/showcase";
 import SitePreview from "./showcase/SitePreview.astro";
+import BurntCrumbsPreview from "./showcase/BurntCrumbsPreview.astro";
 
 const total = showcase.length;
 const pad = (n: number) => n.toString().padStart(2, "0");
+
+// Some previews are bespoke (their own fonts/nav) for true fidelity; the rest
+// use the generic data-driven SitePreview.
+const needsBurntFonts = showcase.some((s) => s.component === "burnt");
 ---
+
+{needsBurntFonts && (
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap"
+  />
+)}
 
 <div class="sc-panel" id="heroShowcase" data-total={total}>
   <div class="browser">
@@ -71,8 +83,10 @@ const pad = (n: number) => n.toString().padStart(2, "0");
                 <div class="w-media"></div>
               </div>
             </div>
-            {/* the real site */}
-            <SitePreview site={site} />
+            {/* the real site — bespoke component when one is set, else generic */}
+            {site.component === "burnt"
+              ? <BurntCrumbsPreview />
+              : <SitePreview site={site} />}
           </div>
         </a>
       ))}
@@ -244,7 +258,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
   .sc-wire > *, .w-hero > *, .w-copy > * { transition: opacity 400ms var(--ease-soft), transform 400ms var(--ease-soft); }
 
   /* The real preview starts hidden; JS reveals it as the final build step. */
-  .sc-stage :global(.sp) {
+  .sc-stage :global(.sc-site) {
     opacity: 0;
     transform: translateY(14px);
     transition: opacity 600ms var(--ease-soft), transform 700ms var(--ease-soft);
@@ -286,7 +300,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
   }
   @media (prefers-reduced-motion: reduce) {
     .sc-slide { transition: opacity 200ms linear; }
-    .sc-stage :global(.sp) { transition: none; transform: none; }
+    .sc-stage :global(.sc-site) { transition: none; transform: none; }
     .stage-pill.is-live .live-dot { animation: none; }
   }
 </style>
@@ -337,7 +351,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
       grid: slide.querySelector(".sc-grid"),
       wire: slide.querySelector(".sc-wire"),
       wireKids: slide.querySelectorAll(".sc-wire .w-nav, .sc-wire .w-copy > *, .sc-wire .w-media"),
-      sp: slide.querySelector(".sp"),
+      sp: slide.querySelector(".sc-site"),
     });
 
     const reset = (slide) => {

@@ -28,7 +28,7 @@ const vars = [
 ].join(";");
 ---
 
-<div class={`sp sp-${site.layout} sp-display-${site.display}`} style={vars}>
+<div class={`sc-site sp sp-${site.layout} sp-display-${site.display}`} style={vars}>
   {site.layout === "overlay" && site.image && (
     <img class="sp-photo" src={site.image} alt="" loading="lazy" decoding="async" />
   )}
