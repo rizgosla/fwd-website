@@ -1499,7 +1499,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
   align-items: stretch;
 }
 @media (min-width: 700px) {
-  .ps-rev { grid-template-columns: 1.55fr 1fr; }
+  .ps-rev { grid-template-columns: 1.7fr 1fr; }
 }
 .ps-rev-doc {
   background: var(--color-paper);
@@ -1531,12 +1531,13 @@ main + footer.footer-dark { margin-top: 0 !important; }
 }
 .ps-rev-doc-body {
   flex: 1;
-  padding: clamp(1rem, 2.5vw, 1.5rem);
-  display: flex; flex-direction: column; gap: 10px;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  display: flex; flex-direction: column; gap: clamp(11px, 1.5vh, 16px);
   min-height: 240px;
 }
 .ps-rev-eye { width: 70px; height: 8px; background: var(--color-blue); border-radius: 3px; }
-.ps-rev-h { width: 70%; height: 18px; background: rgba(13,47,69,0.75); border-radius: 4px; margin-bottom: 8px; }
+.ps-rev-h { width: 70%; height: 18px; background: rgba(13,47,69,0.75); border-radius: 4px; margin-bottom: 6px; }
+.ps-rev-h.sub { width: 44%; height: 13px; background: rgba(13,47,69,0.55); margin-top: clamp(8px, 1.4vh, 16px); margin-bottom: 2px; }
 .ps-rev-line {
   position: relative;
   height: 9px; border-radius: 3px;
@@ -1574,8 +1575,8 @@ main + footer.footer-dark { margin-top: 0 !important; }
 }
 .ps-rev-comments {
   display: flex; flex-direction: column;
-  gap: 12px;
-  padding-top: 8px;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 28px);
 }
 .ps-rev-comment {
   display: flex; align-items: flex-start; gap: 10px;
@@ -1603,9 +1604,9 @@ main + footer.footer-dark { margin-top: 0 !important; }
 }
 .ps-rev-avatar.alt { background: var(--color-periwinkle); color: var(--color-navy); }
 .ps-rev-bubble { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
-.ps-rev-meta { display: flex; gap: 8px; align-items: baseline; }
-.ps-rev-name { font-family: var(--font-display); font-weight: 500; font-size: 13px; color: var(--color-navy); }
-.ps-rev-time { font-family: var(--font-mono); font-size: 10px; color: var(--color-fg-muted); }
+.ps-rev-meta { display: flex; gap: 8px; align-items: baseline; flex-wrap: nowrap; }
+.ps-rev-name { font-family: var(--font-display); font-weight: 500; font-size: 13px; color: var(--color-navy); white-space: nowrap; }
+.ps-rev-time { font-family: var(--font-mono); font-size: 10px; color: var(--color-fg-muted); white-space: nowrap; }
 .ps-rev-text { font-family: var(--font-display); font-weight: 300; font-style: italic; color: var(--color-fg-soft); font-size: 13px; line-height: 1.3; }
 
 /* ----- Step 04: launch — deploy log + URL bar + stats ----- */
