@@ -7,7 +7,7 @@
    registered — moves on and builds the next. Seeded from src/data/showcase.ts;
    adding a site is a one-entry change there and everything below scales to it.
 
-   Each preview is rendered on a fixed 1000×620 canvas (.sc-stage) and scaled
+   Each preview is rendered on a fixed 1000×700 canvas (.sc-stage) and scaled
    to fit the frame with a single transform, so proportions never break.
    -------------------------------------------------------------------------- */
 import { showcase } from "../data/showcase";
@@ -115,8 +115,10 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 3vw, 3rem);
     overflow: hidden;
     align-self: stretch;
-    min-height: clamp(560px, 70vh, 760px);
+    min-height: clamp(560px, 80vh, 880px);
   }
+  /* Grid runs the FULL height of the panel — it only softens at the left and
+     right edges, so the vertical lines reach top and bottom of the section. */
   .sc-panel::before {
     content: "";
     position: absolute; inset: 0;
@@ -124,13 +126,13 @@ const pad = (n: number) => n.toString().padStart(2, "0");
       linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px),
       linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px);
     background-size: 38px 38px;
-    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
     pointer-events: none;
   }
 
   .browser {
-    width: min(820px, 100%);
+    width: min(860px, 100%);
     background: #fff;
     border-radius: 14px;
     border: 1px solid var(--color-line);
@@ -179,11 +181,11 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     50% { box-shadow: 0 0 0 6px rgba(40,201,64,0); }
   }
 
-  /* Body matches the 1000×620 stage aspect, so a single scale fits exactly. */
+  /* Body matches the 1000×700 stage aspect, so a single scale fits exactly. */
   .browser-body {
     position: relative;
     width: 100%;
-    aspect-ratio: 1000 / 620;
+    aspect-ratio: 1000 / 700;
     background: #fff;
     overflow: hidden;
   }
@@ -204,7 +206,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     position: absolute;
     top: 0; left: 0;
     width: 1000px;
-    height: 620px;
+    height: 700px;
     transform-origin: top left;
   }
 
@@ -311,7 +313,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     const pad = (n) => String(n).padStart(2, "0");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // --- Keep the fixed 1000×620 canvases scaled to the live frame width. ---
+    // --- Keep the fixed 1000×700 canvases scaled to the live frame width. ---
     const fit = () => {
       const w = body.clientWidth;
       const s = w / 1000;
