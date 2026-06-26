@@ -48,8 +48,27 @@ export interface ShowcaseSite {
   /** Accent text colour when sitting on the accent (usually white). */
   onAccent?: string;
 
+  /** Type lifted from the real site. So a preview reads like the live site —
+   *  not the fwd. house font — each card can carry its own faces. Both are
+   *  full CSS font stacks. Default to the studio fonts when omitted. */
+  displayFont?: string;
+  serifFont?: string;
+
   /** Headline style: "caps" = condensed uppercase, "serif" = editorial serif. */
   display: "caps" | "serif";
+
+  /** For "caps" overlays: render the accented <em> as the real site does.
+   *  "serif" = editorial serif-italic line under the headline (Burnt's
+   *  "#ScratchMade"); "caps" = same condensed face as the line above. */
+  emStyle?: "serif" | "caps";
+
+  /** Real nav link labels for the faux browser nav. Falls back to decorative
+   *  bars when omitted. */
+  navLinks?: string[];
+
+  /** Optional scrolling marquee strip under the nav (e.g. Burnt's tagline
+   *  ribbon). Omit for sites without one. */
+  marquee?: string[];
 
   /** Hero copy. `headline` may contain a single <em> for the accented word. */
   eyebrow: string;
@@ -84,13 +103,24 @@ export const showcase: ShowcaseSite[] = [
     muted: "rgba(245,237,224,0.72)",
     accent: "#c5453a",
     onAccent: "#f5ede0",
+    displayFont: '"Oswald", system-ui, sans-serif',
+    serifFont: '"Lora", Georgia, serif',
     display: "caps",
+    emStyle: "serif",
     eyebrow: "Irvine, CA · Est. 2010 · #scratchmade",
     headline: "Keeping it <em>#ScratchMade</em>",
     sub: "Scratch-made comfort bites and a modern, casual dining experience.",
     cta: "Order Online",
     image: "/showcase/burnt-crumbs/hero.jpg",
     logo: "/showcase/burnt-crumbs/logo.png",
+    navLinks: ["Menu", "Story", "Catering", "Merch", "Careers"],
+    marquee: [
+      "Keeping it #ScratchMade",
+      "Scratch made daily",
+      "Sauce by the ounce",
+      "Spaghetti grilled cheese",
+      "Pancakes that move",
+    ],
   },
   // Add the next finished site here — see the "HOW TO ADD A NEW SITE" notes
   // at the top of this file. With a second entry the hero starts cycling.
