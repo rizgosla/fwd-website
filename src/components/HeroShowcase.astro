@@ -1,9 +1,14 @@
 ---
 /* ----------------------------------------------------------------------------
    HeroShowcase — the home-page hero's right panel.
-   A browser frame that auto-cycles through every real site in
-   src/data/showcase.ts. Adding a site is a one-entry change in that file;
-   the carousel, URL bar, dots and auto-advance all scale to N entries.
+
+   A browser frame that *builds* a real shipped site in front of you
+   (blank canvas → grid → wireframe → live), then — if more than one site is
+   registered — moves on and builds the next. Seeded from src/data/showcase.ts;
+   adding a site is a one-entry change there and everything below scales to it.
+
+   Each preview is rendered on a fixed 1000×620 canvas (.sc-stage) and scaled
+   to fit the frame with a single transform, so proportions never break.
    -------------------------------------------------------------------------- */
 import { showcase } from "../data/showcase";
 import SitePreview from "./showcase/SitePreview.astro";
@@ -14,23 +19,23 @@ const pad = (n: number) => n.toString().padStart(2, "0");
 
 <div class="sc-panel" id="heroShowcase" data-total={total}>
   <div class="browser">
-    {/* chrome — dots, live URL bar, stage pill */}
+    {/* chrome — dots, live URL bar, build/stage pill */}
     <div class="browser-chrome">
       <div class="dots">
         <span style="background:#FF6058"></span><span style="background:#FFBE2E"></span><span style="background:#28C940"></span>
       </div>
       <div class="urlbar">
         <span class="lock" aria-hidden="true">●</span>
-        <span class="url" id="scUrl">{showcase[0]?.domain}</span>
+        <span class="url" id="scUrl">localhost:4321</span>
       </div>
       <div class="stage-pill" id="scPill">
         <span class="live-dot" aria-hidden="true"></span>
-        Live · <span id="scIndex">{pad(1)}</span> / {pad(total)}
+        <span id="scPillText">Blank canvas</span>
       </div>
     </div>
 
-    {/* stacked slides — only the active one is visible */}
-    <div class="browser-body">
+    {/* stacked slides — each builds, then reveals its real site */}
+    <div class="browser-body" id="scBody">
       {showcase.map((site, i) => (
         <a
           class="sc-slide"
@@ -45,29 +50,54 @@ const pad = (n: number) => n.toString().padStart(2, "0");
           aria-hidden={i === 0 ? "false" : "true"}
           tabindex={i === 0 ? 0 : -1}
         >
-          <SitePreview site={site} />
+          <div class="sc-stage">
+            {/* build scaffolding — fades out as the real site comes in */}
+            <div class="sc-grid"></div>
+            <div class="sc-wire">
+              <div class="w-nav">
+                <span class="w-logo"></span>
+                <span class="w-links"><span></span><span></span><span></span></span>
+                <span class="w-cta"></span>
+              </div>
+              <div class="w-hero">
+                <div class="w-copy">
+                  <span class="w-eyebrow"></span>
+                  <span class="w-bar"></span>
+                  <span class="w-bar w-bar-2"></span>
+                  <span class="w-line"></span>
+                  <span class="w-line w-line-2"></span>
+                  <span class="w-pill"></span>
+                </div>
+                <div class="w-media"></div>
+              </div>
+            </div>
+            {/* the real site */}
+            <SitePreview site={site} />
+          </div>
         </a>
       ))}
     </div>
 
-    {/* footer — project label, auto-advance progress, dot nav */}
+    {/* footer — project label, build progress track, dot nav */}
     <div class="browser-foot">
-      <span class="foot-label" id="scLabel">{showcase[0]?.name}</span>
-      <span class="foot-sep" aria-hidden="true">·</span>
-      <span class="foot-industry" id="scIndustry">{showcase[0]?.industry}</span>
-      <div class="sc-dots" role="tablist" aria-label="Choose a project to preview">
-        {showcase.map((site, i) => (
-          <button
-            class="sc-dot"
-            data-idx={i}
-            role="tab"
-            aria-selected={i === 0 ? "true" : "false"}
-            aria-label={site.name}
-          >
-            <span class="sc-dot-fill"></span>
-          </button>
-        ))}
+      <span class="foot-label" id="scLabel">building…</span>
+      <div class="track">
+        <div class="fill" id="scFill"></div>
       </div>
+      {total > 1 && (
+        <div class="sc-dots" role="tablist" aria-label="Choose a project to preview">
+          {showcase.map((site, i) => (
+            <button
+              class="sc-dot"
+              data-idx={i}
+              role="tab"
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-label={site.name}
+            ></button>
+          ))}
+        </div>
+      )}
+      <span class="foot-index" id="scIndex">{pad(1)} / {pad(total)}</span>
     </div>
   </div>
 </div>
@@ -136,6 +166,10 @@ const pad = (n: number) => n.toString().padStart(2, "0");
   }
   .stage-pill .live-dot {
     width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-periwinkle);
+    transition: background 400ms var(--ease-soft);
+  }
+  .stage-pill.is-live .live-dot {
     background: #28C940;
     box-shadow: 0 0 0 0 rgba(40,201,64,0.55);
     animation: scLive 2.4s var(--ease-soft) infinite;
@@ -145,9 +179,11 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     50% { box-shadow: 0 0 0 6px rgba(40,201,64,0); }
   }
 
+  /* Body matches the 1000×620 stage aspect, so a single scale fits exactly. */
   .browser-body {
     position: relative;
-    height: clamp(440px, 56vh, 560px);
+    width: 100%;
+    aspect-ratio: 1000 / 620;
     background: #fff;
     overflow: hidden;
   }
@@ -157,53 +193,88 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     display: block;
     text-decoration: none;
     opacity: 0;
-    transform: scale(1.02);
-    transition: opacity 700ms var(--ease-soft), transform 900ms var(--ease-soft);
+    transition: opacity 600ms var(--ease-soft);
     pointer-events: none;
   }
-  .sc-slide.is-active {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: auto;
-  }
+  .sc-slide.is-active { opacity: 1; pointer-events: auto; }
   .sc-slide:focus-visible { outline: 3px solid var(--color-blue); outline-offset: -3px; }
 
+  /* Fixed design canvas — JS sets transform: scale() to fit the body. */
+  .sc-stage {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1000px;
+    height: 620px;
+    transform-origin: top left;
+  }
+
+  /* ---- build scaffolding ---- */
+  .sc-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(13,47,69,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13,47,69,0.10) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0;
+  }
+  .sc-wire {
+    position: absolute; inset: 0;
+    padding: 40px 56px;
+    display: flex; flex-direction: column; gap: 40px;
+    opacity: 0;
+  }
+  .w-nav { display: flex; align-items: center; gap: 24px; }
+  .w-logo { width: 120px; height: 30px; border-radius: 6px; background: rgba(13,47,69,0.16); }
+  .w-links { display: flex; gap: 18px; margin-left: auto; }
+  .w-links span { width: 56px; height: 12px; border-radius: 3px; background: rgba(13,47,69,0.12); }
+  .w-cta { width: 130px; height: 38px; border-radius: 999px; background: var(--color-periwinkle); opacity: 0.5; }
+  .w-hero { flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 44px; align-items: center; }
+  .w-copy { display: flex; flex-direction: column; gap: 18px; }
+  .w-eyebrow { width: 180px; height: 14px; border-radius: 3px; background: rgba(13,47,69,0.14); }
+  .w-bar { width: 92%; height: 46px; border-radius: 6px; background: rgba(13,47,69,0.18); }
+  .w-bar-2 { width: 64%; }
+  .w-line { width: 80%; height: 14px; border-radius: 3px; background: rgba(13,47,69,0.12); }
+  .w-line-2 { width: 60%; }
+  .w-pill { width: 180px; height: 48px; border-radius: 999px; background: var(--color-periwinkle); opacity: 0.55; margin-top: 8px; }
+  .w-media {
+    height: 100%; min-height: 320px; border-radius: 12px;
+    background: repeating-linear-gradient(135deg, rgba(13,47,69,0.10) 0 10px, transparent 10px 20px);
+    border: 1px dashed rgba(13,47,69,0.22);
+  }
+  .sc-wire > *, .w-hero > *, .w-copy > * { transition: opacity 400ms var(--ease-soft), transform 400ms var(--ease-soft); }
+
+  /* The real preview starts hidden; JS reveals it as the final build step. */
+  .sc-stage :global(.sp) {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 600ms var(--ease-soft), transform 700ms var(--ease-soft);
+  }
+
   .browser-foot {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 14px;
     padding: 12px 18px;
     background: #fafafb;
     border-top: 1px solid var(--color-line);
   }
   .foot-label {
     font-family: var(--font-mono); font-size: 11px;
-    letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg);
-    white-space: nowrap;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted);
+    white-space: nowrap; min-width: 86px;
   }
-  .foot-sep { color: var(--color-line-strong); }
-  .foot-industry {
-    font-family: var(--font-mono); font-size: 11px;
-    letter-spacing: 0.04em; color: var(--color-fg-muted);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .sc-dots { display: flex; gap: 7px; margin-left: auto; }
+  .track { flex: 1; height: 2px; background: rgba(7,23,34,0.08); border-radius: 2px; position: relative; }
+  .fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-periwinkle); border-radius: 2px; width: 0; }
+  .sc-dots { display: flex; gap: 7px; }
   .sc-dot {
-    position: relative;
-    width: 26px; height: 6px; border-radius: 999px;
-    background: rgba(7,23,34,0.12);
-    overflow: hidden;
+    width: 24px; height: 6px; border-radius: 999px;
+    background: rgba(7,23,34,0.14); padding: 0;
     transition: background 280ms var(--ease-soft);
-    padding: 0;
   }
-  .sc-dot:hover { background: rgba(7,23,34,0.22); }
-  .sc-dot-fill {
-    position: absolute; inset: 0;
-    transform-origin: left;
-    transform: scaleX(0);
-    background: var(--color-periwinkle);
-    border-radius: inherit;
+  .sc-dot:hover { background: rgba(7,23,34,0.28); }
+  .sc-dot[aria-selected="true"] { background: var(--color-blue); }
+  .foot-index {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; color: var(--color-fg-muted); white-space: nowrap;
   }
-  .sc-dot[aria-selected="true"] { background: rgba(7,23,34,0.12); }
-  .sc-dot[aria-selected="true"] .sc-dot-fill { background: var(--color-blue); }
 
   @media (max-width: 1000px) {
     .sc-panel {
@@ -213,11 +284,10 @@ const pad = (n: number) => n.toString().padStart(2, "0");
       padding-top: 3rem; padding-bottom: 4rem;
     }
   }
-
   @media (prefers-reduced-motion: reduce) {
-    .sc-slide { transition: opacity 200ms linear; transform: none; }
-    .sc-slide.is-active { transform: none; }
-    .stage-pill .live-dot { animation: none; }
+    .sc-slide { transition: opacity 200ms linear; }
+    .sc-stage :global(.sp) { transition: none; transform: none; }
+    .stage-pill.is-live .live-dot { animation: none; }
   }
 </style>
 
@@ -225,96 +295,150 @@ const pad = (n: number) => n.toString().padStart(2, "0");
   (() => {
     const root = document.getElementById("heroShowcase");
     if (!root) return;
+    const body = document.getElementById("scBody");
     const slides = Array.from(root.querySelectorAll(".sc-slide"));
     const dots = Array.from(root.querySelectorAll(".sc-dot"));
     const total = slides.length;
-    if (total === 0) return;
+    if (!body || total === 0) return;
 
     const urlEl = document.getElementById("scUrl");
-    const idxEl = document.getElementById("scIndex");
+    const pill = document.getElementById("scPill");
+    const pillText = document.getElementById("scPillText");
     const labelEl = document.getElementById("scLabel");
-    const industryEl = document.getElementById("scIndustry");
+    const fillEl = document.getElementById("scFill");
+    const indexEl = document.getElementById("scIndex");
 
     const pad = (n) => String(n).padStart(2, "0");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const HOLD = 5000; // ms each slide stays up
 
-    let current = -1;
-    let timer = null;
-    let progressRAF = null;
-    let paused = false;
+    // --- Keep the fixed 1000×620 canvases scaled to the live frame width. ---
+    const fit = () => {
+      const w = body.clientWidth;
+      const s = w / 1000;
+      root.querySelectorAll(".sc-stage").forEach((st) => {
+        st.style.transform = `scale(${s})`;
+      });
+    };
+    fit();
+    if ("ResizeObserver" in window) new ResizeObserver(fit).observe(body);
+    else window.addEventListener("resize", fit, { passive: true });
 
-    const setProgress = (dot, pct) => {
-      const fill = dot.querySelector(".sc-dot-fill");
-      if (fill) fill.style.transform = `scaleX(${pct})`;
+    // Build phases, by build-progress fraction (0→1).
+    const PHASES = [
+      { at: 0.0,  label: "Blank canvas" },
+      { at: 0.18, label: "Grid system" },
+      { at: 0.4,  label: "Wireframe" },
+      { at: 0.66, label: "Content" },
+    ];
+    const BUILD = reduce ? 0 : 3600; // ms to build
+    const HOLD = 3000;               // ms live before advancing
+
+    const els = (slide) => ({
+      grid: slide.querySelector(".sc-grid"),
+      wire: slide.querySelector(".sc-wire"),
+      wireKids: slide.querySelectorAll(".sc-wire .w-nav, .sc-wire .w-copy > *, .sc-wire .w-media"),
+      sp: slide.querySelector(".sp"),
+    });
+
+    const reset = (slide) => {
+      const e = els(slide);
+      if (e.grid) e.grid.style.opacity = "0";
+      if (e.wire) e.wire.style.opacity = "0";
+      e.wireKids.forEach((k) => { k.style.opacity = "0"; k.style.transform = "translateY(10px)"; });
+      if (e.sp) { e.sp.style.opacity = "0"; e.sp.style.transform = "translateY(14px)"; }
     };
 
-    const show = (next) => {
-      if (next === current) return;
-      const n = ((next % total) + total) % total;
+    // Render one frame of the build for the active slide.
+    const render = (slide, p, data) => {
+      const e = els(slide);
+      // grid: in by 0.18, dimmed once content arrives
+      const gridIn = Math.min(p / 0.18, 1);
+      const gridOut = p > 0.66 ? Math.max(1 - (p - 0.66) / 0.2, 0) : 1;
+      if (e.grid) e.grid.style.opacity = String(0.6 * gridIn * gridOut);
+      // wireframe: in 0.18→0.4, out 0.66→0.82
+      const wireIn = Math.min(Math.max((p - 0.18) / 0.22, 0), 1);
+      const wireOut = p > 0.66 ? Math.max(1 - (p - 0.66) / 0.16, 0) : 1;
+      if (e.wire) e.wire.style.opacity = String(wireIn * wireOut);
+      e.wireKids.forEach((k, i) => {
+        const t = Math.min(Math.max((p - 0.2 - i * 0.02) / 0.16, 0), 1);
+        k.style.opacity = String(t * wireOut);
+        k.style.transform = `translateY(${(1 - t) * 10}px)`;
+      });
+      // real site: in from 0.66
+      const spIn = Math.min(Math.max((p - 0.66) / 0.28, 0), 1);
+      if (e.sp) { e.sp.style.opacity = String(spIn); e.sp.style.transform = `translateY(${(1 - spIn) * 14}px)`; }
+      // chrome + foot
+      let label = PHASES[0].label;
+      for (const ph of PHASES) if (p >= ph.at) label = ph.label;
+      if (urlEl) urlEl.textContent = p >= 0.66 ? data.domain : "localhost:4321";
+      if (pillText) pillText.textContent = p >= 1 ? "Live" : label;
+      if (pill) pill.classList.toggle("is-live", p >= 1);
+      if (labelEl) labelEl.textContent = p >= 1 ? data.name : "building…";
+      if (fillEl) fillEl.style.width = (p * 100) + "%";
+    };
+
+    let current = -1;
+    let raf = null;
+    let holdTimer = null;
+    let paused = false;
+    let pausedAt = 0;
+
+    const clearTimers = () => {
+      if (raf) cancelAnimationFrame(raf);
+      if (holdTimer) clearTimeout(holdTimer);
+      raf = holdTimer = null;
+    };
+
+    const activate = (n) => {
       slides.forEach((s, i) => {
         const active = i === n;
         s.classList.toggle("is-active", active);
         s.setAttribute("aria-hidden", active ? "false" : "true");
         s.setAttribute("tabindex", active ? "0" : "-1");
       });
-      dots.forEach((d, i) => {
-        d.setAttribute("aria-selected", i === n ? "true" : "false");
-        if (i !== n) setProgress(d, 0);
-      });
-      const data = slides[n].dataset;
-      if (urlEl) urlEl.textContent = data.domain || "";
-      if (idxEl) idxEl.textContent = pad(n + 1);
-      if (labelEl) labelEl.textContent = data.name || "";
-      if (industryEl) industryEl.textContent = data.industry || "";
+      dots.forEach((d, i) => d.setAttribute("aria-selected", i === n ? "true" : "false"));
+      if (indexEl) indexEl.textContent = `${pad(n + 1)} / ${pad(total)}`;
       current = n;
     };
 
-    const stopProgress = () => {
-      if (progressRAF) cancelAnimationFrame(progressRAF);
-      progressRAF = null;
-    };
+    const advance = () => build((current + 1) % total);
 
-    const runProgress = () => {
-      stopProgress();
-      if (reduce || total < 2) return;
-      const dot = dots[current];
+    function build(n) {
+      clearTimers();
+      const slide = slides[n];
+      const data = slide.dataset;
+      activate(n);
+      reset(slide);
+
+      if (reduce) { render(slide, 1, data); return; } // no motion: straight to live
+
       const start = performance.now();
       const step = (ts) => {
-        if (paused) { progressRAF = requestAnimationFrame(step); return; }
-        const t = Math.min((ts - start) / HOLD, 1);
-        if (dot) setProgress(dot, t);
-        if (t < 1) progressRAF = requestAnimationFrame(step);
-        else show(current + 1);
+        if (paused) { raf = requestAnimationFrame(step); return; }
+        const p = Math.min((ts - start) / BUILD, 1);
+        render(slide, p, data);
+        if (p < 1) raf = requestAnimationFrame(step);
+        else if (total > 1) holdTimer = setTimeout(advance, HOLD); // cycle to next site
       };
-      progressRAF = requestAnimationFrame(step);
-    };
+      // small beat on the blank canvas before building
+      raf = requestAnimationFrame(() => { raf = requestAnimationFrame(step); });
+    }
 
-    const go = (next) => {
-      show(next);
-      runProgress();
-    };
+    // Dots jump to (and rebuild) a site.
+    dots.forEach((d) => d.addEventListener("click", () => build(parseInt(d.dataset.idx, 10) || 0)));
 
-    // Dot clicks jump to a slide and restart the timer.
-    dots.forEach((d) =>
-      d.addEventListener("click", () => go(parseInt(d.dataset.idx, 10) || 0))
-    );
-
-    // Pause auto-advance on hover/focus so people can read.
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    root.addEventListener("mouseenter", pause);
-    root.addEventListener("mouseleave", resume);
-    root.addEventListener("focusin", pause);
-    root.addEventListener("focusout", resume);
+    // Pause while hovered/focused so people can read.
+    root.addEventListener("mouseenter", () => { paused = true; });
+    root.addEventListener("mouseleave", () => { paused = false; });
+    root.addEventListener("focusin", () => { paused = true; });
+    root.addEventListener("focusout", () => { paused = false; });
 
     // Kick off when the panel scrolls into view.
-    const start = () => go(0);
+    fit();
+    const start = () => build(0);
     if ("IntersectionObserver" in window && !reduce) {
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { io.disconnect(); start(); }
-        });
+        entries.forEach((e) => { if (e.isIntersecting) { io.disconnect(); start(); } });
       }, { threshold: 0.2 });
       io.observe(root);
     } else {

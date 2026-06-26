@@ -1,8 +1,13 @@
 ---
 /* ----------------------------------------------------------------------------
    SitePreview — renders ONE shipped site as a faithful mini-hero.
-   Driven entirely by a ShowcaseSite entry (src/data/showcase.ts), so adding a
-   new site never touches this file. Two layouts:
+
+   Sized in FIXED pixels against a 1000×620 design canvas (.sc-stage). The
+   parent (HeroShowcase) scales that whole canvas to fit the browser frame with
+   a single transform, so proportions are locked at every window size — it
+   reads like a real, shrunk-down webpage rather than reflowing type.
+
+   Two layouts:
      • overlay → text over a full-bleed photo (visual brands / restaurants)
      • split   → editorial text + an optional signature widget (services)
    All colour comes in as inline CSS vars so each card carries its own palette.
@@ -69,6 +74,7 @@ const vars = [
 </div>
 
 <style>
+  /* Everything below is in px against the fixed 1000×620 .sc-stage. */
   .sp {
     position: absolute;
     inset: 0;
@@ -77,7 +83,6 @@ const vars = [
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    container-type: inline-size;
   }
 
   .sp-photo {
@@ -86,18 +91,19 @@ const vars = [
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 60%;
-    transform: scale(1.05);
+    object-position: 50% 58%;
   }
-  /* Overlay sites get a left-weighted scrim so text stays legible. */
+  /* Overlay sites get a left/bottom scrim so text stays legible. */
   .sp-overlay .sp-scrim {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, color-mix(in srgb, var(--sp-bg) 88%, transparent) 0%,
-        color-mix(in srgb, var(--sp-bg) 45%, transparent) 48%,
-        transparent 78%),
-      linear-gradient(0deg, color-mix(in srgb, var(--sp-bg) 80%, transparent) 0%, transparent 38%);
+      linear-gradient(90deg,
+        color-mix(in srgb, var(--sp-bg) 86%, transparent) 0%,
+        color-mix(in srgb, var(--sp-bg) 40%, transparent) 50%,
+        transparent 80%),
+      linear-gradient(0deg,
+        color-mix(in srgb, var(--sp-bg) 78%, transparent) 0%, transparent 42%);
   }
   .sp-split .sp-scrim { display: none; }
 
@@ -107,34 +113,34 @@ const vars = [
     z-index: 2;
     display: flex;
     align-items: center;
-    gap: 5cqw;
-    padding: 4cqw 5cqw;
+    gap: 28px;
+    padding: 40px 56px 0;
   }
-  .sp-logo { height: 6.5cqw; width: auto; }
+  .sp-logo { height: 48px; width: auto; }
   .sp-logo-text {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 4.2cqw;
+    font-size: 30px;
     letter-spacing: -0.01em;
     color: var(--sp-fg);
   }
-  .sp-nav-links { display: flex; gap: 3cqw; margin-left: auto; }
+  .sp-nav-links { display: flex; gap: 24px; margin-left: auto; }
   .sp-nav-links span {
-    width: 7cqw; height: 1.6cqw; border-radius: 2px;
-    background: color-mix(in srgb, var(--sp-fg) 38%, transparent);
+    width: 64px; height: 12px; border-radius: 3px;
+    background: color-mix(in srgb, var(--sp-fg) 32%, transparent);
   }
   .sp-nav-cta {
     font-family: var(--font-sans);
-    font-size: 2.7cqw;
+    font-size: 16px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--sp-on-accent);
     background: var(--sp-accent);
-    padding: 1.8cqw 3.4cqw;
+    padding: 14px 26px;
     border-radius: 999px;
   }
-  .sp-split .sp-nav-cta { box-shadow: 0 4cqw 8cqw -4cqw color-mix(in srgb, var(--sp-accent) 60%, transparent); }
+  .sp-split .sp-nav-cta { margin-left: auto; box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--sp-accent) 60%, transparent); }
 
   /* ---- body ---- */
   .sp-body {
@@ -143,44 +149,47 @@ const vars = [
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 4cqw;
-    padding: 2cqw 5cqw 6cqw;
+    gap: 40px;
+    padding: 24px 56px 56px;
   }
   .sp-overlay .sp-body { align-items: flex-end; }
-  .sp-copy { max-width: 62cqw; display: flex; flex-direction: column; gap: 2.4cqw; }
-  .sp-split .sp-copy { max-width: 56cqw; }
+  .sp-copy { max-width: 660px; display: flex; flex-direction: column; gap: 22px; }
+  .sp-display-caps .sp-copy { max-width: 880px; }
+  .sp-split .sp-copy { max-width: 520px; }
 
   .sp-eyebrow {
-    display: inline-flex; align-items: center; gap: 2cqw;
+    display: inline-flex; align-items: center; gap: 14px;
     font-family: var(--font-sans);
-    font-size: 2.5cqw;
+    font-size: 16px;
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--sp-muted);
   }
   .sp-dot {
-    width: 2cqw; height: 2cqw; border-radius: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
     background: var(--sp-accent);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--sp-accent) 55%, transparent);
+    flex: none;
   }
 
   .sp-headline {
     margin: 0;
-    line-height: 0.92;
+    line-height: 0.9;
     color: var(--sp-fg);
+    overflow-wrap: break-word;
   }
   .sp-display-caps .sp-headline {
     font-family: var(--font-display);
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 12cqw;
-    letter-spacing: -0.01em;
+    font-size: 92px;
+    letter-spacing: -0.02em;
+    white-space: nowrap; /* keep each line (incl. #ScratchMade) unbroken */
   }
   .sp-display-serif .sp-headline {
     font-family: var(--font-display);
     font-weight: 350;
-    font-size: 9.5cqw;
+    font-size: 68px;
     letter-spacing: -0.02em;
     line-height: 0.98;
     font-variation-settings: "opsz" 144;
@@ -194,27 +203,27 @@ const vars = [
 
   .sp-sub {
     margin: 0;
-    max-width: 40cqw;
+    max-width: 440px;
     font-family: var(--font-display);
     font-style: italic;
     font-weight: 300;
-    font-size: 3.4cqw;
+    font-size: 26px;
     line-height: 1.35;
     color: var(--sp-muted);
   }
 
   .sp-cta {
     align-self: flex-start;
-    display: inline-flex; align-items: center; gap: 2cqw;
-    margin-top: 1cqw;
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-top: 6px;
     font-family: var(--font-sans);
-    font-size: 3cqw;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--sp-on-accent);
     background: var(--sp-accent);
-    padding: 2.6cqw 4.6cqw;
+    padding: 18px 34px;
     border-radius: 999px;
   }
   .sp-arrow { font-size: 0.9em; }
@@ -223,41 +232,37 @@ const vars = [
   .sp-side { flex: 1; display: flex; justify-content: flex-end; }
   .sp-widget {
     width: 100%;
-    max-width: 46cqw;
+    max-width: 360px;
     background: color-mix(in srgb, var(--sp-fg) 4%, #fff);
     border: 1px solid color-mix(in srgb, var(--sp-fg) 12%, transparent);
-    border-radius: 4cqw;
-    padding: 4cqw;
-    display: flex; flex-direction: column; gap: 2.4cqw;
-    box-shadow: 0 8cqw 20cqw -8cqw color-mix(in srgb, var(--sp-fg) 30%, transparent);
+    border-radius: 22px;
+    padding: 28px;
+    display: flex; flex-direction: column; gap: 18px;
+    box-shadow: 0 40px 80px -40px color-mix(in srgb, var(--sp-fg) 40%, transparent);
   }
   .sp-widget-label {
     font-family: var(--font-sans);
-    font-size: 2.4cqw; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--sp-muted);
   }
-  .sp-widget-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.8cqw; }
+  .sp-widget-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
   .sp-widget-rows li {
     display: flex; align-items: center; justify-content: space-between;
-    padding-bottom: 1.8cqw;
+    padding-bottom: 14px;
     border-bottom: 1px solid color-mix(in srgb, var(--sp-fg) 10%, transparent);
-    font-size: 3cqw;
+    font-size: 20px;
   }
   .sp-widget-rows li:last-child { border-bottom: 0; padding-bottom: 0; }
   .sp-widget-rows span { color: var(--sp-muted); }
-  .sp-widget-rows strong {
-    font-family: var(--font-display); font-weight: 500;
-    color: var(--sp-fg);
-  }
+  .sp-widget-rows strong { font-family: var(--font-display); font-weight: 500; color: var(--sp-fg); }
   .sp-widget-note {
     font-family: var(--font-display); font-style: italic; font-weight: 300;
-    font-size: 2.6cqw; color: var(--sp-muted); line-height: 1.3;
+    font-size: 17px; color: var(--sp-muted); line-height: 1.3;
   }
-
   .sp-imgblock {
-    width: 100%; max-width: 46cqw; aspect-ratio: 4/5;
-    border-radius: 4cqw;
+    width: 100%; max-width: 360px; aspect-ratio: 4/5;
+    border-radius: 22px;
     background:
       radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--sp-accent) 30%, transparent), transparent 60%),
       color-mix(in srgb, var(--sp-fg) 8%, var(--sp-bg));
