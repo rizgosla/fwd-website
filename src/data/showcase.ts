@@ -92,30 +92,6 @@ export const showcase: ShowcaseSite[] = [
     image: "/showcase/burnt-crumbs/hero.jpg",
     logo: "/showcase/burnt-crumbs/logo.png",
   },
-  {
-    id: "oasis-dental",
-    name: "Oasis Family Dental",
-    domain: "oasisdental.com",
-    url: "https://oasisdental.com",
-    industry: "Healthcare · Irvine, CA",
-    layout: "split",
-    bg: "#f7fafb",
-    fg: "#0f2a33",
-    muted: "#56707a",
-    accent: "#1f7a8c",
-    onAccent: "#ffffff",
-    display: "serif",
-    eyebrow: "Family dentistry · Irvine, CA",
-    headline: "A calmer kind of <em>dental visit</em>.",
-    sub: "Same-day appointments, gentle care, and a team that remembers your name.",
-    cta: "Book a visit",
-    widget: {
-      label: "Next available",
-      rows: [
-        { k: "Thu, May 14", v: "2:00 PM" },
-        { k: "Fri, May 15", v: "9:30 AM" },
-      ],
-      note: "Books straight into the practice scheduler",
-    },
-  },
+  // Add the next finished site here — see the "HOW TO ADD A NEW SITE" notes
+  // at the top of this file. With a second entry the hero starts cycling.
 ];
