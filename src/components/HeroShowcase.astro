@@ -7,7 +7,7 @@
    registered — moves on and builds the next. Seeded from src/data/showcase.ts;
    adding a site is a one-entry change there and everything below scales to it.
 
-   Each preview is rendered on a fixed 1000×700 canvas (.sc-stage) and scaled
+   Each preview is rendered on a fixed 1000×931 canvas (.sc-stage) and scaled
    to fit the frame with a single transform, so proportions never break.
    -------------------------------------------------------------------------- */
 import { showcase } from "../data/showcase";
@@ -181,11 +181,11 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     50% { box-shadow: 0 0 0 6px rgba(40,201,64,0); }
   }
 
-  /* Body matches the 1000×700 stage aspect, so a single scale fits exactly. */
+  /* Body matches the 1000×931 stage aspect, so a single scale fits exactly. */
   .browser-body {
     position: relative;
     width: 100%;
-    aspect-ratio: 1000 / 700;
+    aspect-ratio: 1000 / 931;
     background: #fff;
     overflow: hidden;
   }
@@ -206,7 +206,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     position: absolute;
     top: 0; left: 0;
     width: 1000px;
-    height: 700px;
+    height: 931px;
     transform-origin: top left;
   }
 

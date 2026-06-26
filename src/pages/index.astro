@@ -362,9 +362,11 @@ import HeroShowcase from "../components/HeroShowcase.astro";
 </BaseLayout>
 
 <style>
-.hero-outer { position: relative; min-height: calc(100vh - 100px); display: flex; align-items: stretch; padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem); }
+.hero-outer { position: relative; min-height: calc(100vh - 100px); display: flex; align-items: stretch; }
   .hero { display: grid; grid-template-columns: 1fr 1.15fr; width: 100%; align-items: stretch; gap: clamp(2rem, 4vw, 4rem); }
-  .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding-left: var(--pad-x); justify-content: center; }
+  /* Padding lives on the text column so the showcase column (with its grid
+     background) can run flush to the section's top and bottom edges. */
+  .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding-left: var(--pad-x); padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem); justify-content: center; }
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .hero-eyebrow .bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
   .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 14ch; }
