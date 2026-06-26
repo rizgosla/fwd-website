@@ -1292,6 +1292,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
 /* ----- Step 01: short call — booking calendar ----- */
 .ps-frame-call { background: linear-gradient(180deg, #fbfbfd 0%, #eef0f6 100%); }
 .ps-cal {
+  position: relative;
   padding: clamp(1.5rem, 3vw, 2.5rem);
   display: flex; flex-direction: column;
   gap: clamp(1rem, 2vw, 1.5rem);
@@ -1367,8 +1368,11 @@ main + footer.footer-dark { margin-top: 0 !important; }
   animation: mvPulseRing 2.4s var(--ease-soft) infinite;
 }
 .ps-cal-foot {
+  position: absolute;
+  right: clamp(1.5rem, 3vw, 2.5rem);
+  bottom: clamp(1.5rem, 3vw, 2.5rem);
   display: flex; align-items: center; justify-content: flex-end;
-  margin-top: 0.25rem;
+  margin: 0;
 }
 .ps-cal-slot {
   display: flex; align-items: center; gap: 12px;
@@ -1376,7 +1380,9 @@ main + footer.footer-dark { margin-top: 0 !important; }
   border: 1px solid var(--color-line);
   border-radius: 10px;
   padding: 12px 16px;
-  box-shadow: 0 10px 30px -12px rgba(7,23,34,0.18);
+  box-shadow:
+    0 18px 44px -16px rgba(7,23,34,0.30),
+    0 6px 16px -10px rgba(7,23,34,0.20);
 }
 .ps-cal-slot-dot {
   width: 8px; height: 8px; border-radius: 50%;
@@ -1437,6 +1443,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
   white-space: nowrap;
 }
 .ps-draft-body {
+  flex: 1;
   padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
   gap: clamp(1.25rem, 3vw, 2rem);
@@ -1488,6 +1495,8 @@ main + footer.footer-dark { margin-top: 0 !important; }
   grid-template-columns: 1fr;
   gap: clamp(1rem, 2vw, 1.5rem);
   padding: clamp(1.25rem, 3vw, 2rem);
+  align-content: stretch;
+  align-items: stretch;
 }
 @media (min-width: 700px) {
   .ps-rev { grid-template-columns: 1.55fr 1fr; }
@@ -1502,13 +1511,18 @@ main + footer.footer-dark { margin-top: 0 !important; }
 }
 .ps-rev-doc-head {
   display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
   padding: 10px 16px;
   background: #f5f6f9;
   border-bottom: 1px solid rgba(0,0,0,0.06);
   font-family: var(--font-mono); font-size: 11px;
   color: var(--color-fg-muted); letter-spacing: 0.05em;
 }
-.ps-rev-doc-tab { color: var(--color-navy); font-weight: 500; }
+.ps-rev-doc-tab {
+  color: var(--color-navy); font-weight: 500;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ps-rev-doc-saved { flex-shrink: 0; white-space: nowrap; }
 .ps-rev-doc-saved::before {
   content: ""; display: inline-block;
   width: 6px; height: 6px; border-radius: 50%;
@@ -1516,6 +1530,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
   vertical-align: middle;
 }
 .ps-rev-doc-body {
+  flex: 1;
   padding: clamp(1rem, 2.5vw, 1.5rem);
   display: flex; flex-direction: column; gap: 10px;
   min-height: 240px;
@@ -1598,6 +1613,7 @@ main + footer.footer-dark { margin-top: 0 !important; }
 .ps-launch {
   padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
+  justify-content: space-between;
   gap: clamp(1rem, 2vw, 1.5rem);
 }
 .ps-launch-bar-top {
