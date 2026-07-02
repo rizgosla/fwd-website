@@ -36,10 +36,28 @@ const {
         so each preview reads like the real, live site. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* Loaded non-render-blocking: on slow/mobile connections a plain
+        <link rel="stylesheet"> to a third-party origin holds first paint
+        until it resolves, which can leave the page blank for seconds.
+        The preload+media swap trick fetches it without blocking, applies it
+        once ready, and the fallback stacks above keep text visible either way. */}
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
-      rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:ital,wght@0,300..700;1,300..700&family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
