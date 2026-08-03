@@ -1,125 +1,229 @@
 ---
 import BrandMark from "./BrandMark.astro";
 
-// Studio links land on real /studio sections — no redirect hops via /about or /team.
+// Studio links land on real /studio sections. `/studio#people` was removed —
+// the team section it pointed at is being cut, so this goes to the page itself.
 const studioLinks = [
+  { href: "/studio", label: "The studio" },
   { href: "/studio#values", label: "What we believe" },
-  { href: "/studio#people", label: "The team" },
-  { href: "/work",          label: "Selected work" },
+  { href: "/work", label: "Selected work" },
 ];
 const serviceLinks = [
   { href: "/services", label: "Full Site — $4,000" },
-  { href: "/services#what-you-get", label: "What's included" },
-  { href: "/contact",  label: "Custom inquiry" },
+  { href: "/services#offer", label: "What's included" },
+  { href: "/contact", label: "Custom inquiry" },
 ];
 ---
 
 <!--
-  Slim footer (round-3 feedback): no tagline, no copyright/version row.
-  The brand mark grows to fill the brand column. BrandMark resolves
-  to `currentColor` so it reads white-on-ink here.
--->
-<footer class="footer-dark footer-slim" aria-labelledby="footer-contact-heading">
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a href="/" class="footer-logo-link" aria-label="fwd. — home">
-          <BrandMark class="footer-mark" decorative={true} />
-        </a>
-      </div>
+  The closing movement of the page, not a sitemap.
 
-      <div class="footer-col">
-        <h2 class="footer-label">Studio</h2>
+  The ink field stays — it's the only dark surface on /work and /contact. What
+  it gains: a periwinkle seam so it stops merging into the ink .cta-band that
+  services and studio end with, a display closing line, and the BrandMark
+  committed to as a cropped graphic rather than a logo parked in a column.
+
+  Motion is on the closing line only. [data-mv-watch] holds elements at
+  opacity:0 until JS runs, and this is the last-resort contact surface on every
+  page — the link columns stay visible whether the script runs or not.
+-->
+<footer class="ft" aria-labelledby="ft-contact-heading">
+  <span class="ft-seam mv-wipe" data-mv-watch aria-hidden="true"></span>
+
+  <div class="ft-inner">
+    <p class="display ft-line mv-rise" data-mv-watch>
+      Small studio. Flat fees. Sites we'd <em>put our names on</em>.
+    </p>
+
+    <div class="ft-grid">
+      <div class="ft-col">
+        <h2 class="ft-label">Studio</h2>
         <ul>
           {studioLinks.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
         </ul>
       </div>
 
-      <div class="footer-col">
-        <h2 class="footer-label">Services</h2>
+      <div class="ft-col">
+        <h2 class="ft-label">Services</h2>
         <ul>
           {serviceLinks.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
         </ul>
       </div>
 
-      <div class="footer-col">
-        <h2 id="footer-contact-heading" class="footer-label">Contact</h2>
+      <div class="ft-col">
+        <h2 id="ft-contact-heading" class="ft-label">Contact</h2>
         <ul>
-          <li><a href="mailto:hello@fwd.studio">hello@fwd.studio</a></li>
-          <li><span class="footer-static">Irvine, CA</span></li>
+          <li><a href="mailto:fwddesignconsulting@gmail.com">fwddesignconsulting@gmail.com</a></li>
+          <li><span class="ft-static">Irvine, CA</span></li>
           <li><a href="/contact">Start a project</a></li>
         </ul>
       </div>
+    </div>
+
+    <div class="ft-mark" aria-hidden="true">
+      <BrandMark class="ft-mark-svg" decorative={true} />
     </div>
   </div>
 </footer>
 
 <style>
-  .footer-dark {
-    background: var(--color-ink, #071722);
-    color: rgba(255,255,255,0.78);
-    padding: 4rem 0 3rem;
+  .ft {
     position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-ink);
+    color: rgba(255,255,255,0.78);
+    padding-block: clamp(3.5rem, 8vh, 5.5rem) clamp(3rem, 6vh, 4rem);
   }
-  .footer-dark::before {
+  /* Lights the opposite corner to .cta-band::before (which lights top-centre),
+     so two ink bands stacked on each other read as two planes. */
+  .ft::before {
     content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: rgba(255,255,255,0.08);
-  }
-  /* G-04 — full bleed, padding via --pad-x only */
-  .footer-inner {
-    width: 100%;
-    padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
-  }
-  .footer-grid {
-    display: grid; gap: 2.5rem;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 800px) {
-    .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: clamp(2rem, 4vw, 4rem); align-items: center; }
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 10% 100%, rgb(20 70 103 / 0.40), transparent 70%);
+    pointer-events: none; z-index: 0;
   }
 
-  .footer-brand {
+  /* The seam. 1px of periwinkle is enough to read as deliberate. */
+  .ft-seam {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px; z-index: 3;
+    background: linear-gradient(90deg,
+      rgb(142 148 184 / 0.15),
+      rgb(142 148 184 / 0.55) 22%,
+      rgb(142 148 184 / 0.55) 78%,
+      rgb(142 148 184 / 0.15));
+    transform-origin: left;
+  }
+
+  /* The mark gets its own grid track rather than sitting behind the content,
+     so overlap is structurally impossible and it scales to whatever width is
+     left over instead of being cropped. */
+  .ft-mark {
+    color: #ffffff;
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
   }
-  .footer-logo-link {
-    display: inline-flex;
-    color: var(--color-paper);
-    transition: opacity 200ms var(--ease-soft);
-    width: fit-content;
-  }
-  .footer-logo-link:hover { opacity: 0.78; }
-  /* Mark grows to fill the freed column space */
-  :global(.footer-mark) {
-    height: clamp(120px, 14vw, 200px);
-    width: auto;
+  .ft-mark :global(.ft-mark-svg) {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
     display: block;
   }
 
-  .footer-label {
+  /* Below 900px the mark drops onto its own line, so it goes full-bleed:
+     out through .ft-inner's padding to both viewport edges.
+     BrandMark's viewBox is a 160x160 square but the wordmark only occupies
+     y 33.61 -> 126.4 (measured via getBBox) — 58% of the height, with a 21%
+     empty band above and below. Cropping those bands is what stops a
+     full-width mark from becoming a tall square of dead air. */
+  @media (max-width: 899px) {
+    .ft-mark {
+      margin-inline: calc(var(--pad-x) * -1);
+      width: calc(100% + (var(--pad-x) * 2));
+      aspect-ratio: 160 / 92.79;
+      overflow: hidden;
+      align-items: flex-start;
+      justify-content: stretch;
+    }
+    .ft-mark :global(.ft-mark-svg) {
+      max-width: none;
+      /* Percentage margins resolve against width, and the svg is as tall as
+         it is wide, so -21% lifts exactly the empty top band out of view. */
+      margin-top: -21%;
+    }
+  }
+
+  .ft-inner {
+    position: relative; z-index: 1;
+    width: 100%;
+    padding-inline: var(--pad-x);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2.75rem, 6vh, 4.5rem);
+  }
+  /* Two tracks: everything readable on the left, the mark filling the space
+     left over on the right, spanning both rows so it uses the full height. */
+  @media (min-width: 900px) {
+    .ft-inner {
+      grid-template-columns: minmax(0, 1fr) clamp(9rem, 20vw, 24rem);
+      column-gap: clamp(2rem, 5vw, 5rem);
+      align-items: center;
+    }
+    .ft-line { grid-column: 1; grid-row: 1; }
+    .ft-grid { grid-column: 1; grid-row: 2; }
+    .ft-mark { grid-column: 2; grid-row: 1 / span 2; }
+  }
+
+  .ft-line {
+    margin: 0;
+    font-size: var(--text-step-3);
+    line-height: 1.06;
+    color: var(--color-paper);
+    max-width: 20ch;
+  }
+  .ft-line em {
+    font-style: italic;
+    color: var(--color-periwinkle);
+  }
+
+  .ft-grid {
+    display: grid; gap: 2.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) {
+    .ft-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+  }
+
+  .ft-label {
     font-family: var(--font-mono);
     font-size: var(--text-step--2);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
     font-weight: 500;
-    margin: 0 0 1.25rem;
+    margin: 0 0 1.15rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
   }
-  .footer-col ul {
+  .ft-col ul {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-direction: column; gap: 0.7rem;
   }
-  .footer-col a, .footer-static {
+  .ft-col a, .ft-static {
     font-family: var(--font-sans);
     font-size: var(--text-step--1);
     color: rgba(255,255,255,0.78);
     transition: color 200ms var(--ease-soft);
+    /* The email is ~28 unbroken characters and the columns get to ~190px
+       around 700-800px wide. Without this it clips against .ft's overflow. */
+    overflow-wrap: anywhere;
   }
-  .footer-col a:hover { color: var(--color-periwinkle, #8e94b8); }
-  .footer-col a:focus-visible {
-    outline: 2px solid var(--color-periwinkle, #8e94b8);
+  /* Same underline-wipe the nav links use. */
+  .ft-col a { position: relative; width: fit-content; max-width: 100%; }
+  .ft-col a::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px; background: var(--color-periwinkle);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 380ms var(--ease-out-expo);
+  }
+  .ft-col a:hover { color: var(--color-periwinkle); }
+  .ft-col a:hover::after { transform: scaleX(1); }
+  .ft-col a:focus-visible {
+    outline: 2px solid var(--color-periwinkle);
     outline-offset: 3px;
     border-radius: 2px;
+  }
+  .ft-static { color: rgba(255,255,255,0.55); }
+
+  @media (max-width: 699px) {
+    .ft-line { max-width: 16ch; }
   }
 </style>
