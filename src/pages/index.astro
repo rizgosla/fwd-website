@@ -4,6 +4,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Marquee from "../components/Marquee.astro";
 import HeroShowcase from "../components/HeroShowcase.astro";
+import CtaClose from "../components/CtaClose.astro";
 ---
 
 <BaseLayout title="fwd. — Websites that earn their place online">
@@ -359,19 +360,17 @@ import HeroShowcase from "../components/HeroShowcase.astro";
     </ol>
   </section>
 
-  
-  <section class="cta-band-light mv-soften" data-mv-watch aria-labelledby="home-cta-title">
-    <div class="cta-band-light-bg" aria-hidden="true"></div>
-    <div class="cta-band-light-inner">
-      <h2 id="home-cta-title" class="display cta-band-light-title">Got a practice, a product, or a <em>side project</em>?</h2>
-      <div class="cta-band-light-side">
-        <p class="cta-band-light-lede">Tell us about it. We reply to every inquiry — usually within a day.</p>
-        <a href="/contact" class="btn btn-primary cta-band-light-btn">
-          Start a project <span class="arrow" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>
-  </section>
+  {/* Light tone here on purpose: the sequence is dark process step 04 → close
+      → dark footer, so an ink close would stack three dark bands in a row. */}
+  <CtaClose
+    tone="light"
+    eyebrow="Ready when you are"
+    lead="Got a practice, a product, or a"
+    swap={["side project?", "small business?", "local shop?", "studio?"]}
+    lede="Tell us about it. We reply to every inquiry — usually within a day."
+    note="Replies within a day, every day"
+    ticker={["Flat fee", "No retainers", "3 revision rounds", "You own it all"]}
+  />
 </BaseLayout>
 
 <style>
@@ -742,67 +741,6 @@ import HeroShowcase from "../components/HeroShowcase.astro";
   .ps-title-on-dark em { font-style: italic; color: var(--color-periwinkle); font-variation-settings: "opsz" 144; }
   .ps-body-on-dark { color: rgba(255,255,255,0.78); max-width: 42ch; }
   .ps-meta-on-dark { color: rgba(255,255,255,0.4); }
-  /* ============================================================
-     LIGHT CTA BAND — homepage variant. Sits between the dark
-     process section and the dark footer, providing visual relief.
-     ============================================================ */
-  .cta-band-light {
-    position: relative;
-    background: var(--color-bg-soft);
-    color: var(--color-fg);
-    padding-block: clamp(7rem, 16vh, 12rem) clamp(11rem, 24vh, 18rem);
-    border-bottom: 1px solid var(--color-line);
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .cta-band-light-bg {
-    position: absolute; inset: 0;
-    background-image: url("/assets/fwd-logo.svg");
-    background-repeat: no-repeat;
-    background-position: right clamp(1rem, 4vw, 4rem) center;
-    background-size: auto 80%;
-    opacity: 0.07;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .cta-band-light-inner {
-    position: relative; z-index: 1;
-    width: 100%; padding-inline: var(--pad-x);
-    display: flex; flex-direction: column; gap: 3.125rem; align-items: flex-start;
-  }
-  .cta-band-light-title {
-    font-size: var(--text-step-5);
-    margin: 0;
-    line-height: 1;
-    letter-spacing: -0.025em;
-    max-width: 18ch;
-    color: var(--color-navy);
-  }
-  .cta-band-light-title em {
-    font-style: italic;
-    color: var(--color-blue);
-  }
-  .cta-band-light-side { display: flex; flex-direction: column; gap: 1.875rem; align-items: flex-start; }
-  .cta-band-light-lede {
-    margin: 0;
-    color: var(--color-fg-soft);
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-style: italic;
-    font-size: var(--text-step-1);
-    line-height: 1.4;
-    max-width: 36ch;
-    font-variation-settings: "opsz" 60;
-  }
-  .cta-band-light-btn {
-    background: var(--color-navy);
-    color: var(--color-paper);
-    border-color: var(--color-navy);
-  }
-  .cta-band-light-btn:hover {
-    background: var(--color-blue);
-    border-color: var(--color-blue);
-  }
 
   @media (max-width: 1000px) {
     .hero-outer { min-height: 0; padding-block: 2rem 3rem; }

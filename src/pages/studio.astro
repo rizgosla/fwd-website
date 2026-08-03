@@ -2,7 +2,7 @@
 // Auto-generated from site/studio.html — round 4 design.
 // Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import BrandMark from "../components/BrandMark.astro";
+import CtaClose from "../components/CtaClose.astro";
 ---
 
 <BaseLayout title="The studio — fwd.">
@@ -118,27 +118,15 @@ import BrandMark from "../components/BrandMark.astro";
 
   </section>
   
-  <section class="cta-band cta-band-marks mv-soften" data-mv-watch>
-    <div class="cta-band-bg" aria-hidden="true">
-      <div class="cta-band-bg-marks">
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-        <BrandMark class="cb-mark" decorative={true} />
-      </div>
-    </div>
-    <div class="cta-band-inner">
-      <h2 class="display">Sound like the kind of studio you would <em>like to work with</em>?</h2>
-      <div>
-        <p>The contact form takes about a minute. We reply to every inquiry.</p>
-        <a href="/contact" class="btn btn-primary">Start a project <span class="arrow" aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
+  <CtaClose
+    tone="ink"
+    eyebrow="Three people, one studio"
+    lead="Sound like the kind of studio you'd"
+    swap={["like to work with?", "trust with a launch?", "actually hear back from?", "recommend after?"]}
+    lede="The contact form takes about a minute. We reply to every inquiry."
+    note="No account managers, no kickoff decks"
+    ticker={["Three partners", "Flat fee", "About 4 weeks", "You own it all"]}
+  />
 </BaseLayout>
 
 <style>

@@ -15,18 +15,21 @@ const serviceLinks = [
 ];
 ---
 
-<!--
+{/*
   The closing movement of the page, not a sitemap.
 
   The ink field stays — it's the only dark surface on /work and /contact. What
-  it gains: a periwinkle seam so it stops merging into the ink .cta-band that
-  services and studio end with, a display closing line, and the BrandMark
-  committed to as a cropped graphic rather than a logo parked in a column.
+  it gains: a periwinkle seam so it stops merging into the ink CtaClose band
+  that precedes it, a display closing line, and the BrandMark committed to as
+  a graphic in its own track rather than a logo parked in a column.
 
   Motion is on the closing line only. [data-mv-watch] holds elements at
   opacity:0 until JS runs, and this is the last-resort contact surface on every
   page — the link columns stay visible whether the script runs or not.
--->
+
+  Braces, not <!-- -->: Astro emits HTML comments to every page, JSX ones it
+  strips at build.
+*/}
 <footer class="ft" aria-labelledby="ft-contact-heading">
   <span class="ft-seam mv-wipe" data-mv-watch aria-hidden="true"></span>
 
