@@ -1,0 +1,19 @@
+# Contact form delivery — see src/pages/api/inquiry.ts
+#
+# LOCAL: copy this file to `.env` (Astro reads it into import.meta.env) and
+# paste your key. Both `.env` and `.dev.vars` are gitignored.
+#
+# PRODUCTION: do NOT put the key in a file. Set it as a Cloudflare secret:
+#
+#     npx wrangler secret put RESEND_API_KEY
+#
+# The endpoint reads locals.runtime.env first (production) and falls back to
+# import.meta.env (local). With no key set it returns a 503 and the form shows
+# a real error — it never fakes a successful send.
+#
+# The `from` address in inquiry.ts is inquiries@fwddesignconsulting.com, which
+# means fwddesignconsulting.com must be verified in the Resend dashboard
+# (Domains -> Add Domain, then add the DNS records it gives you). Until then
+# Resend rejects the send and the form reports the failure honestly.
+
+RESEND_API_KEY=re_your_key_here
