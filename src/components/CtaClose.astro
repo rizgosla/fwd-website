@@ -31,6 +31,10 @@ interface Props {
   note?: string;
   ticker?: string[];
   tone?: "light" | "ink";
+  /** ASCII mark colour. Defaults to the tone's accent; "paper" when the
+   *  preceding section already leans on the accent and the mark needs to
+   *  separate from it. */
+  mark?: "accent" | "paper";
 }
 
 const {
@@ -44,6 +48,7 @@ const {
   note,
   ticker = [],
   tone = "light",
+  mark = "accent",
 } = Astro.props;
 
 const words = swap?.slice(0, 4) ?? [];
@@ -88,7 +93,7 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     </div>
     </div>
 
-    <pre class="ctc-ascii" data-ascii aria-hidden="true"></pre>
+    <pre class:list={["ctc-ascii", mark === "paper" && "is-paper"]} data-ascii aria-hidden="true"></pre>
 
     {ticker.length > 0 && (
       <div class="ctc-ticker" aria-hidden="true">
@@ -161,6 +166,9 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 45%, transparent 92%);
   }
   .ctc-light .ctc-ascii { opacity: 0.20; }
+  /* mark="paper" — for pages where the section above already leans on the
+     accent, so a periwinkle mark would read as more of the same. */
+  .ctc-ascii.is-paper { color: var(--color-paper); opacity: 0.24; }
 
   /* Faint hairline grid, faded out at the edges — same device as the hero
      showcase panel, at a much lower level so type stays the subject. */

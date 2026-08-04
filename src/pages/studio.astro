@@ -1,307 +1,594 @@
 ---
-// Auto-generated from site/studio.html — round 4 design.
-// Edit page-level markup here; shared components live in src/components.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaClose from "../components/CtaClose.astro";
+import BrandMark from "../components/BrandMark.astro";
+
+// Thirteen weeks in a quarter, three booked runs of four. The thirteenth week
+// is left empty rather than labelled — a one-column bar can't hold a caption
+// without clipping it, and the empty space already says what it needs to.
+const WEEKS = 13;
+const RUNS = [
+  { name: "Oasis Dental", start: 1, span: 4, state: "done" },
+  { name: "North & Pine", start: 5, span: 4, state: "live" },
+  { name: "Roost Coffee", start: 9, span: 4, state: "next" },
+];
+
+// Split for the per-character reveal. Characters are always present at their
+// real width and only fade in, so the line never reflows — which is what lets
+// this run in the display serif instead of being forced into mono.
+const ANSWER = "We are trying something in between.";
+const ANSWER_CHARS = [...ANSWER];
 ---
 
 <BaseLayout title="The studio — fwd.">
-<section class="studio-hero">
-    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="studio-hero-watermark" />
-    <div class="full studio-hero-inner">
-      <div data-mv-watch class="mv-rise">
-        <p class="studio-hero-meta">
-          <span class="num">02</span>
-          <span class="bar"></span>
-          <span class="label">The studio</span>
+  <section class="st-hero">
+    <div class="st-hero-glow" aria-hidden="true"></div>
+    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="st-hero-mark" />
+    <div class="full st-hero-inner">
+      <div class="mv-rise" data-mv-watch>
+        <span class="st-eyebrow st-eyebrow-dark"><span class="st-eyebrow-bar"></span>The studio</span>
+        <h1 class="display st-hero-title">Look <em>twice your size</em>. Not a third of it.</h1>
+        <p class="lede st-hero-lede">
+          A small studio building websites for businesses that don't have a marketing
+          department. Fewer people on our side means fairer prices on yours.
         </p>
-        <h1 class="display studio-hero-title">Three people.<br /><em>One studio.</em><br />No project managers.</h1>
-        <p class="lede studio-hero-lede">We started fwd. because we were tired of agency websites that promised the moon and delivered a WordPress theme. We build calmer sites, with fewer people, for fairer prices.</p>
       </div>
     </div>
   </section>
 
-  <section class="section" id="values">
+  <section class="section st-why">
     <div class="full">
-      <div class="story-grid">
-        <div class="story-body mv-stagger" data-mv-watch>
-          <p class="eyebrow story-eyebrow"><span>Why we exist</span></p>
-          <p class="manifesto-lede">A good website should make a small business look <em>twice its size</em>, not a third of it.</p>
-          <p class="manifesto-p">For two decades the only good options were either custom — done by an agency, billed against retainers, and shipped six months late — or template, done by a freelancer in a weekend, and exactly as forgettable as the next.</p>
-          <p class="manifesto-p">We are trying something in between. A small studio, fixed prices, real design work, and a turnaround measured in weeks. Most of what we ship is a single landing page. That is enough. Most businesses do not need more.</p>
-          <p class="manifesto-p">We work directly with the people whose names will appear in the footer. There is no account manager, no kickoff deck, no Slack channel called <em>#engagement</em>. Just three of us, and you, and a couple of weeks of careful design.</p>
-        </div>
-        <aside class="story-stack" aria-hidden="true">
-          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-1" />
-          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-2" />
-          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-3" />
-          <img src="/assets/fwd-logo.svg" alt="" class="shs-mark shs-mark-4" />
-        </aside>
+      <div class="st-why-head mv-rise" data-mv-watch>
+        <span class="st-eyebrow"><span class="st-eyebrow-bar"></span>Why we exist</span>
+        <h2 class="display st-title st-why-title">For twenty years there were <em>two options</em>.</h2>
       </div>
+
+      {/* The two dead ends sit side by side across the full width, then the
+          answer resolves character by character beneath them. */}
+      <div class="st-dead mv-stagger" data-mv-watch>
+        <div class="st-dead-col">
+          <span class="st-dead-k">Custom</span>
+          <p class="st-dead-v">An agency. Retainers, a kickoff deck, six months late.</p>
+        </div>
+        <div class="st-dead-col">
+          <span class="st-dead-k">Template</span>
+          <p class="st-dead-v">A freelancer and one weekend. As forgettable as the next one.</p>
+        </div>
+      </div>
+
+      <p class="display st-decode" data-mv-watch aria-label={ANSWER}>
+        {ANSWER_CHARS.map((ch, i) =>
+          ch === " " ? " " : <span style={`--i:${i}`} aria-hidden="true">{ch}</span>,
+        )}
+      </p>
+
+      <p class="st-body st-why-tail">
+        A small studio, fixed prices, real design work, and a turnaround measured
+        in weeks rather than quarters.
+      </p>
     </div>
   </section>
 
-  <section class="values-band mv-soften" data-mv-watch>
+  <section class="section st-cap">
     <div class="full">
-      <h2 class="sr-only">What we believe</h2>
-      <div class="values-grid mv-stagger" data-mv-watch>
-        <div class="value">
-          <span class="value-num">01</span>
-          <h3 class="value-h">Fewer, slower projects</h3>
-          <p class="value-body">Three to four a quarter. We would rather ship one site well than six sites in parallel.</p>
+      <div class="st-grid">
+        <div class="st-copy mv-rise" data-mv-watch>
+          <span class="st-eyebrow"><span class="st-eyebrow-bar"></span>How we work</span>
+          <h2 class="display st-title">Three or four projects a <em>quarter</em>.</h2>
+          <p class="st-body">
+            That's the whole capacity. It's why the price is fixed, why the timeline is four
+            weeks instead of six months, and why the person who answers your email is the
+            person who builds your site. A studio that takes everything can't do any of it
+            carefully.
+          </p>
         </div>
-        <div class="value">
-          <span class="value-num">02</span>
-          <h3 class="value-h">A flat fee, on paper</h3>
-          <p class="value-body">One number, posted publicly. No hourlies, no retainers, no scope creep.</p>
-        </div>
-        <div class="value">
-          <span class="value-num">03</span>
-          <h3 class="value-h">You own everything</h3>
-          <p class="value-body">Your domain, your hosting, your code. We hand it over and you can switch designers tomorrow.</p>
-        </div>
-        <div class="value">
-          <span class="value-num">04</span>
-          <h3 class="value-h">Plain language</h3>
-          <p class="value-body">No engagements, no deliverables, no ideation sprints. You will know what you are paying for.</p>
+
+        <div class="st-cap-card mv-soften" data-mv-watch data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+          <div class="st-cap-head">
+            <span class="st-cap-label">One quarter</span>
+            <span class="st-cap-meta">13 weeks</span>
+          </div>
+
+          <div class="st-cap-weeks" aria-hidden="true">
+            {Array.from({ length: WEEKS }, (_, i) => (
+              <span class="st-cap-week">{i + 1}</span>
+            ))}
+          </div>
+
+          {/* Bars are positioned as percentages of the lane rather than grid
+              columns, so they line up with the week ticks exactly instead of
+              approximately. */}
+          <div class="st-cap-lanes" aria-hidden="true">
+            {RUNS.map((run, i) => (
+              <div class="st-cap-lane">
+                <div class="st-cap-slots">
+                  {Array.from({ length: WEEKS }, () => <span></span>)}
+                </div>
+                <span
+                  class:list={["st-cap-run", `is-${run.state}`]}
+                  style={`left:${((run.start - 1) / WEEKS) * 100}%; width:${(run.span / WEEKS) * 100}%; --d:${i * 140}ms`}
+                >
+                  <span class="st-cap-run-name">{run.name}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <p class="st-cap-foot">
+            <span class="st-cap-key"><span class="st-cap-dot is-live"></span>In build</span>
+            <span class="st-cap-note">One at a time. Never in parallel.</span>
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="people">
-    <div class="full">
-      <div class="section-head mv-rise" data-mv-watch>
-        <h2 class="display section-title">The whole studio.</h2>
-        <p class="section-sub">You will meet all three of us on the first call, and the same three names will be on every email. Photos coming soon — for now, the names will do.</p>
+  <section class="st-thread">
+    <div class="full st-thread-grid">
+      <div class="st-thread-copy mv-rise" data-mv-watch>
+        <span class="st-eyebrow st-eyebrow-dark"><span class="st-eyebrow-bar"></span>Who you'll work with</span>
+        <h2 class="display st-title st-title-dark">You talk to the people who <em>build it</em>.</h2>
+        <p class="st-body st-body-dark">
+          No account manager, no kickoff deck, no discovery phase. You meet the studio on the
+          first call, and the same people are on every email through launch.
+        </p>
       </div>
 
-      <div class="people-grid mv-stagger" data-mv-watch>
-        <article class="person">
-          <div class="person-portrait">
-            <span class="person-firstname" aria-hidden="true">Riz</span>
-            <span class="person-glyph" aria-hidden="true">●</span>
-          </div>
-          <div class="person-meta">
-            <h3 class="person-name">Riz Gosla</h3>
-            <span class="person-role">Engineering &amp; design</span>
-            <p class="person-bio">Builds every site we ship and designs most of what gets built. Riz makes the technical calls — what stack, where it lives, how it scales — and translates the design into actual working code. If something on your site is moving, blinking, loading, or laying itself out, that is him.</p>
-          </div>
-        </article>
+      {/* Five role cards converge into one on scroll. The motion performs the
+          argument in a single gesture, rather than asking the reader to
+          compare two static rows. Driven entirely by .is-inview from the
+          existing IntersectionObserver — no extra JS. */}
+      <div class="st-fold" data-mv-watch aria-hidden="true">
+        <span class="st-fold-cap st-fold-cap-before">The usual route — four handoffs</span>
 
-        <article class="person">
-          <div class="person-portrait">
-            <span class="person-firstname" aria-hidden="true">Alex</span>
-            <span class="person-glyph" aria-hidden="true">●</span>
-          </div>
-          <div class="person-meta">
-            <h3 class="person-name">Alex</h3>
-            <span class="person-role">Payment &amp; finances</span>
-            <p class="person-bio">Runs the books. Alex handles every invoice, every payment, every contract you will sign. Flat fees, plain receipts, on-time deposits — the parts of working with a studio that usually feel awkward, made boring on purpose.</p>
-          </div>
-        </article>
+        <div class="st-fold-stage">
+          <span class="st-fold-card" style="--i:0"><span>Account<br />manager</span></span>
+          <span class="st-fold-card" style="--i:1"><span>Strategist</span></span>
+          <span class="st-fold-card" style="--i:2"><span>Designer</span></span>
+          <span class="st-fold-card" style="--i:3"><span>Developer</span></span>
+          <span class="st-fold-card" style="--i:4"><span>Support</span></span>
 
-        <article class="person">
-          <div class="person-portrait">
-            <span class="person-firstname" aria-hidden="true">Jaiden</span>
-            <span class="person-glyph" aria-hidden="true">●</span>
-          </div>
-          <div class="person-meta">
-            <h3 class="person-name">Jaiden</h3>
-            <span class="person-role">Client &amp; growth</span>
-            <p class="person-bio">The first voice you will hear from. Jaiden answers the contact form, runs the intro call, scopes the project, and stays on as your point of contact through launch. If you are trying to figure out whether we are the right studio for you, ask Jaiden.</p>
-          </div>
-        </article>
+          {/* The end state has to be worth arriving at. A lone chip in an
+              empty stage reads as an anticlimax, so what's left standing is a
+              full-width card that carries the four stages it absorbed. */}
+          <span class="st-fold-solo">
+            <BrandMark class="st-fold-mark" decorative={true} />
+            <span class="st-fold-solo-label">the studio</span>
+            <span class="st-fold-solo-stages">
+              <span class="st-fold-stg"><b>Inquiry</b><i>Read and answered within a day</i></span>
+              <span class="st-fold-stg"><b>Intro call</b><i>Fifteen minutes, no deck</i></span>
+              <span class="st-fold-stg"><b>Design &amp; build</b><i>Drafted, revised, in your browser</i></span>
+              <span class="st-fold-stg"><b>Launch</b><i>Domain, hosting, handoff doc</i></span>
+            </span>
+            <span class="st-fold-solo-hint">Hover for what each covers</span>
+          </span>
+        </div>
+
+        <span class="st-fold-cap st-fold-cap-after">Here — none</span>
       </div>
+
+      <p class="sr-only">
+        Most studios pass a project between an account manager, a strategist, a designer,
+        a developer and a support team. Here, the same people handle every stage.
+      </p>
     </div>
   </section>
 
-  </section>
-  
   <CtaClose
     tone="ink"
-    eyebrow="Three people, one studio"
+    mark="paper"
+    eyebrow="One studio, no middlemen"
     lead="Sound like the kind of studio you'd"
     swap={["like to work with?", "trust with a launch?", "actually hear back from?", "recommend after?"]}
     lede="The contact form takes about a minute. We reply to every inquiry."
     note="No account managers, no kickoff decks"
-    ticker={["Three partners", "Flat fee", "About 4 weeks", "You own it all"]}
+    ticker={["Small studio", "Flat fee", "About 4 weeks", "You own it all"]}
   />
 </BaseLayout>
 
 <style>
   /* ============================================================
-     STUDIO HERO — dark full-bleed band with a giant logo watermark
-     bleeding off the left and text content stacked on the right.
+     Shared studio bits
      ============================================================ */
-  .studio-hero {
-    position: relative;
-    background: var(--color-ink);
-    color: var(--color-paper);
-    overflow: hidden;
-    padding-block: clamp(5rem, 14vh, 10rem);
+  .st-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+    margin-bottom: 1.25rem;
+  }
+  .st-eyebrow-bar { width: 24px; height: 1px; background: var(--color-blue); }
+  .st-eyebrow-dark { color: rgba(255,255,255,0.55); }
+  .st-eyebrow-dark .st-eyebrow-bar { background: var(--color-periwinkle); }
+
+  .st-title { font-size: var(--text-step-4); margin: 0; max-width: 18ch; line-height: 1.0; }
+  .st-title-dark { color: var(--color-paper); }
+  .st-title-dark em { color: var(--color-periwinkle); }
+  .st-body {
+    margin: 1.25rem 0 0; max-width: 46ch;
+    font-family: var(--font-display); font-weight: 300;
+    font-size: var(--text-step-1); line-height: 1.5;
+    color: var(--color-fg-soft); font-variation-settings: "opsz" 60;
+    text-wrap: pretty;
+  }
+  .st-body-dark { color: rgba(255,255,255,0.78); }
+
+  /* ============================================================
+     01 — HERO
+     ============================================================ */
+  .st-hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    background: var(--color-ink); color: var(--color-paper);
+    padding-block: clamp(5rem, 15vh, 10rem);
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-  .studio-hero::before {
-    content: "";
-    position: absolute; inset: 0;
+  .st-hero-glow {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 60% 50% at 20% 30%, rgb(142 148 184 / 0.12), transparent 70%),
-      radial-gradient(ellipse 60% 60% at 90% 90%, rgb(20 70 103 / 0.45), transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(ellipse 55% 60% at 18% 28%, rgb(142 148 184 / 0.16), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 88% 92%, rgb(20 70 103 / 0.50), transparent 70%);
   }
-  .studio-hero-watermark {
-    position: absolute;
-    left: -10%;
-    top: 50%;
-    transform: translateY(-50%) rotate(-8deg);
-    height: 140%;
-    width: auto;
-    max-width: none;
-    opacity: 0.07;
-    filter: brightness(0) invert(1);
-    pointer-events: none;
-    z-index: 0;
+  .st-hero-mark {
+    position: absolute; right: -8%; top: 50%;
+    transform: translateY(-50%);
+    height: 150%; width: auto; max-width: none;
+    opacity: 0.05; filter: brightness(0) invert(1);
+    pointer-events: none; z-index: 0;
   }
-  .studio-hero-inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-items: end;
+  .st-hero-inner { position: relative; z-index: 1; }
+  /* This was `max-width: 30ch`, but ch resolves against the *wrapper's* font
+     size (body, ~17px) — not the display type inside it. That capped the whole
+     block at roughly 250px and forced the title to one word per line. */
+  .st-hero-inner > div { max-width: min(64rem, 100%); }
+  .st-hero-title {
+    font-size: var(--text-step-6); margin: 0;
+    color: var(--color-paper); line-height: 0.95;
+    letter-spacing: -0.03em; max-width: 15ch;
   }
-  .studio-hero-inner > div { max-width: 38rem; width: 100%; }
-  .studio-hero-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0 0 2.5rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-periwinkle);
-  }
-  .studio-hero-meta .num { color: var(--color-periwinkle); }
-  .studio-hero-meta .bar { width: 28px; height: 1px; background: rgba(255,255,255,0.4); display: inline-block; }
-  .studio-hero-meta .label { color: rgba(255,255,255,0.7); }
-  .studio-hero-title {
-    font-size: var(--text-step-6);
-    margin: 0;
-    color: var(--color-paper);
-    line-height: 0.98;
-    letter-spacing: -0.025em;
-    font-variation-settings: "opsz" 144;
-    max-width: 14ch;
-  }
-  .studio-hero-title em {
-    font-style: italic;
-    color: var(--color-periwinkle);
-    font-variation-settings: "opsz" 144;
-  }
-  .studio-hero-lede {
-    margin: 2rem 0 0;
-    color: rgba(255,255,255,0.72);
-    max-width: 50ch;
-    font-size: var(--text-step-1);
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-variation-settings: "opsz" 60;
+  .st-hero-title em { font-style: italic; color: var(--color-periwinkle); }
+  .st-hero-lede {
+    margin: 2rem 0 0; color: rgba(255,255,255,0.74);
+    max-width: 46ch; font-size: var(--text-step-1);
   }
   @media (max-width: 800px) {
-    .studio-hero-inner { justify-items: stretch; }
-    .studio-hero-watermark { left: -30%; height: 110%; }
+    .st-hero-mark { right: -30%; height: 110%; }
+    .st-hero-title { font-size: clamp(2.6rem, 11vw, 4.5rem); }
   }
 
   /* ============================================================
-     STORY SECTION — manifesto text on the LEFT, a diagonal stack
-     of four logo marks (deep blue / periwinkle / paper / navy)
-     on the right.
+     02 — WHY WE EXIST. Type-led on purpose; the two dead-end
+     options are set as editorial fragments, not a chart.
      ============================================================ */
-  .story-eyebrow { margin: 0 0 1.5rem; }
-  .story-stack {
+  .st-why-head { max-width: 46ch; }
+  .st-why-title { max-width: 20ch; }
+
+  /* Two dead ends across the full width rather than stacked — the section was
+     tall and narrow, using vertical space it didn't need. */
+  .st-dead {
+    display: grid; grid-template-columns: 1fr;
+    gap: 1.5rem clamp(2rem, 5vw, 5rem);
+    margin: clamp(2rem, 4vh, 3rem) 0 clamp(2.5rem, 6vh, 4rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  @media (min-width: 760px) { .st-dead { grid-template-columns: 1fr 1fr; } }
+  .st-dead-col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .st-dead-k {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .st-dead-v {
+    margin: 0; color: var(--color-fg-soft);
+    font-size: var(--text-step-0); line-height: 1.5; max-width: 40ch;
+  }
+
+  /* Display serif, full width. Every character occupies its real width from
+     first paint and only fades in, so nothing reflows mid-animation — that is
+     what makes a proportional face workable here. */
+  .st-decode {
+    margin: 0;
+    font-size: var(--text-step-4);
+    line-height: 1.05;
+    color: var(--color-navy);
+    max-width: 24ch;
+  }
+  .st-decode span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.22em);
+  }
+  .st-decode[data-mv-watch] { opacity: 1; }
+  .st-decode.is-inview span {
+    animation: stChar 460ms var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--i) * 26ms);
+  }
+  @keyframes stChar { to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) {
+    .st-decode span { opacity: 1; transform: none; animation: none; }
+  }
+
+  .st-why-tail { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
+  /* ============================================================
+     03 — CAPACITY GRID
+     The empty half of the grid is the argument, so it is drawn
+     as deliberately as the filled part.
+     ============================================================ */
+  .st-cap { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); }
+  .st-grid { display: grid; grid-template-columns: 1fr; gap: clamp(2.5rem, 5vw, 4rem); align-items: center; }
+  @media (min-width: 950px) { .st-grid { grid-template-columns: 0.85fr 1.15fr; } }
+
+  .st-cap-card {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    padding: clamp(1.5rem, 2.6vw, 2.25rem);
+    --sheen: rgb(13 47 69 / 0.10);
+    box-shadow: 0 40px 90px -50px rgb(7 23 34 / 0.35), 0 12px 30px -18px rgb(7 23 34 / 0.14);
+    transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft);
+  }
+  .st-cap-card:hover { transform: translateY(-3px); }
+  .st-cap-card .tier-sheen {
+    position: absolute; inset: 0; z-index: 0; border-radius: inherit;
+    pointer-events: none; opacity: 0;
+    transition: opacity 360ms var(--ease-soft);
+    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), var(--sheen), transparent 60%);
+  }
+  .st-cap-card:hover .tier-sheen { opacity: 1; }
+  .st-cap-card > :not(.tier-sheen) { position: relative; z-index: 1; }
+
+  .st-cap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  .st-cap-label { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-1); color: var(--color-navy); font-variation-settings: "opsz" 60; }
+  .st-cap-meta { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
+
+  .st-cap-weeks {
+    display: grid; grid-template-columns: repeat(13, 1fr);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--color-fg-muted); text-align: center;
+    padding-bottom: 8px; margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .st-cap-lanes { display: flex; flex-direction: column; gap: 8px; }
+  .st-cap-lane { position: relative; height: 38px; }
+  /* The empty half of the quarter is the argument, so the unbooked weeks are
+     drawn rather than left blank. */
+  .st-cap-slots {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: repeat(13, 1fr);
+  }
+  .st-cap-slots span {
+    border-right: 1px solid rgba(13,47,69,0.07);
+    border-radius: 2px;
+  }
+  .st-cap-slots span:last-child { border-right: 0; }
+  .st-cap-run {
+    position: absolute; top: 0; bottom: 0;
+    display: flex; align-items: center;
+    padding: 0 12px; border-radius: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em; white-space: nowrap; overflow: hidden;
+    transform-origin: left;
+    animation: stRun 700ms var(--ease-out-expo) both;
+    animation-delay: var(--d);
+  }
+  @keyframes stRun { from { transform: scaleX(0.02); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+  .st-cap-run.is-done { background: rgba(13,47,69,0.10); color: var(--color-fg-soft); }
+  .st-cap-run.is-live { background: var(--color-navy); color: var(--color-paper); box-shadow: 0 10px 24px -12px rgba(7,23,34,0.6); }
+  .st-cap-run.is-next { background: rgba(142,148,184,0.28); color: var(--color-navy); }
+  .st-cap-run.is-open {
+    background: transparent; color: var(--color-blue);
+    border: 1px dashed var(--color-line-strong);
+    justify-content: center; padding: 0 6px;
+  }
+  .st-cap-run.is-open .st-cap-run-name { font-size: 10px; }
+
+  .st-cap-foot {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    margin: 1.25rem 0 0; padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.06em; color: var(--color-fg-muted);
+  }
+  .st-cap-key { display: inline-flex; align-items: center; gap: 6px; }
+  .st-cap-dot { width: 8px; height: 8px; border-radius: 2px; }
+  .st-cap-dot.is-live { background: var(--color-navy); }
+  .st-cap-dot.is-open { border: 1px dashed var(--color-line-strong); }
+  .st-cap-note { margin-left: auto; color: var(--color-blue); }
+
+  @media (max-width: 620px) {
+    .st-cap-weeks { font-size: 8px; }
+    .st-cap-run { font-size: 9px; padding: 0 6px; }
+  }
+
+  /* ============================================================
+     03 — THE CHAIN. One label, four times.
+     ============================================================ */
+  .st-thread {
+    position: relative; overflow: hidden;
+    background: var(--color-ink); color: var(--color-paper);
+    padding-block: clamp(4rem, 10vh, 7rem);
+  }
+  .st-thread::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 60% 60% at 20% 0%, rgb(142 148 184 / 0.12), transparent 70%);
+  }
+  .st-thread .full { position: relative; z-index: 1; }
+  .st-thread-grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem); align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .st-thread-grid { grid-template-columns: 0.9fr 1.1fr; }
+    .st-fold { margin-top: 0; }
+  }
+  .st-thread-copy { max-width: 46ch; }
+
+  /* global.css references .sr-only on the live studio page but never defines
+     it, so that "What we believe" heading renders visibly. Defined here;
+     belongs in global.css when this ships. */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  .st-fold {
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 1.25rem;
+  }
+  .st-fold-cap {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    transition: opacity 500ms var(--ease-soft);
+  }
+  .st-fold-cap-before { color: rgba(255,255,255,0.42); opacity: 1; }
+  .st-fold-cap-after { color: var(--color-periwinkle); opacity: 0; }
+
+  /* Fixed height so the collapse never reflows the page around it. */
+  /* Sized to the card rather than left roomy — the collapsed state was
+     floating in empty space. Hover expansion overflows a little, which the
+     section's own padding absorbs. */
+  .st-fold-stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1;
-    max-width: 460px;
-    margin-inline: auto;
-    align-self: center;
-  }
-  .shs-mark {
-    position: absolute;
-    top: 0; left: 0;
-    width: 70%;
-    height: auto;
-    display: block;
-  }
-  /* Layer 1 (back) — deep blue */
-  .shs-mark-1 {
-    top: 0; left: 0;
-    filter: brightness(0) saturate(100%) invert(20%) sepia(38%) saturate(1400%) hue-rotate(168deg) brightness(95%) contrast(98%);
-    opacity: 0.9;
-  }
-  /* Layer 2 — periwinkle */
-  .shs-mark-2 {
-    top: 10%; left: 10%;
-    filter: brightness(0) saturate(100%) invert(64%) sepia(11%) saturate(700%) hue-rotate(190deg) brightness(95%) contrast(90%);
-    opacity: 0.95;
-  }
-  /* Layer 3 — paper white (with subtle border via drop-shadow so it reads on light bg) */
-  .shs-mark-3 {
-    top: 20%; left: 20%;
-    filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(13,47,69,0.25));
-    opacity: 1;
-  }
-  /* Layer 4 (front) — navy */
-  .shs-mark-4 {
-    top: 30%; left: 30%;
-    filter: brightness(0) saturate(100%) invert(13%) sepia(45%) saturate(1900%) hue-rotate(180deg) brightness(85%) contrast(95%);
-    opacity: 1;
-  }
-  @media (max-width: 899px) {
-    .story-stack { max-width: 280px; }
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
   }
 
-.story-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
-  @media (min-width: 900px) { .story-grid { grid-template-columns: 1.5fr 1fr; gap: clamp(3rem, 6vw, 6rem); } }
-  .story-body { display: flex; flex-direction: column; gap: 1.5rem; }
-  .manifesto-lede { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-3); line-height: 1.2; letter-spacing: -0.015em; color: var(--color-fg); margin: 0; max-width: 26ch; font-variation-settings: "opsz" 96; text-wrap: balance; }
-  .manifesto-lede em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
-  .manifesto-p { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); line-height: 1.5; color: var(--color-fg-soft); margin: 0; max-width: 58ch; font-variation-settings: "opsz" 60; text-wrap: pretty; }
-  .manifesto-p em { font-style: italic; color: var(--color-blue); }
-  .values-band { background: var(--color-ink); color: var(--color-paper); padding-block: clamp(4rem, 9vh, 6rem); margin-block: 4rem; position: relative; overflow: hidden; }
-  .values-band::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgb(142 148 184 / 0.12), transparent 70%); pointer-events: none; }
-  .values-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); position: relative; z-index: 1; }
-  .value { display: flex; flex-direction: column; gap: 0.75rem; }
-  .value-num { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-periwinkle); }
-  .value-h { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); color: var(--color-paper); margin: 0; letter-spacing: -0.015em; font-variation-settings: "opsz" 60; }
-  .value-body { margin: 0; color: rgba(255,255,255,0.7); font-size: var(--text-step-0); line-height: 1.5; max-width: 30ch; }
-  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 3rem; }
-  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
-  .section-title { font-size: var(--text-step-4); max-width: 22ch; margin: 0; }
-  .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
-  .people-grid { display: grid; gap: 2rem; grid-template-columns: 1fr; }
-  @media (min-width: 800px) { .people-grid { grid-template-columns: repeat(3, 1fr); } }
-  .person { display: flex; flex-direction: column; gap: 1.25rem; border-top: 1px solid var(--color-line); padding-top: 1.5rem; }
-  .person-portrait { aspect-ratio: 4/5; background: var(--color-bg-soft); border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .person-portrait::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 85%); mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 85%); }
-  .person-firstname { font-family: var(--font-display); font-weight: 350; font-style: italic; font-size: clamp(4rem, 10vw, 7rem); color: var(--color-navy); line-height: 1; letter-spacing: -0.04em; font-variation-settings: "opsz" 144; position: relative; z-index: 1; transition: color 320ms var(--ease-soft); }
-  .person:hover .person-firstname { color: var(--color-blue); }
-  .person-glyph { position: absolute; bottom: 14px; right: 14px; color: var(--color-periwinkle); font-size: 9px; z-index: 1; animation: mvBlink 1.6s steps(1) infinite; }
-  .person-meta { display: flex; flex-direction: column; gap: 0.4rem; }
-  .person-name { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); margin: 0; color: var(--color-fg); letter-spacing: -0.015em; font-variation-settings: "opsz" 60; }
-  .person-role { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-blue); }
-  .person-bio { margin: 0.5rem 0 0; color: var(--color-fg-soft); font-size: var(--text-step-0); line-height: 1.5; max-width: 38ch; }
-  .section-expect { background: var(--color-bg-soft); }
-  .expect-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
-  .expect-row { display: grid; grid-template-columns: 1fr; gap: 0.5rem; padding-block: 1.75rem; border-bottom: 1px solid var(--color-line); transition: padding-left 280ms var(--ease-soft), background 280ms var(--ease-soft); }
-  @media (min-width: 760px) { .expect-row { grid-template-columns: 140px 1fr; gap: 3rem; align-items: baseline; } }
-  .expect-row:hover { padding-left: 0.5rem; background: rgb(20 70 103 / 0.025); }
-  .expect-when { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-blue); font-weight: 500; }
-  .expect-text { display: flex; flex-direction: column; gap: 0.4rem; }
-  .expect-h { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); color: var(--color-fg); margin: 0; letter-spacing: -0.015em; font-variation-settings: "opsz" 60; }
-  .expect-p { margin: 0; color: var(--color-fg-soft); font-size: var(--text-step-0); line-height: 1.5; max-width: 60ch; }
+  .st-fold-card {
+    position: absolute; top: 50%; left: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    width: clamp(104px, 17vw, 152px); height: 84px;
+    padding: 0.5rem;
+    border-radius: 12px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.04em; line-height: 1.35;
+    /* Spread from centre by index, with a little rotation so they read as
+       separate physical objects rather than a row of divs. */
+    --spread: calc((var(--i) - 2) * clamp(112px, 18vw, 168px));
+    --rot: calc((var(--i) - 2) * 2.5deg);
+    margin: -42px 0 0 calc(clamp(104px, 17vw, 152px) * -0.5);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.66);
+    box-shadow: 0 18px 40px -22px rgba(0,0,0,0.7);
+    transform: translateX(var(--spread)) rotate(var(--rot));
+    opacity: 1;
+    /* Held spread for 1.3s before collapsing — the observer fires as soon as
+       the block is 15% visible, and the whole thing was finishing before it
+       had properly arrived on screen. */
+    transition:
+      transform 1500ms var(--ease-out-expo),
+      opacity 900ms var(--ease-soft);
+    transition-delay: calc(3000ms + var(--i) * 70ms);
+  }
+
+  .st-fold-solo {
+    position: absolute; top: 50%; left: 50%;
+    width: min(560px, 100%);
+    /* translate, not a negative margin: margin-left: min(-280px, -50%) picks
+       the *more negative* value, so on a wide stage it resolved to -50% of the
+       container and threw the card left of centre. */
+    transform: translate(-50%, -50%) scale(0.94);
+    display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+    padding: 1.15rem 1.25rem;
+    border-radius: 14px;
+    background: var(--color-periwinkle);
+    border: 1px solid var(--color-periwinkle);
+    color: var(--color-navy);
+    box-shadow: 0 26px 60px -24px rgba(142,148,184,0.7);
+    opacity: 0;
+    transition:
+      opacity 700ms var(--ease-soft) 4300ms,
+      transform 900ms var(--ease-out-expo) 4300ms;
+  }
+  .st-fold-solo :global(.st-fold-mark) {
+    height: clamp(48px, 7vw, 68px); width: auto; display: block;
+    color: var(--color-navy);
+  }
+  /* The mark's shadow layer is periwinkle, which is this card's background —
+     it would vanish. Re-tint it so the mark keeps its two-layer offset. */
+  .st-fold-solo :global(.st-fold-mark) > g:first-of-type path {
+    fill: rgba(13, 47, 69, 0.22);
+  }
+  .st-fold-solo-label {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .st-fold-solo-stages {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(13,47,69,0.22);
+    width: 100%;
+  }
+  .st-fold-stg { display: flex; flex-direction: column; gap: 0.15rem; text-align: center; }
+  .st-fold-stg b {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-0); color: var(--color-navy);
+    font-variation-settings: "opsz" 40;
+  }
+  /* Detail is hidden until hover — the collapsed card stays tight, and hovering
+     expands it to show what each stage actually covers. */
+  .st-fold-stg i {
+    font-style: normal;
+    font-family: var(--font-mono); font-size: 10px;
+    line-height: 1.35; letter-spacing: 0.02em;
+    color: rgba(13,47,69,0.62);
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 420ms var(--ease-soft), opacity 300ms var(--ease-soft);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .st-fold-solo:hover .st-fold-stg i { max-height: 4rem; opacity: 1; }
+    .st-fold-solo:hover { box-shadow: 0 34px 70px -22px rgba(142,148,184,0.85); }
+  }
+  .st-fold-solo-hint {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(13,47,69,0.45);
+    transition: opacity 300ms var(--ease-soft);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .st-fold-solo:hover .st-fold-solo-hint { opacity: 0; }
+  }
+
+  /* Collapse, on scroll into view. */
+  .st-fold.is-inview .st-fold-card {
+    transform: translateX(0) rotate(0deg) scale(0.86);
+    opacity: 0;
+  }
+  .st-fold.is-inview .st-fold-solo { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .st-fold.is-inview .st-fold-cap-before { opacity: 0; }
+  .st-fold.is-inview .st-fold-cap-after { opacity: 1; }
+  .st-fold-cap { transition: opacity 700ms var(--ease-soft) 2300ms; }
+
+  /* [data-mv-watch] holds elements at opacity 0 until observed; this one
+     animates its children instead, so the container itself stays visible. */
+  .st-fold[data-mv-watch] { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-fold-card { opacity: 0; transform: none; }
+    .st-fold-solo { opacity: 1; transform: translate(-50%, -50%); }
+    .st-fold-cap-before { opacity: 0; }
+    .st-fold-cap-after { opacity: 1; }
+  }
+
+  @media (max-width: 700px) {
+    .st-fold-stage { height: 200px; }
+    .st-fold-card {
+      --spread: calc((var(--i) - 2) * clamp(52px, 14vw, 72px));
+      --rot: calc((var(--i) - 2) * 5deg);
+      width: 100px; font-size: 10px;
+      margin-left: -50px;
+    }
+    .st-fold-solo { width: 100%; }
+    .st-fold-solo-stages { gap: 0.3rem 0.75rem; }
+    .st-fold-solo-stages span { font-size: var(--text-step--1); }
+  }
 </style>
-
 
