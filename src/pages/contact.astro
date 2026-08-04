@@ -35,8 +35,8 @@ import BrandMark from "../components/BrandMark.astro";
     <div class="full email-poster-wrap">
       <div class="email-poster-inner mv-stagger" data-mv-watch>
         <span class="eyebrow"><span>The fastest way to reach us</span></span>
-        <a href="mailto:hello@fwd.studio" class="email-display">hello@fwd.studio</a>
-        <p class="email-sub">All three of us read it. One of us replies. Usually within a day.</p>
+        <a href="mailto:fwddesignconsulting@gmail.com" class="email-display">fwddesignconsulting@gmail.com</a>
+        <p class="email-sub">We all read it. One of us replies. Usually within a day.</p>
       </div>
     </div>
   </section>
@@ -49,7 +49,15 @@ import BrandMark from "../components/BrandMark.astro";
 
           <p class="field-required-hint"><span aria-hidden="true" class="req-marker">*</span> indicates a required field</p>
 
-          <form id="contactForm" class="contact-form" novalidate>
+          {/* action + method mean this still submits if JS fails; the endpoint
+              answers native posts with a plain HTML page instead of JSON. */}
+          <form id="contactForm" class="contact-form" method="POST" action="/api/inquiry" novalidate>
+            {/* Honeypot. Off-screen rather than display:none — some bots skip
+                hidden fields but fill anything they can parse. */}
+            <div class="hp" aria-hidden="true">
+              <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+            </div>
+
             <div class="form-row">
               <label class="field">
                 <span class="field-label">Your name <span aria-hidden="true" class="req-marker">*</span></span>
@@ -112,6 +120,8 @@ import BrandMark from "../components/BrandMark.astro";
               </button>
               <span class="form-meta">We reply within a day, every day.</span>
             </div>
+
+            <p class="form-error" id="formError" role="alert" hidden></p>
           </form>
 
           <div class="form-success" hidden role="status" aria-live="polite">
@@ -120,6 +130,7 @@ import BrandMark from "../components/BrandMark.astro";
             </div>
             <h2 class="display success-h">Got it.</h2>
             <p class="success-p">Your inquiry is in our inbox. One of us will read it today and reply with a proposal by <strong id="successReplyBy">tomorrow afternoon</strong>.</p>
+
             <p class="success-meta">A confirmation is on its way to <strong id="successEmail">your email</strong>. If you do not see it in 10 minutes, check your spam folder.</p>
             <div class="success-actions">
               <a href="/services" class="link-arrow">Read services in the meantime <span class="arrow">→</span></a>
@@ -135,7 +146,7 @@ import BrandMark from "../components/BrandMark.astro";
               <span class="status-dot mv-pulse"></span>
               Usually within a day
             </span>
-            <span class="aside-help">Three of us read every inquiry. If you write in over a weekend you will hear back on Monday.</span>
+            <span class="aside-help">We read every inquiry. If you write in over a weekend you will hear back on Monday.</span>
           </div>
 
           <div class="aside-card">
@@ -256,6 +267,19 @@ import BrandMark from "../components/BrandMark.astro";
   .radio-d { font-size: var(--text-step--2); color: var(--color-fg-muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
   .form-foot { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding-top: 0.5rem; border-top: 1px solid var(--color-line); margin-top: 0.5rem; }
   .form-meta { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.06em; color: var(--color-fg-muted); }
+  /* Honeypot — off-screen rather than display:none, which some bots skip. */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form-error {
+    margin: 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid #c2786a;
+    border-left-width: 3px;
+    border-radius: 8px;
+    background: rgb(194 120 106 / 0.06);
+    color: #8f4436;
+    font-size: var(--text-step--1);
+    line-height: 1.5;
+  }
   .form-submit { position: relative; min-width: 180px; justify-content: center; }
   .form-submit[aria-busy="true"] { background: var(--color-blue); cursor: progress; }
   .submit-arrow, .submit-spinner { transition: opacity 200ms var(--ease-soft); }
@@ -290,22 +314,56 @@ import BrandMark from "../components/BrandMark.astro";
     const submitSpinner = btn.querySelector('.submit-spinner');
     const successEmailEl = document.getElementById('successEmail');
     const successResetBtn = document.getElementById('successReset');
-    form.addEventListener('submit', (e) => {
+    const errEl = document.getElementById('formError');
+    const replyByEl = document.getElementById('successReplyBy');
+
+    const setBusy = (busy) => {
+      btn.disabled = busy;
+      if (busy) btn.setAttribute('aria-busy', 'true'); else btn.removeAttribute('aria-busy');
+      submitText.textContent = busy ? 'Sending…' : 'Send inquiry';
+      submitArrow.style.opacity = busy ? '0' : '1';
+      submitSpinner.style.opacity = busy ? '1' : '0';
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      btn.setAttribute('aria-busy', 'true');
-      btn.disabled = true;
-      submitText.textContent = 'Sending…';
-      submitArrow.style.opacity = '0';
-      submitSpinner.style.opacity = '1';
-      setTimeout(() => {
-        const data = new FormData(form);
-        const email = data.get('email') || 'your email';
-        successEmailEl.textContent = email;
+      errEl.hidden = true;
+      setBusy(true);
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const out = await res.json().catch(() => ({}));
+
+        if (!res.ok || !out.ok) {
+          // Never pretend this worked — say so, and give them a way through.
+          errEl.textContent = (out.error || 'Something went wrong sending that.')
+            + ' You can email us directly at fwddesignconsulting@gmail.com.';
+          errEl.hidden = false;
+          setBusy(false);
+          errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+
+        successEmailEl.textContent = new FormData(form).get('email') || 'your email';
+        if (out.replyBy) replyByEl.textContent = out.replyBy;
         form.style.opacity = '0';
         form.style.transform = 'translateY(-8px)';
-        setTimeout(() => { form.hidden = true; success.hidden = false; success.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 320);
-      }, 900);
+        setTimeout(() => {
+          form.hidden = true;
+          success.hidden = false;
+          success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 320);
+      } catch {
+        errEl.textContent = 'We couldn’t reach the server. Check your connection, '
+          + 'or email us directly at fwddesignconsulting@gmail.com.';
+        errEl.hidden = false;
+        setBusy(false);
+      }
     });
     successResetBtn?.addEventListener('click', () => {
       form.reset();
@@ -313,11 +371,8 @@ import BrandMark from "../components/BrandMark.astro";
       form.hidden = false;
       form.style.opacity = '1';
       form.style.transform = 'translateY(0)';
-      btn.removeAttribute('aria-busy');
-      btn.disabled = false;
-      submitText.textContent = 'Send inquiry';
-      submitArrow.style.opacity = '1';
-      submitSpinner.style.opacity = '0';
+      errEl.hidden = true;
+      setBusy(false);
     });
   })();
 </script>

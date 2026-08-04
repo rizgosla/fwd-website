@@ -1,0 +1,556 @@
+---
+/* ----------------------------------------------------------------------------
+   CtaClose — the shared closing section.
+
+   Replaces three different treatments that all did the same three things
+   (heading, paragraph, button): .cta-band-light on home and .cta-band /
+   .cta-band-marks on services and studio.
+
+   Type-led on purpose. The pages above this already carry five hand-built
+   fake-UI visuals; a sixth immediately before the footer would dilute the
+   device rather than extend it. So the weight goes into the headline, with
+   one cycling word as the only moving part.
+
+   `swap` is fixed at FOUR words — the keyframe windows below are 25% each.
+   Pass the trailing punctuation with each word ("side project?"), not after
+   the span: the words share one inline-grid cell so the slot is as wide as
+   the longest entry, and keeping the "?" inside means the leftover space
+   lands as invisible trailing whitespace at the end of a left-aligned line.
+   -------------------------------------------------------------------------- */
+interface Props {
+  eyebrow?: string;
+  /** Text before the cycling word. */
+  lead: string;
+  /** Exactly four words, each carrying its own trailing punctuation. */
+  swap?: string[];
+  /** Static ending, used when `swap` is omitted. */
+  tail?: string;
+  lede: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  note?: string;
+  ticker?: string[];
+  tone?: "light" | "ink";
+  /** ASCII mark colour. Defaults to the tone's accent; "paper" when the
+   *  preceding section already leans on the accent and the mark needs to
+   *  separate from it. */
+  mark?: "accent" | "paper";
+}
+
+const {
+  eyebrow,
+  lead,
+  swap,
+  tail,
+  lede,
+  ctaLabel = "Start a project",
+  ctaHref = "/contact",
+  note,
+  ticker = [],
+  tone = "light",
+  mark = "accent",
+} = Astro.props;
+
+const words = swap?.slice(0, 4) ?? [];
+// Unique per instance — a fixed id would collide (and break aria-labelledby)
+// the moment two of these render on one page, as the preview route does.
+const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<section class:list={["ctc", `ctc-${tone}`]} aria-labelledby={titleId}>
+  <div class="ctc-grid" aria-hidden="true"></div>
+
+  <div class="ctc-inner">
+    <div class="ctc-main">
+    {eyebrow && (
+      <span class="ctc-eyebrow mv-rise" data-mv-watch>
+        <span class="ctc-eyebrow-bar"></span>{eyebrow}
+      </span>
+    )}
+
+    <h2 id={titleId} class="display ctc-title mv-rise" data-mv-watch>
+      {lead}{" "}
+      {words.length > 0 ? (
+        <span class="ctc-swap" style={`--ctc-count:${words.length}`}>
+          {words.map((w, i) => (
+            <span class="ctc-swap-item" style={`--i:${i}`} aria-hidden={i > 0 ? "true" : undefined}>{w}</span>
+          ))}
+        </span>
+      ) : <span class="ctc-tail">{tail}</span>}
+    </h2>
+
+    <p class="ctc-lede mv-rise" data-mv-watch>{lede}</p>
+
+    <div class="ctc-actions mv-rise" data-mv-watch>
+      <a href={ctaHref} class="btn btn-primary ctc-btn">
+        {ctaLabel} <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      {note && (
+        <span class="ctc-note">
+          <span class="ctc-dot" aria-hidden="true"></span>{note}
+        </span>
+      )}
+    </div>
+    </div>
+
+    <pre class:list={["ctc-ascii", mark === "paper" && "is-paper"]} data-ascii aria-hidden="true"></pre>
+
+    {ticker.length > 0 && (
+      <div class="ctc-ticker" aria-hidden="true">
+        <div class="ctc-ticker-track">
+          {[...ticker, ...ticker].map((t) => (
+            <><span>{t}</span><span class="dot">●</span></>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .ctc {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(5rem, 13vh, 9rem);
+  }
+  .ctc-light {
+    --ctc-fg: var(--color-navy);
+    --ctc-soft: var(--color-fg-soft);
+    --ctc-muted: var(--color-fg-muted);
+    --ctc-accent: var(--color-blue);
+    --ctc-line: var(--color-line);
+    --ctc-rule: rgb(20 70 103 / 0.06);
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .ctc-ink {
+    --ctc-fg: var(--color-paper);
+    --ctc-soft: rgba(255,255,255,0.80);
+    --ctc-muted: rgba(255,255,255,0.52);
+    --ctc-accent: var(--color-periwinkle);
+    --ctc-line: rgba(255,255,255,0.14);
+    --ctc-rule: rgba(255,255,255,0.05);
+    background: var(--color-ink);
+    color: var(--ctc-fg);
+  }
+  .ctc-ink::before {
+    content: "";
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 70% 60% at 85% 0%, rgb(142 148 184 / 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------------
+     ASCII render of the fwd. mark. The logo is rasterised to a character
+     grid on the client and then shimmers — a few cells swap to a
+     neighbouring ramp character each tick, so it reads as a live terminal
+     rather than a static texture. Sits behind the grid and the type.
+     Empty until JS fills it, so it degrades to the plain grid.
+     ------------------------------------------------------------------ */
+  /* Its own grid column below — never underneath the type. Hidden entirely
+     under 1100px, where there is no room for a column beside the headline
+     (and no cursor to drive the ripple either). */
+  .ctc-ascii {
+    display: none;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: clamp(6px, 0.62vw, 9px);
+    line-height: 0.62;
+    white-space: pre;
+    overflow: hidden;
+    color: var(--ctc-accent);
+    opacity: 0.30;
+    user-select: none;
+    -webkit-mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 45%, transparent 92%);
+    mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 45%, transparent 92%);
+  }
+  .ctc-light .ctc-ascii { opacity: 0.20; }
+  /* mark="paper" — for pages where the section above already leans on the
+     accent, so a periwinkle mark would read as more of the same. */
+  .ctc-ascii.is-paper { color: var(--color-paper); opacity: 0.24; }
+
+  /* Faint hairline grid, faded out at the edges — same device as the hero
+     showcase panel, at a much lower level so type stays the subject. */
+  .ctc-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(var(--ctc-rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ctc-rule) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, #000 10%, transparent 80%);
+    mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, #000 10%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .ctc-inner {
+    position: relative; z-index: 1;
+    width: 100%;
+    padding-inline: var(--pad-x);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ctc-main {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+  /* Two tracks: type on the left, the ASCII mark in its own column on the
+     right. Structurally impossible for them to overlap at any width. */
+  @media (min-width: 1100px) {
+    .ctc-inner {
+      grid-template-columns: minmax(0, 1fr) clamp(17rem, 33vw, 36rem);
+      column-gap: clamp(2rem, 4vw, 4.5rem);
+      align-items: center;
+    }
+    .ctc-main { grid-column: 1; grid-row: 1; }
+    .ctc-ascii {
+      display: block;
+      grid-column: 2; grid-row: 1;
+      align-self: stretch;
+      min-height: 22rem;
+    }
+    .ctc-ticker { grid-column: 1 / -1; grid-row: 2; }
+  }
+
+  .ctc-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ctc-muted);
+  }
+  .ctc-eyebrow-bar { width: 24px; height: 1px; background: var(--ctc-accent); }
+
+  .ctc-title {
+    margin: 0;
+    font-size: var(--text-step-5);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    color: var(--ctc-fg);
+    max-width: 17ch;
+    /* The swapping word changes the last line's width; balancing would make
+       the whole heading re-wrap on every swap. */
+    text-wrap: initial;
+  }
+
+  /* Static ending carries the same accent the cycling words do, so a page
+     without a swap still gets the one-italic-accent-per-headline device. */
+  .ctc-tail {
+    font-style: italic;
+    color: var(--ctc-accent);
+    font-variation-settings: "opsz" 144;
+  }
+
+  /* All four words share one grid cell, so the slot is as wide as the
+     longest and nothing above it reflows when the word changes. */
+  .ctc-swap {
+    display: inline-grid;
+    vertical-align: top;
+  }
+  .ctc-swap-item {
+    grid-area: 1 / 1;
+    justify-self: start;
+    white-space: nowrap;
+    font-style: italic;
+    color: var(--ctc-accent);
+    font-variation-settings: "opsz" 144;
+    opacity: 0;
+    animation: ctcSwap 12s var(--ease-soft) infinite;
+    animation-delay: calc(var(--i) * 12s / var(--ctc-count));
+  }
+  @keyframes ctcSwap {
+    0%   { opacity: 0; transform: translateY(0.28em); }
+    2%   { opacity: 1; transform: translateY(0); }
+    23%  { opacity: 1; transform: translateY(0); }
+    25%  { opacity: 0; transform: translateY(-0.28em); }
+    100% { opacity: 0; transform: translateY(0.28em); }
+  }
+
+  .ctc-lede {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 300; font-style: italic;
+    font-size: var(--text-step-1);
+    line-height: 1.4;
+    color: var(--ctc-soft);
+    max-width: 46ch;
+    text-wrap: pretty;
+    font-variation-settings: "opsz" 60;
+  }
+
+  .ctc-actions {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .ctc-note {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.06em;
+    color: var(--ctc-muted);
+  }
+  .ctc-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2bb673;
+    animation: mvPulseRing 2.4s var(--ease-soft) infinite;
+  }
+  .ctc-ink .ctc-btn {
+    background: var(--color-paper);
+    color: var(--color-navy);
+    border-color: var(--color-paper);
+  }
+  .ctc-ink .ctc-btn:hover {
+    background: var(--color-periwinkle);
+    border-color: var(--color-periwinkle);
+    color: var(--color-navy);
+  }
+
+  .ctc-ticker {
+    width: 100%;
+    margin-top: clamp(2rem, 5vh, 3.5rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ctc-line);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
+  }
+  .ctc-ticker-track {
+    display: inline-flex; align-items: center; gap: 1.25rem;
+    white-space: nowrap;
+    animation: ctcTicker 34s linear infinite;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ctc-muted);
+  }
+  .ctc-ticker-track .dot { color: var(--ctc-accent); font-size: 0.6em; }
+  @keyframes ctcTicker { to { transform: translateX(-50%); } }
+
+  /* The global reduce rule collapses animation-duration to 0.01ms, which would
+     snap every swap word to its final keyframe — opacity 0 — and leave the
+     headline with no ending. Pin the first word visible instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .ctc-swap-item { animation: none; opacity: 0; transform: none; }
+    .ctc-swap-item:first-child { opacity: 1; }
+    .ctc-ticker-track { animation: none; }
+    .ctc-dot { animation: none; }
+  }
+
+  @media (max-width: 700px) {
+    .ctc-title { font-size: var(--text-step-4); max-width: 14ch; }
+    .ctc-ascii { opacity: 0.13; }
+  }
+</style>
+
+<script is:inline>
+  // ASCII render of the brand mark. Rasterises /assets/fwd-logo.svg into a
+  // character grid, then composites two things over that base every frame:
+  // a slow rolling shimmer, and a ripple that radiates from the cursor.
+  //
+  // The base grid is immutable and each frame is composed from it, rather
+  // than mutating cells in place — a wave needs to read the original density
+  // of every cell it passes over, which in-place mutation destroys.
+  //
+  // No dependencies. Falls back to the plain hairline grid on any failure.
+  (() => {
+    if (window.__ctcAscii) return; // one initialiser per page, not per instance
+    window.__ctcAscii = true;
+
+    const RAMP = " .:-=+*#%@";
+    const MAX = RAMP.length - 1;
+    const FPS = 24;
+    const LIFE = 1150;   // ms a ripple lives for
+    const SPEED = 0.055; // characters per ms the ring expands
+    const BAND = 4.5;    // half-width of the crest, in characters
+    const EMIT = 110;    // min ms between ripples while the cursor moves
+    const EMIT_D = 5;    // min characters moved before a new ripple
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const measureCell = (el) => {
+      const probe = document.createElement("span");
+      probe.textContent = "0".repeat(50);
+      probe.style.cssText = "position:absolute;visibility:hidden;white-space:pre;";
+      el.appendChild(probe);
+      const w = probe.getBoundingClientRect().width / 50;
+      probe.remove();
+      const lh = parseFloat(getComputedStyle(el).lineHeight);
+      return { w, h: lh || w };
+    };
+
+    const build = (el, img) => {
+      const box = el.getBoundingClientRect();
+      const cell = measureCell(el);
+      if (!cell.w || !box.width) return null;
+
+      const cols = Math.max(8, Math.floor(box.width / cell.w));
+      const rows = Math.max(4, Math.floor(box.height / cell.h));
+
+      // Fit the logo inside the grid, preserving its aspect against the
+      // non-square character cell.
+      // The element is now its own column, so the mark just fits its own box.
+      const imgAR = img.naturalWidth / img.naturalHeight;
+      const cellAR = cell.w / cell.h;
+      let dw = cols;
+      let dh = Math.round(dw / imgAR * cellAR);
+      if (dh > rows) { dh = rows; dw = Math.round(rows * imgAR / cellAR); }
+
+      const cv = document.createElement("canvas");
+      cv.width = dw; cv.height = dh;
+      const ctx = cv.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, dw, dh);
+      const data = ctx.getImageData(0, 0, dw, dh).data;
+
+      const offX = Math.floor((cols - dw) / 2);
+      const offY = Math.floor((rows - dh) / 2);
+
+      // base[] holds the ramp index per cell, -1 for empty. live[] indexes only
+      // the cells that are part of the mark, so the per-frame loop touches
+      // those and nothing else.
+      const base = new Int8Array(rows * cols).fill(-1);
+      const live = [];
+
+      for (let y = 0; y < dh; y++) {
+        for (let x = 0; x < dw; x++) {
+          const a = data[(y * dw + x) * 4 + 3] / 255;
+          if (a < 0.08) continue;
+          // The mark is a solid shape, so raw alpha would resolve almost every
+          // interior cell to the densest character and read as a block. A
+          // deterministic per-cell offset breaks the fill into actual texture.
+          const dither = ((x * 7 + y * 13) % 5) / 5;
+          const v = Math.max(1, Math.min(MAX, Math.round(a * MAX - dither * 2.6)));
+          const at = (y + offY) * cols + (x + offX);
+          base[at] = v;
+          live.push(at);
+        }
+      }
+      return { rows, cols, base, live, cell, buf: new Array(rows * cols).fill(" ") };
+    };
+
+    const compose = (el, st, t, ripples) => {
+      const { rows, cols, base, live, buf } = st;
+      for (let i = 0; i < live.length; i++) {
+        const at = live[i];
+        const x = at % cols;
+        const y = (at / cols) | 0;
+        let v = base[at];
+
+        // Slow rolling shimmer — deterministic, so no allocation or timers.
+        v += Math.sin(x * 0.42 + y * 0.31 + t * 0.0016) * 0.55;
+
+        // Each ripple is a single expanding ring, not a standing oscillation:
+        // radius grows with age, the crest is a narrow band around it, and the
+        // whole thing fades out as it travels. Cells outside the band cost one
+        // comparison and nothing else.
+        for (let k = 0; k < ripples.length; k++) {
+          const rp = ripples[k];
+          const age = t - rp.born;
+          const r = age * SPEED;
+          const dx = x - rp.x;
+          const dy = y - rp.y;
+          const off = Math.sqrt(dx * dx + dy * dy) - r;
+          if (off < -BAND || off > BAND) continue;
+          const crest = Math.cos((off / BAND) * 1.5707963);
+          v += crest * crest * 4.4 * (1 - age / LIFE);
+        }
+
+        buf[at] = RAMP[v < 1 ? 1 : v > MAX ? MAX : Math.round(v)];
+      }
+      let s = "";
+      for (let y = 0; y < rows; y++) {
+        s += buf.slice(y * cols, (y + 1) * cols).join("");
+        if (y < rows - 1) s += "\n";
+      }
+      el.textContent = s;
+    };
+
+    const animate = (el, st, section) => {
+      if (!st.live.length) return;
+      const ripples = [];
+      let lastX = -999, lastY = -999, lastEmit = 0;
+      let last = 0;
+
+      // One ring per meaningful movement — throttled by both time and distance
+      // so a fast sweep leaves a trail rather than a solid wall of rings.
+      const onMove = (e) => {
+        const now = performance.now();
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / st.cell.w;
+        const y = (e.clientY - r.top) / st.cell.h;
+        const moved = Math.hypot(x - lastX, y - lastY);
+        if (now - lastEmit < EMIT || moved < EMIT_D) return;
+        lastEmit = now;
+        lastX = x; lastY = y;
+        ripples.push({ x, y, born: now });
+        if (ripples.length > 6) ripples.shift();
+      };
+      section.addEventListener("mousemove", onMove, { passive: true });
+
+      // Only run while the section is actually on screen. This sits at the
+      // bottom of every page, so without this it would burn a frame budget
+      // the entire time someone is reading the top of the page.
+      let raf = null;
+      let settled = false;
+      const step = (ts) => {
+        if (ts - last > 1000 / FPS) {
+          last = ts;
+          const now = performance.now();
+          while (ripples.length && now - ripples[0].born > LIFE) ripples.shift();
+          // Once every ring has died, stop repainting until something happens.
+          if (ripples.length || !settled) {
+            compose(el, st, ts, ripples);
+            settled = ripples.length === 0;
+          }
+        }
+        raf = requestAnimationFrame(step);
+      };
+      section.addEventListener("mousemove", () => { settled = false; }, { passive: true });
+
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && raf === null) {
+              raf = requestAnimationFrame(step);
+            } else if (!entry.isIntersecting && raf !== null) {
+              cancelAnimationFrame(raf);
+              raf = null;
+              ripples.length = 0;
+            }
+          });
+        }, { rootMargin: "200px" }).observe(section);
+      } else {
+        raf = requestAnimationFrame(step);
+      }
+    };
+
+    const img = new Image();
+    img.onload = () => {
+      document.querySelectorAll("[data-ascii]").forEach((el) => {
+        const section = el.closest(".ctc") || el.parentElement;
+        let st = build(el, img);
+        if (!st) return;
+        compose(el, st, 0, -999, -999, 0);
+        if (!reduce) animate(el, st, section);
+
+        // Re-rasterise on resize; the grid is measured in characters, not pixels.
+        let t = null;
+        window.addEventListener("resize", () => {
+          clearTimeout(t);
+          t = setTimeout(() => {
+            const next = build(el, img);
+            if (!next) return;
+            st.rows = next.rows; st.cols = next.cols;
+            st.base = next.base; st.live = next.live;
+            st.cell = next.cell; st.buf = next.buf;
+            compose(el, st, performance.now(), -999, -999, 0);
+          }, 220);
+        }, { passive: true });
+      });
+    };
+    img.src = "/assets/fwd-logo.svg";
+  })();
+</script>
