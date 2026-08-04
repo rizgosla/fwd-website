@@ -6,7 +6,7 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://fwd.example.com',
+  site: 'https://fwddesignconsulting.com',
 
   vite: {
     plugins: [tailwindcss()],

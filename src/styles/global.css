@@ -1436,7 +1436,8 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   font-family: var(--font-mono); font-size: var(--text-step--2);
   color: var(--color-fg-muted); letter-spacing: 0.14em; text-transform: uppercase;
 }
-.ni-card h4 {
+/* Markup uses <h3>; this selector said h4 and had never matched. */
+.ni-card h3 {
   font-family: var(--font-display); font-weight: 400;
   font-size: var(--text-step-1);
   color: var(--color-navy); margin: 0;
