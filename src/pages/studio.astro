@@ -16,11 +16,11 @@ const RUNS = [
 // Split for the per-character reveal. Characters are always present at their
 // real width and only fade in, so the line never reflows — which is what lets
 // this run in the display serif instead of being forced into mono.
-const ANSWER = "We are trying something in between.";
+const ANSWER = "So we built the third one.";
 const ANSWER_CHARS = [...ANSWER];
 ---
 
-<BaseLayout title="The studio — fwd.">
+<BaseLayout title="The studio - Forward Design Consulting">
   <section class="st-hero">
     <div class="st-hero-glow" aria-hidden="true"></div>
     <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="st-hero-mark" />
@@ -38,22 +38,62 @@ const ANSWER_CHARS = [...ANSWER];
 
   <section class="section st-why">
     <div class="full">
+      {/* Eyebrow dropped here: the headline names the section, and the page's
+          remaining eyebrows sit on sections that are locked. */}
       <div class="st-why-head mv-rise" data-mv-watch>
-        <span class="st-eyebrow"><span class="st-eyebrow-bar"></span>Why we exist</span>
         <h2 class="display st-title st-why-title">For twenty years there were <em>two options</em>.</h2>
       </div>
 
-      {/* The two dead ends sit side by side across the full width, then the
-          answer resolves character by character beneath them. */}
-      <div class="st-dead mv-stagger" data-mv-watch>
-        <div class="st-dead-col">
-          <span class="st-dead-k">Custom</span>
-          <p class="st-dead-v">An agency. Retainers, a kickoff deck, six months late.</p>
-        </div>
-        <div class="st-dead-col">
-          <span class="st-dead-k">Template</span>
-          <p class="st-dead-v">A freelancer and one weekend. As forgettable as the next one.</p>
-        </div>
+      {/* Three contracts in a row. The first two get struck out on scroll, the
+          third is the one that stands. The copy lives on the documents rather
+          than beside them, so the section is the visual. */}
+      <div class="st-contracts mv-stagger" data-mv-watch>
+        <article class="st-contract is-void">
+          <span class="st-contract-strike" aria-hidden="true"></span>
+          <header class="st-contract-top">
+            <span class="st-contract-k">Custom</span>
+          </header>
+          <h3 class="st-contract-h">An agency.</h3>
+          <p class="st-contract-p">Retainers, a kickoff deck, and a launch date that keeps moving.</p>
+          <span class="st-contract-clauses" aria-hidden="true">
+            <span></span><span></span><span class="is-short"></span><span></span><span class="is-short"></span>
+          </span>
+          <footer class="st-contract-foot">
+            <span class="st-contract-rule" aria-hidden="true"></span>
+            <span class="st-contract-term">Six months</span>
+          </footer>
+        </article>
+
+        <article class="st-contract is-void">
+          <span class="st-contract-strike" aria-hidden="true"></span>
+          <header class="st-contract-top">
+            <span class="st-contract-k">Template</span>
+          </header>
+          <h3 class="st-contract-h">A freelancer.</h3>
+          <p class="st-contract-p">Live by Monday, and indistinguishable from the next one.</p>
+          <span class="st-contract-clauses" aria-hidden="true">
+            <span></span><span class="is-short"></span><span></span>
+          </span>
+          <footer class="st-contract-foot">
+            <span class="st-contract-rule" aria-hidden="true"></span>
+            <span class="st-contract-term">One weekend</span>
+          </footer>
+        </article>
+
+        <article class="st-contract is-signed">
+          <header class="st-contract-top">
+            <span class="st-contract-k">Forward</span>
+          </header>
+          <h3 class="st-contract-h">This studio.</h3>
+          <p class="st-contract-p">Scope, price and launch date all agreed before anything begins.</p>
+          <span class="st-contract-clauses" aria-hidden="true">
+            <span></span><span></span><span class="is-short"></span><span></span>
+          </span>
+          <footer class="st-contract-foot">
+            <span class="st-contract-rule" aria-hidden="true"></span>
+            <span class="st-contract-term">20 business days</span>
+          </footer>
+        </article>
       </div>
 
       <p class="display st-decode" data-mv-watch aria-label={ANSWER}>
@@ -62,10 +102,6 @@ const ANSWER_CHARS = [...ANSWER];
         )}
       </p>
 
-      <p class="st-body st-why-tail">
-        A small studio, fixed prices, real design work, and a turnaround measured
-        in weeks rather than quarters.
-      </p>
     </div>
   </section>
 
@@ -175,9 +211,10 @@ const ANSWER_CHARS = [...ANSWER];
     </div>
   </section>
 
+  {/* mark="paper" is dropped with the tone change: a paper mark on the light
+      surface would sit at 24% white on #f6f6f8 and disappear. */}
   <CtaClose
-    tone="ink"
-    mark="paper"
+    tone="light"
     eyebrow="One studio, no middlemen"
     lead="Sound like the kind of studio you'd"
     swap={["like to work with?", "trust with a launch?", "actually hear back from?", "recommend after?"]}
@@ -257,42 +294,139 @@ const ANSWER_CHARS = [...ANSWER];
   }
 
   /* ============================================================
-     02 — WHY WE EXIST. Type-led on purpose; the two dead-end
-     options are set as editorial fragments, not a chart.
+     02 — WHY WE EXIST. The three routes carry the argument; the
+     decode line is the resolution.
      ============================================================ */
-  .st-why-head { max-width: 46ch; }
-  .st-why-title { max-width: 20ch; }
-
-  /* Two dead ends across the full width rather than stacked — the section was
-     tall and narrow, using vertical space it didn't need. */
-  .st-dead {
-    display: grid; grid-template-columns: 1fr;
-    gap: 1.5rem clamp(2rem, 5vw, 5rem);
-    margin: clamp(2rem, 4vh, 3rem) 0 clamp(2.5rem, 6vh, 4rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-line);
+  /* Was `max-width: 46ch`, which resolves against the wrapper's body font
+     (~17px), not the display type inside it. That capped the block near 390px
+     and forced the headline into three cramped lines. Same trap as the hero. */
+  /* The heading steps back here: the struck lines below are the display
+     moment, so a second step-4 headline above them would fight for the same
+     job. Muted and one step down. */
+  .st-why-head { max-width: min(46rem, 100%); }
+  .st-why-title {
+    font-size: var(--text-step-3); max-width: 26ch;
+    line-height: 1.1; color: var(--color-fg-muted);
   }
-  @media (min-width: 760px) { .st-dead { grid-template-columns: 1fr 1fr; } }
-  .st-dead-col { display: flex; flex-direction: column; gap: 0.5rem; }
-  .st-dead-k {
+  .st-why-title em { color: var(--color-fg-soft); }
+
+  /* ============================================================
+     THREE CONTRACTS. Two get voided on scroll, one stands. The
+     document read comes from the internals (ruled header, clause
+     bars, signature rule) rather than from a paper-thin corner
+     radius, so the cards stay on the 14px card tier.
+     ============================================================ */
+  .st-contracts {
+    display: grid; grid-template-columns: 1fr;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin: clamp(2rem, 4vh, 3rem) 0 0;
+  }
+  @media (min-width: 820px) { .st-contracts { grid-template-columns: repeat(3, 1fr); } }
+
+  .st-contract {
+    position: relative; overflow: hidden; isolation: isolate;
+    display: flex; flex-direction: column;
+    min-height: clamp(300px, 30vw, 400px);
+    padding: clamp(1.5rem, 2.2vw, 2rem);
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    box-shadow: 0 24px 50px -34px rgb(7 23 34 / 0.26);
+    transition: box-shadow 360ms var(--ease-soft), transform 360ms var(--ease-soft);
+  }
+
+  .st-contract-top {
+    padding-bottom: 0.9rem; margin-bottom: 1.1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .st-contract-k {
     font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.14em; text-transform: uppercase;
+    letter-spacing: 0.16em; text-transform: uppercase;
     color: var(--color-fg-muted);
   }
-  .st-dead-v {
+  .st-contract-h {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-2); line-height: 1.1;
+    letter-spacing: -0.018em; color: var(--color-navy);
+    font-variation-settings: "opsz" 60;
+  }
+  .st-contract-p {
     margin: 0; color: var(--color-fg-soft);
-    font-size: var(--text-step-0); line-height: 1.5; max-width: 40ch;
+    font-size: var(--text-step-0); line-height: 1.55;
+  }
+
+  /* Clause bars: what makes it read as a document rather than a card. */
+  .st-contract-clauses {
+    display: flex; flex-direction: column; gap: 7px;
+    margin: 1.35rem 0 0;
+  }
+  .st-contract-clauses span {
+    height: 5px; border-radius: 2px;
+    background: rgb(13 47 69 / 0.09);
+  }
+  .st-contract-clauses span.is-short { width: 58%; }
+
+  .st-contract-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; margin-top: auto; padding-top: 1.4rem;
+  }
+  .st-contract-rule {
+    flex: 1; height: 1px; background: var(--color-line-strong); opacity: 0.5;
+  }
+  .st-contract-term {
+    flex-shrink: 0;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* ---- voided ---- */
+  .st-contract.is-void { background: var(--color-bg-soft); box-shadow: none; }
+  .st-contract.is-void .st-contract-h { color: var(--color-fg-muted); }
+  .st-contract.is-void .st-contract-p { color: var(--color-fg-muted); }
+
+  /* One pen stroke corner to corner. Anchored at the bottom-left and rotated
+     up through the top-right; overshoot is clipped by the card's overflow.
+     Ink, not the blue accent: blue marks the contract that stands, so using it
+     to cancel two others would have the accent saying both things at once. */
+  .st-contract-strike {
+    position: absolute; z-index: 2;
+    left: 0; top: 100%; width: 160%;
+    height: 2px; background: var(--color-navy); opacity: 0.55;
+    transform: rotate(-44deg) scaleX(0); transform-origin: left center;
+    transition: transform 900ms var(--ease-out-expo);
+  }
+  .st-contracts.is-inview .st-contract:nth-child(1) .st-contract-strike { transition-delay: 640ms; transform: rotate(-44deg) scaleX(1); }
+  .st-contracts.is-inview .st-contract:nth-child(2) .st-contract-strike { transition-delay: 900ms; transform: rotate(-44deg) scaleX(1); }
+
+  /* ---- the one that stands ---- */
+  .st-contract.is-signed {
+    border-color: var(--color-blue);
+    box-shadow: 0 34px 64px -30px rgb(7 23 34 / 0.34);
+  }
+  .st-contract.is-signed .st-contract-k { color: var(--color-blue); font-weight: 500; }
+  .st-contract.is-signed .st-contract-p { color: var(--color-fg); }
+  .st-contract.is-signed .st-contract-term { color: var(--color-blue); }
+  .st-contract.is-signed .st-contract-rule { background: var(--color-blue); opacity: 0.35; }
+  .st-contract.is-signed .st-contract-clauses span { background: rgb(20 70 103 / 0.12); }
+  .st-contract.is-signed:hover { transform: translateY(-3px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-contract-strike { transform: rotate(-44deg) scaleX(1); }
   }
 
   /* Display serif, full width. Every character occupies its real width from
      first paint and only fades in, so nothing reflows mid-animation — that is
      what makes a proportional face workable here. */
   .st-decode {
-    margin: 0;
-    font-size: var(--text-step-4);
-    line-height: 1.05;
+    margin: clamp(2.25rem, 5vh, 3.25rem) 0 0;
+    font-size: var(--text-step-5);
+    /* No cap tight enough to force a wrap: this reads as one line. */
+    line-height: 1.1;
+    padding-bottom: 0.06em;
     color: var(--color-navy);
-    max-width: 24ch;
+    max-width: 30ch;
   }
   .st-decode span {
     display: inline-block;
@@ -300,16 +434,17 @@ const ANSWER_CHARS = [...ANSWER];
     transform: translateY(0.22em);
   }
   .st-decode[data-mv-watch] { opacity: 1; }
+  /* Held back until both strike rules have finished drawing. The second rule
+     lands around 1460ms, so the answer starts writing just after it. */
   .st-decode.is-inview span {
-    animation: stChar 460ms var(--ease-out-expo) forwards;
-    animation-delay: calc(var(--i) * 26ms);
+    animation: stChar 520ms var(--ease-out-expo) forwards;
+    animation-delay: calc(1500ms + var(--i) * 28ms);
   }
   @keyframes stChar { to { opacity: 1; transform: translateY(0); } }
   @media (prefers-reduced-motion: reduce) {
     .st-decode span { opacity: 1; transform: none; animation: none; }
   }
 
-  .st-why-tail { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
   /* ============================================================
      03 — CAPACITY GRID
      The empty half of the grid is the argument, so it is drawn

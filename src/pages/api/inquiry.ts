@@ -20,11 +20,11 @@ export const prerender = false;
 const TO = "fwddesignconsulting@gmail.com";
 /* Must be on a domain verified with Resend, which is why this isn't the Gmail
    address — you can't send *from* an address you don't control. */
-const FROM = "fwd. website <inquiries@fwddesignconsulting.com>";
+const FROM = "Forward Design Consulting <inquiries@fwddesignconsulting.com>";
 const RESEND = "https://api.resend.com/emails";
 
 const SCOPE_LABEL: Record<string, string> = {
-  full: "Full Site — $4,000",
+  full: "Full Site, $4,000",
   smaller: "Something smaller",
   "not-sure": "Not sure yet",
 };
@@ -179,11 +179,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       from: FROM,
       to: [email],
       reply_to: TO,
-      subject: "We got your inquiry — fwd.",
+      subject: "We got your inquiry - Forward Design Consulting",
       text:
         `Hi ${name},\n\nThanks for getting in touch. Your inquiry is with us and ` +
         `one of us will reply by ${by} with a flat-fee proposal.\n\n` +
-        `For reference, here's what you sent:\n\n${brief}\n\n— fwd.\n${TO}`,
+        `For reference, here's what you sent:\n\n${brief}\n\nForward Design Consulting\n${TO}`,
     });
   } catch (err) {
     console.error("[inquiry] confirmation failed (inquiry itself was delivered):", err);

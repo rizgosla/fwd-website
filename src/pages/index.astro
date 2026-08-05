@@ -7,7 +7,7 @@ import HeroShowcase from "../components/HeroShowcase.astro";
 import CtaClose from "../components/CtaClose.astro";
 ---
 
-<BaseLayout title="fwd. — Websites that earn their place online">
+<BaseLayout title="Forward Design Consulting - Websites that earn their place online">
 <!-- ============ HERO with idle motion baked in ============ -->
   <section class="hero-outer">
     <div class="hero">
@@ -646,12 +646,20 @@ import CtaClose from "../components/CtaClose.astro";
     max-width: 32ch;
   }
 
+  /* The last step is a full-bleed ink band and CtaClose is the next full-bleed
+     band; the section's own bottom padding left a strip of paper between the
+     two. Each step already carries its own padding-block. */
+  .section-process { padding-bottom: 0; }
+  /* Was margin-bottom: 3rem (from .section-head) *plus* this padding, which put
+     ~93px under the process heading against the offer heading's ~45px. One
+     mechanism, same value as .section-offer's. */
   .section-process .section-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-    padding-bottom: clamp(2rem, 5vh, 4rem);
+    margin-bottom: 0;
+    padding-bottom: clamp(2.5rem, 5vh, 4rem);
     text-align: left;
   }
   .section-process .section-head .section-title { text-align: left; max-width: 22ch; }

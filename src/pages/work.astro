@@ -1,324 +1,250 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/work/ProjectCard.astro";
+import CtaClose from "../components/CtaClose.astro";
 
-const all = await getCollection("work");
-const live = all
-  .filter((e) => e.data.status === "live")
-  .sort((a, b) => a.data.order - b.data.order);
-const upcoming = all
-  .filter((e) => e.data.status !== "live")
-  .sort((a, b) => a.data.order - b.data.order);
-
-const statusLabel = {
-  build: "In build",
-  design: "In design",
-  discovery: "Kickoff",
-};
+const projects = (await getCollection("work")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
 ---
 
-<BaseLayout title="Selected work — fwd.">
+<BaseLayout title="Selected work - Forward Design Consulting">
   <section class="work-hero">
-    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="work-hero-stamp" />
-    <div class="full work-hero-inner">
-      <div data-mv-watch class="mv-rise work-hero-text">
-        <p class="work-hero-eyebrow">
-          <span class="num">— 03</span>
-          <span>Selected work</span>
-        </p>
+    <div class="full work-hero-grid">
+      {/* No eyebrow: the h1 already names the section, and the page's one
+          eyebrow allowance is spent on the closing CTA. */}
+      <div class="work-hero-text mv-rise" data-mv-watch>
         <h1 class="display work-hero-title">A small studio. <em>Real projects</em>.</h1>
-        <p class="lede work-hero-lede">Every site we ship gets a short write-up — what we built, why, and how it performed once it went live. New entries land as projects launch.</p>
+        <p class="lede work-hero-lede">
+          Every card here links straight through to the live site, so you can judge the
+          work the way a visitor would rather than the way a case study would like you to.
+        </p>
       </div>
-      <ul class="work-hero-stats">
-        <li><strong>{live.length.toString().padStart(2, "0")}</strong><span>Launched</span></li>
-        <li><strong>{upcoming.length.toString().padStart(2, "0")}</strong><span>In production</span></li>
-        <li><strong>100%</strong><span>Flat-fee</span></li>
-        <li><strong>2026</strong><span>Studio year</span></li>
+
+      {/* Three browser frames that start stacked and settle into a fan.
+          Chrome vocabulary is the hero showcase's; the spread-by-index
+          geometry is the studio fold's. Neither one's motion is reused: this
+          plays once on entry and stops. */}
+      <div class="wh-fan" data-mv-watch aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <span class="wh-pane" style={`--i:${i}`}>
+            <span class="wh-chrome">
+              <span class="wh-dots"><span></span><span></span><span></span></span>
+              <span class="wh-url"></span>
+            </span>
+            <span class="wh-body">
+              <span class="wh-nav">
+                <span class="wh-logo"></span>
+                <span class="wh-links"><span></span><span></span><span></span></span>
+              </span>
+              <span class="wh-bar"></span>
+              <span class="wh-bar wh-bar-2"></span>
+              <span class="wh-line"></span>
+              <span class="wh-pill"></span>
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Stats live here rather than in the hero: a trust strip inside the hero
+      pushes the stack past four elements and floats the CTA down the page.
+      Mirrors the homepage meta-strip. */}
+  <section class="work-meta">
+    <div class="full">
+      <div class="work-meta-grid mv-stagger" data-mv-watch>
+        <div class="work-meta-cell">
+          <span class="work-meta-key">Shipped</span>
+          <strong class="work-meta-val">{projects.length.toString().padStart(2, "0")} projects</strong>
+        </div>
+        <div class="work-meta-cell">
+          <span class="work-meta-key">Pricing model</span>
+          <strong class="work-meta-val">Flat fee, no retainers</strong>
+        </div>
+        <div class="work-meta-cell">
+          <span class="work-meta-key">Studio year</span>
+          <strong class="work-meta-val">Since 2026</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-projects">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <h2 class="display section-title">What we've <em>built</em>.</h2>
+        <p class="section-sub">
+          We keep the studio small on purpose, so this page fills up slowly. One careful
+          project at a time, written up in a paragraph rather than a brochure.
+        </p>
+      </div>
+
+      <ul class="project-grid mv-stagger" data-mv-watch>
+        {projects.map((entry) => (
+          <ProjectCard
+            title={entry.data.title}
+            url={entry.data.url}
+            blurb={entry.data.summary}
+            image={entry.data.image}
+          />
+        ))}
       </ul>
     </div>
   </section>
 
-  {live.length > 0 && (
-    <section class="section section-work-grid">
-      <div class="full">
-        <div class="section-head mv-rise" data-mv-watch>
-          <h2 class="display section-title">Launched <em>projects</em>.</h2>
-          <p class="section-sub">Tap any card to read the full case study — brief, approach, results, and a process recap.</p>
-        </div>
-
-        <ul class="work-grid mv-stagger" data-mv-watch>
-          {live.map((entry) => (
-            <li class="work-card">
-              <a href={`/work/${entry.id}`} class="work-card-link">
-                <span class="work-card-stripe" aria-hidden="true"></span>
-                <div class="work-card-body">
-                  <div class="work-card-meta">
-                    {entry.data.industry && <span>{entry.data.industry}</span>}
-                    {entry.data.location && <span class="sep" aria-hidden="true">·</span>}
-                    {entry.data.location && <span>{entry.data.location}</span>}
-                  </div>
-                  <h3 class="work-card-title">{entry.data.title}</h3>
-                  <p class="work-card-summary">{entry.data.summary}</p>
-                  {entry.data.results.length > 0 && (
-                    <dl class="work-card-results">
-                      {entry.data.results.slice(0, 2).map((r) => (
-                        <div>
-                          <dt>{r.label}</dt>
-                          <dd>{r.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  )}
-                </div>
-                <div class="work-card-foot">
-                  <span class="work-card-scope">{entry.data.scope} · ${entry.data.price.toLocaleString()}</span>
-                  <span class="work-card-cta">Read case study <span class="arrow" aria-hidden="true">→</span></span>
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  {upcoming.length > 0 && (
-    <section class="section section-upcoming" id="next">
-      <div class="full">
-        <div class="section-head mv-rise" data-mv-watch>
-          <h2 class="display section-title">In <em>production</em>.</h2>
-          <p class="section-sub">We keep the studio small on purpose — three to four projects a quarter, fully shipped, then written up like the ones above.</p>
-        </div>
-
-        <ul class="pipeline-grid mv-stagger" data-mv-watch>
-          {upcoming.map((entry) => (
-            <li class="pipeline-card">
-              <div class="pipeline-header">
-                <span class="pipeline-status">
-                  <span class={`pipeline-dot pipeline-dot-${entry.data.status}`} aria-hidden="true"></span>
-                  {statusLabel[entry.data.status as "build" | "design" | "discovery"]}
-                </span>
-                {entry.data.launchesIn && <span class="pipeline-eta">Launches {entry.data.launchesIn}</span>}
-              </div>
-              <h3 class="pipeline-title">{entry.data.title}</h3>
-              <p class="pipeline-desc">{entry.data.summary}</p>
-              <span class="pipeline-meta">{entry.data.scope} · ${entry.data.price.toLocaleString()}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  <section class="section section-note">
-    <div class="full">
-      <div class="container-prose note-inner mv-stagger" data-mv-watch>
-        <p class="eyebrow"><span>A note on this page</span></p>
-        <h2 class="display note-h">Real projects, written up <em>as they ship</em>.</h2>
-        <p class="note-body">When we started fwd. we agreed we would never show work that was not ours, and we would never dress up a placeholder to look like a case study. So this page fills up slowly — one careful project at a time.</p>
-        <p class="note-body">If you would like the next slot, the <a class="link-arrow" href="/services">services page<span class="arrow">→</span></a> has the scope and the price, and the <a class="link-arrow" href="/contact">contact form<span class="arrow">→</span></a> takes a minute.</p>
-      </div>
-    </div>
-  </section>
+  <CtaClose
+    tone="light"
+    eyebrow="The next slot is open"
+    lead="Want your site to be the"
+    swap={["next one here?", "one we ship next?", "next launch?", "one people bookmark?"]}
+    lede="Tell us what you are working on. We reply to every inquiry, usually within a day."
+    note="Flat-fee proposal within a day"
+    ticker={["Flat fee", "No retainers", "About 4 weeks", "You own it all"]}
+  />
 </BaseLayout>
 
 <style>
   .work-hero {
     position: relative;
     background: var(--color-paper);
-    padding-block: clamp(4rem, 11vh, 8rem) clamp(3rem, 7vh, 5rem);
+    padding-block: clamp(3.5rem, 8vh, 6rem) clamp(3rem, 8vh, 5.5rem);
     border-bottom: 1px solid var(--color-line);
     overflow: hidden;
   }
-  .work-hero::before {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-line-strong), transparent);
+  .work-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(3rem, 6vw, 5rem);
+    align-items: center;
   }
-  .work-hero-stamp {
-    position: absolute;
-    top: clamp(2rem, 5vh, 4rem);
-    right: var(--pad-x);
-    height: clamp(60px, 8vw, 110px);
-    width: auto;
-    opacity: 0.25;
-    pointer-events: none;
+  @media (min-width: 900px) {
+    .work-hero-grid { grid-template-columns: 1fr 1fr; }
   }
-  .work-hero-inner {
-    position: relative; z-index: 1;
-    display: flex; flex-direction: column;
-    gap: clamp(3rem, 7vh, 5rem);
-  }
-  .work-hero-text { text-align: center; max-width: 60ch; margin-inline: auto; }
-  .work-hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 0.75rem;
-    margin: 0 0 2rem;
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-fg-muted);
-  }
-  .work-hero-eyebrow .num { color: var(--color-blue); font-weight: 500; }
+
+  .work-hero-text { display: flex; flex-direction: column; align-items: flex-start; }
+  /* "projects" is italic and carries both a p and a j. At line-height 1 the
+     descenders clip against the lede below, so this runs 1.1 with a reserve
+     rather than inheriting .display's 0.98. */
   .work-hero-title {
-    font-size: var(--text-step-5); margin: 0; line-height: 1;
-    letter-spacing: -0.03em; color: var(--color-navy);
-    max-width: 18ch; margin-inline: auto; text-wrap: balance;
+    font-size: var(--text-step-5); margin: 0;
+    line-height: 1.1; padding-bottom: 0.08em;
+    letter-spacing: -0.03em; color: var(--color-navy); max-width: 14ch;
   }
   .work-hero-title em { font-style: italic; color: var(--color-blue); }
-  .work-hero-lede {
-    margin: 1.75rem auto 0; color: var(--color-fg-soft);
-    max-width: 50ch; font-size: var(--text-step-1);
-  }
-  .work-hero-stats {
-    list-style: none; padding: 0; margin: 0;
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    border-top: 1px solid var(--color-line);
+  .work-hero-lede { margin: 1.5rem 0 0; color: var(--color-fg-soft); max-width: 46ch; font-size: var(--text-step-1); }
+
+  /* ============================================================
+     META STRIP — same pattern as the homepage's, one row down.
+     ============================================================ */
+  .work-meta {
+    background: var(--color-bg-soft);
     border-bottom: 1px solid var(--color-line);
+    padding-block: clamp(2rem, 4vh, 3.5rem);
   }
-  @media (min-width: 720px) {
-    .work-hero-stats { grid-template-columns: repeat(4, 1fr); }
+  .work-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem 2.5rem;
   }
-  .work-hero-stats li {
-    display: flex; flex-direction: column; gap: 0.35rem;
-    padding: 1.5rem clamp(1rem, 2.5vw, 2rem);
-    border-right: 1px solid var(--color-line);
-  }
-  .work-hero-stats li:last-child { border-right: 0; }
-  @media (max-width: 719px) {
-    .work-hero-stats li:nth-child(2) { border-right: 0; }
-    .work-hero-stats li:nth-child(-n+2) { border-bottom: 1px solid var(--color-line); }
-  }
-  .work-hero-stats strong {
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-4); letter-spacing: -0.025em;
-    color: var(--color-navy); line-height: 1;
-    font-variation-settings: "opsz" 144;
-  }
-  .work-hero-stats span {
+  .work-meta-cell { display: flex; flex-direction: column; gap: 0.35rem; }
+  .work-meta-key {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--color-fg-muted);
   }
+  .work-meta-val {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-1); font-variation-settings: "opsz" 60;
+    color: var(--color-fg); letter-spacing: -0.01em;
+  }
 
-  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 2.25rem; }
+  /* ============================================================
+     HERO VISUAL — three browser frames fanning out on entry.
+     ============================================================ */
+  .wh-fan {
+    position: relative;
+    height: clamp(260px, 34vw, 400px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* The container animates its children rather than itself, so it has to
+     opt out of the [data-mv-watch] opacity hold. */
+  .wh-fan[data-mv-watch] { opacity: 1; }
+
+  .wh-pane {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: clamp(210px, 27vw, 320px);
+    margin: calc(clamp(150px, 19vw, 224px) / -2) 0 0 calc(clamp(210px, 27vw, 320px) / -2);
+    height: clamp(150px, 19vw, 224px);
+    display: flex; flex-direction: column;
+    border-radius: 14px;
+    border: 1px solid var(--color-line);
+    background: var(--color-paper);
+    overflow: hidden;
+    box-shadow:
+      0 40px 90px -40px rgb(7 23 34 / 0.32),
+      0 14px 30px -14px rgb(7 23 34 / 0.18);
+    --spread: calc((var(--i) - 1) * clamp(30px, 4.5vw, 62px));
+    --rot: calc((var(--i) - 1) * 3.2deg);
+    /* Start stacked square-on, settle out into the fan. */
+    transform: translate(0, 16px) rotate(0deg);
+    opacity: 0;
+    transition:
+      transform 1100ms var(--ease-out-expo),
+      opacity 700ms var(--ease-soft);
+    transition-delay: calc(var(--i) * 150ms);
+    z-index: calc(var(--i) + 1);
+  }
+  .wh-fan.is-inview .wh-pane {
+    transform: translate(var(--spread), 0) rotate(var(--rot));
+    opacity: 1;
+  }
+
+  .wh-chrome {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 11px;
+    background: #f5f6f8;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .wh-dots { display: flex; gap: 4px; }
+  .wh-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(13, 47, 69, 0.18); }
+  .wh-url { flex: 1; height: 16px; border-radius: 5px; background: #fff; border: 1px solid var(--color-line); }
+
+  .wh-body { flex: 1; display: flex; flex-direction: column; gap: 9px; padding: 14px 16px; }
+  .wh-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .wh-logo { width: 34px; height: 9px; border-radius: 3px; background: rgba(13, 47, 69, 0.16); }
+  .wh-links { display: flex; gap: 7px; margin-left: auto; }
+  .wh-links span { width: 18px; height: 5px; border-radius: 2px; background: rgba(13, 47, 69, 0.12); }
+  .wh-bar { width: 84%; height: 15px; border-radius: 4px; background: rgba(13, 47, 69, 0.18); }
+  .wh-bar-2 { width: 56%; }
+  .wh-line { width: 70%; height: 6px; border-radius: 2px; background: rgba(13, 47, 69, 0.12); }
+  .wh-pill { width: 62px; height: 18px; border-radius: 999px; background: var(--color-periwinkle); opacity: 0.55; margin-top: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wh-pane {
+      transform: translate(var(--spread), 0) rotate(var(--rot));
+      opacity: 1;
+    }
+  }
+
+  /* ============================================================
+     PROJECT GRID
+     ============================================================ */
+  .section-projects { padding-block: clamp(4rem, 9vh, 7rem); }
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: clamp(2.5rem, 5vh, 3.5rem); }
   @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
-  /* ---------- launched grid ---------- */
-  .work-grid {
+  .project-grid {
     list-style: none; padding: 0; margin: 0;
-    display: grid; gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+    display: grid; gap: clamp(2.5rem, 5vw, 4rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
   }
-  .work-card { display: flex; }
-  .work-card-link {
-    flex: 1;
-    display: flex; flex-direction: column;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-radius: 14px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft), box-shadow 280ms var(--ease-soft);
-  }
-  .work-card-link:hover,
-  .work-card-link:focus-visible {
-    border-color: var(--color-navy);
-    transform: translateY(-2px);
-    box-shadow: 0 24px 50px -28px rgb(7 23 34 / 0.30);
-  }
-  .work-card-link:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 3px; }
-  .work-card-stripe {
-    height: 6px;
-    background: linear-gradient(90deg, var(--color-blue), var(--color-periwinkle));
-  }
-  .work-card-body {
-    padding: 1.75rem 1.75rem 1.5rem;
-    display: flex; flex-direction: column;
-    gap: 1rem;
-    flex: 1;
-  }
-  .work-card-meta {
-    display: flex; flex-wrap: wrap; gap: 0.5rem;
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--color-fg-muted);
-  }
-  .work-card-meta .sep { color: var(--color-line-strong); }
-  .work-card-title {
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-3); margin: 0;
-    letter-spacing: -0.02em; color: var(--color-navy);
-    font-variation-settings: "opsz" 144;
-    line-height: 1.05;
-  }
-  .work-card-summary {
-    margin: 0; color: var(--color-fg-soft);
-    font-size: var(--text-step-0); line-height: 1.5;
-  }
-  .work-card-results {
-    margin: auto 0 0;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-line);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  .work-card-results div { display: flex; flex-direction: column; gap: 0.25rem; }
-  .work-card-results dt {
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--color-fg-muted);
-  }
-  .work-card-results dd {
-    margin: 0;
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-2); color: var(--color-navy);
-    letter-spacing: -0.015em;
-    font-variation-settings: "opsz" 60;
-  }
-  .work-card-foot {
-    padding: 1rem 1.75rem;
-    border-top: 1px solid var(--color-line);
-    background: var(--color-bg-soft);
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem; flex-wrap: wrap;
-  }
-  .work-card-scope {
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.06em; color: var(--color-fg-muted);
-  }
-  .work-card-cta {
-    font-family: var(--font-sans); font-size: var(--text-step--1);
-    font-weight: 500; color: var(--color-blue);
-    display: inline-flex; align-items: center; gap: 0.4rem;
-  }
-  .work-card-cta .arrow { transition: transform 280ms var(--ease-soft); }
-  .work-card-link:hover .work-card-cta .arrow,
-  .work-card-link:focus-visible .work-card-cta .arrow { transform: translateX(4px); }
 
-  /* ---------- upcoming pipeline ---------- */
-  .pipeline-grid {
-    list-style: none; padding: 0; margin: 0;
-    display: grid; gap: 1.25rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  @media (max-width: 899px) {
+    .work-hero-title { font-size: clamp(2.6rem, 10vw, 4.2rem); }
   }
-  .pipeline-card { padding: 1.75rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-paper); display: flex; flex-direction: column; gap: 1rem; }
-  .pipeline-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); gap: 0.75rem; flex-wrap: wrap; }
-  .pipeline-status { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-blue); }
-  .pipeline-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-periwinkle); }
-  .pipeline-dot-build { background: #2bb673; }
-  .pipeline-dot-design { background: var(--color-blue); }
-  .pipeline-dot-discovery { background: var(--color-periwinkle); }
-  .pipeline-eta { color: var(--color-fg-muted); }
-  .pipeline-title { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); margin: 0; letter-spacing: -0.015em; color: var(--color-navy); font-variation-settings: "opsz" 60; }
-  .pipeline-desc { margin: 0; color: var(--color-fg-soft); font-size: var(--text-step--1); line-height: 1.5; }
-  .pipeline-meta { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.06em; padding-top: 0.5rem; border-top: 1px solid var(--color-line); }
-
-  .section-note { background: var(--color-bg-soft); border-block: 1px solid var(--color-line); }
-  .note-inner { display: flex; flex-direction: column; gap: 1.25rem; padding-block: 1rem; }
-  .note-h { font-size: var(--text-step-3); max-width: 26ch; margin: 0.5rem 0 0; }
-  .note-body { font-family: var(--font-display); font-weight: 300; font-size: var(--text-step-1); color: var(--color-fg-soft); line-height: 1.5; margin: 0; max-width: 58ch; font-variation-settings: "opsz" 60; }
 </style>
