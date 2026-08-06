@@ -1,67 +1,37 @@
-# Work case studies
+# Work projects
 
-Each markdown file in this directory is one project on `/work`. Live projects get a card on the index page and their own detail page at `/work/[slug]`. In-progress projects (status `build` / `design` / `discovery`) just get a card with a status badge.
+Each markdown file in this directory is one card on `/work`. There is no detail page:
+cards link straight out to the live site.
 
-## To add a new project
+## To add a project
 
-1. Create a new `.md` file here. Filename becomes the URL slug (`oasis-dental.md` → `/work/oasis-dental`).
-2. Fill in the frontmatter. Required: `title`, `client`, `summary`. Everything else is optional but recommended for live projects.
-3. Put long-form prose (extra "why this mattered", retrospectives) in the markdown body.
-
-## Frontmatter reference
+Create a `.md` file here with four values. No code changes, no markup.
 
 ```yaml
-title: Oasis Dental                   # required — display name
-client: Oasis Family Dental           # required — full client name
-summary: One-sentence description.    # required — shown on the index card
-location: Irvine, CA
-industry: Healthcare · Dental
-scope: Full Site                      # default "Full Site"
-price: 4000                           # number, no $ sign
-turnaround: 9 business days
-launched: March 2026                  # for status: live
-launchesIn: June 2026                 # for status: build / design / discovery
-status: live                          # live | build | design | discovery
-order: 1                              # lower numbers appear first
+---
+title: Oasis Dental
 url: https://oasisdental.com
-repo: https://github.com/example/site # optional — useful for the next step
-
-deck: |
-  Longer hero deck shown on the detail page. Inline HTML
-  like <em>italics</em> is allowed.
-
-brief:
-  h: Headline for the brief section.
-  body:
-    - One paragraph per line.
-    - Another paragraph.
-
-approach:
-  h: Headline for the approach section.
-  bullets:
-    - First decision we made.
-    - Second decision we made.
-
-results:
-  - label: Booking inquiries
-    value: 3.2×
-    sub: vs. the same 30-day window last year.
-
-quote:
-  text: A pull quote from the client.
-  cite: Dr. Mei Smith
-  role: Owner
-
-process:
-  - day: Day 1
-    title: Intro call
-    body: Optional detail.
+order: 1
+summary: One short paragraph on what we built and why.
+image: /work/oasis-dental/preview.png   # optional
+---
 ```
 
-## Building a case study from a repo
+| Field | Required | Notes |
+|---|---|---|
+| `title` | yes | Display name on the card |
+| `url` | yes | Must be a full URL. Becomes the card's link and its label |
+| `summary` | yes | The blurb. One paragraph, roughly 30 to 50 words |
+| `order` | no | Lower numbers first. Defaults to `0` |
+| `image` | no | Path under `public/`. Omit it and the card draws a placeholder |
 
-If a project has a `repo` field, the easiest way to draft a case study is to point Claude at the repo and ask:
+The file body is not rendered. Leave it empty.
 
-> Read the repository at `<repo URL>` and fill out `src/content/work/<slug>.md` with the appropriate frontmatter and prose. Use the existing `oasis-dental.md` as the template.
+## Preview images
 
-Claude will inspect the repo's commits, README, and structure to fill in the scope, results, process, and prose. Review and adjust the draft, then ship.
+Drop a screenshot at `public/work/<slug>/preview.png` and point `image` at it.
+Cards crop to a 16:10 frame from the top, so capture the full homepage at desktop
+width and let the fold do the trimming.
+
+Until an image exists, leave `image` off. The card renders the studio's gridded
+placeholder, which is a designed state rather than a missing one.

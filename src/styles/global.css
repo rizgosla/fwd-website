@@ -389,28 +389,9 @@
 }
 .email-poster-inner { position: relative; z-index: 1; }
 
-/* FAQ — alignment fix + animated open state */
-.faq-item summary {
-  display: flex !important; align-items: center; justify-content: space-between;
-  gap: 2rem; padding: 1.5rem 0; cursor: pointer; list-style: none; position: relative;
-}
-.faq-item summary::-webkit-details-marker, .faq-item summary::marker { display: none; content: ""; }
-.faq-item summary::after {
-  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 0;
-  background: var(--color-periwinkle); transition: width 320ms var(--ease-soft);
-}
-.faq-item[open] summary::after { width: 100%; }
-.faq-a { padding: 0 0 1.75rem 0 !important; margin: 0; max-width: 65ch; }
-.faq-a p { margin: 0; padding: 0; }
-.faq-item[open] { background: rgba(20,70,103,0.025); }
-.faq-item[open] summary .faq-q { color: var(--color-blue); }
-.faq-item[open] .faq-a { position: relative; padding-left: 1.25rem !important; }
-.faq-item[open] .faq-a::before {
-  content: ""; position: absolute; left: 0; top: 0.4em; bottom: 0.4em;
-  width: 2px; background: var(--color-periwinkle); transform-origin: top;
-  animation: faqLineGrow 500ms var(--ease-out-expo);
-}
-@keyframes faqLineGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+/* The FAQ list rules that lived here were orphaned when the questions became
+   scoped .fq-card components on the services page. Only the section ornament
+   below is still shared. */
 .section-faq { position: relative; overflow: hidden; }
 .section-faq::before, .section-faq::after {
   content: ""; position: absolute; right: -10vw; top: 50%;
@@ -737,8 +718,9 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 .ps-frame-call { background: linear-gradient(180deg, #fbfbfd 0%, #eef0f6 100%); }
 .ps-cal {
   position: relative;
-  padding: clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
+  justify-content: center;
   gap: clamp(1rem, 2vw, 1.5rem);
 }
 .ps-cal-head {
@@ -813,8 +795,8 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 }
 .ps-cal-foot {
   position: absolute;
-  right: clamp(1.5rem, 3vw, 2.5rem);
-  bottom: clamp(1.5rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 3vw, 2rem);
+  bottom: clamp(1.25rem, 3vw, 2rem);
   display: flex; align-items: center; justify-content: flex-end;
   margin: 0;
 }
@@ -1055,10 +1037,14 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 
 /* ----- Step 04: launch — deploy log + URL bar + stats ----- */
 .ps-frame-launch { background: linear-gradient(180deg, #fbfbfd 0%, #eef0f6 100%); }
+/* Every frame is locked to 560px but this content is only ~430px tall, and
+   space-between dumped all 130px of slack into the two gaps — so this step's
+   internals sat ~90px apart while steps 01 and 03 sat at the declared 1.5rem.
+   The log absorbs it instead (below), which keeps the gaps at the same value
+   as every other step and still fills the frame the way steps 01-03 do. */
 .ps-launch {
   padding: clamp(1.25rem, 3vw, 2rem);
   display: flex; flex-direction: column;
-  justify-content: space-between;
   gap: clamp(1rem, 2vw, 1.5rem);
 }
 .ps-launch-bar-top {
@@ -1096,6 +1082,8 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   animation: mvBlink 1.2s steps(1) infinite;
 }
 .ps-launch-log {
+  flex: 1;
+  display: flex; flex-direction: column;
   background: var(--color-paper);
   border: 1px solid var(--color-line);
   border-radius: 10px;
@@ -1104,6 +1092,7 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   box-shadow: 0 12px 30px -16px rgba(7,23,34,0.16);
 }
 .ps-launch-row {
+  flex: 1;
   display: grid;
   grid-template-columns: 26px 1fr auto;
   align-items: center;
@@ -1280,7 +1269,9 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   color: var(--color-paper);
   max-width: 16ch;
   font-variation-settings: "opsz" 144;
-  line-height: 1;
+  /* "day by day" is italic with two descenders. 1.1 minimum plus a reserve. */
+  line-height: 1.1;
+  padding-bottom: 0.06em;
 }
 .walkthrough-h em { font-style: italic; color: var(--color-periwinkle); font-variation-settings: "opsz" 144; }
 .walkthrough-controls {
@@ -1300,61 +1291,44 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 .walkthrough-controls button:hover { background: rgb(255 255 255 / 0.12); border-color: var(--color-periwinkle); }
 .walkthrough-controls button[aria-pressed="true"] { background: var(--color-periwinkle); color: var(--color-navy); border-color: var(--color-periwinkle); }
 
-/* The track */
+/* The track now holds the calendar (styled on the page) plus the phase
+   buttons. The calendar carries the sequence, so the buttons are plain labels
+   rather than dots threaded on an animated line. */
 .walkthrough-track {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
+  gap: clamp(1.25rem, 3vh, 1.75rem);
   margin-bottom: 2rem;
 }
-.walkthrough-track::before {
-  content: ""; position: absolute;
-  left: 0; right: 0; top: 14px;
-  height: 1px;
-  background: rgb(255 255 255 / 0.12);
+.wt-phases {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
 }
-.walkthrough-track::after {
-  content: ""; position: absolute;
-  left: 0; top: 14px; height: 1px;
-  background: var(--color-periwinkle);
-  width: 10%;
-  transition: width 700ms var(--ease-soft);
-  z-index: 1;
+@media (min-width: 760px) {
+  .wt-phases { grid-template-columns: repeat(5, 1fr); }
 }
-.walkthrough-track[data-step="0"]::after { width: 10%; }
-.walkthrough-track[data-step="1"]::after { width: 30%; }
-.walkthrough-track[data-step="2"]::after { width: 50%; }
-.walkthrough-track[data-step="3"]::after { width: 70%; }
-.walkthrough-track[data-step="4"]::after { width: 90%; }
 
 .walkthrough-marker {
-  position: relative;
-  display: flex; flex-direction: column; align-items: flex-start;
-  padding-top: 32px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.03);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  color: inherit;
   cursor: pointer;
-  background: none; border: 0; color: inherit;
   text-align: left;
-  transition: opacity 200ms var(--ease-soft);
-  opacity: 0.55;
+  opacity: 0.62;
+  transition:
+    opacity 240ms var(--ease-soft),
+    background 240ms var(--ease-soft),
+    border-color 240ms var(--ease-soft);
 }
-.walkthrough-marker:hover { opacity: 0.85; }
-.walkthrough-marker[aria-pressed="true"] { opacity: 1; }
-.walkthrough-marker::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 8px;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--color-ink);
-  border: 2px solid rgb(255 255 255 / 0.3);
-  z-index: 2;
-  transition: border-color 200ms var(--ease-soft), background 200ms var(--ease-soft), box-shadow 200ms var(--ease-soft);
-}
-.walkthrough-marker[aria-pressed="true"]::before {
-  background: var(--color-periwinkle);
+.walkthrough-marker:hover { opacity: 0.88; background: rgb(255 255 255 / 0.06); }
+.walkthrough-marker[aria-pressed="true"] {
+  opacity: 1;
+  background: rgb(255 255 255 / 0.08);
   border-color: var(--color-periwinkle);
-  box-shadow: 0 0 0 6px rgb(142 148 184 / 0.18);
 }
 .walkthrough-marker .day {
   font-family: var(--font-mono); font-size: var(--text-step--2);
@@ -1403,7 +1377,8 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   font-family: var(--font-display); font-weight: 350;
   font-size: var(--text-step-3);
   color: var(--color-paper); margin: 0;
-  letter-spacing: -0.02em; line-height: 1.05;
+  /* "50% deposit" is italic with a p descender. */
+  letter-spacing: -0.02em; line-height: 1.12;
   font-variation-settings: "opsz" 144;
   max-width: 18ch;
 }
@@ -1420,51 +1395,6 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
   padding-top: 0.75rem;
   border-top: 1px solid rgb(255 255 255 / 0.1);
 }
-
-/* ============================================================
-   SERVICES — NOT INCLUDED CARDS
-   ============================================================ */
-.not-included {
-  background: var(--color-bg-soft);
-  border-block: 1px solid var(--color-line);
-  padding-block: clamp(3rem, 6vh, 4.5rem);
-}
-.ni-grid {
-  display: grid; gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  margin-top: 1.75rem;
-}
-.ni-card {
-  background: var(--color-paper);
-  border: 1px solid var(--color-line);
-  border-radius: 14px;
-  padding: 1.5rem 1.5rem 1.4rem;
-  display: flex; flex-direction: column; gap: 0.5rem;
-  position: relative;
-  transition: border-color 280ms var(--ease-soft), transform 280ms var(--ease-soft);
-}
-.ni-card:hover { border-color: var(--color-line-strong); transform: translateY(-2px); }
-.ni-card .tag {
-  font-family: var(--font-mono); font-size: var(--text-step--2);
-  color: var(--color-fg-muted); letter-spacing: 0.14em; text-transform: uppercase;
-}
-/* Markup uses <h3>; this selector said h4 and had never matched. */
-.ni-card h3 {
-  font-family: var(--font-display); font-weight: 400;
-  font-size: var(--text-step-1);
-  color: var(--color-navy); margin: 0;
-  letter-spacing: -0.015em;
-  font-variation-settings: "opsz" 60;
-}
-.ni-card p { margin: 0.25rem 0 0; color: var(--color-fg-soft); font-size: var(--text-step--1); line-height: 1.5; }
-.ni-card .addon {
-  margin-top: 0.85rem;
-  padding-top: 0.85rem;
-  border-top: 1px dashed var(--color-line);
-  font-family: var(--font-mono); font-size: var(--text-step--2);
-  letter-spacing: 0.06em; color: var(--color-blue);
-}
-.ni-card .addon::before { content: "+ "; }
 
 /* ============================================================
    WORK — DEEP CASE STUDY EXAMPLE
@@ -1741,70 +1671,13 @@ body main > :last-child { margin-bottom: 0; }
 }
 
 /* ============================================================
-   FAQ alignment + animation fixes
+   FAQ — open-state keyframe only.
+
+   The list rules that lived here (.faq-item, .faq-a, .faq-q) were
+   orphaned when the questions became scoped .fq-card components on
+   the services page. .fq-card-a still uses this animation.
    ============================================================ */
-.faq-item { padding-inline: 0; }
-.faq-item summary {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.5rem 0;
-  cursor: pointer;
-  list-style: none;
-  position: relative;
-}
-.faq-item summary::-webkit-details-marker,
-.faq-item summary::marker { display: none; content: ""; }
-.faq-item:hover summary {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-/* Animated underline that draws under the question on open */
-.faq-item summary::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: 0;
-  height: 1px;
-  width: 0;
-  background: var(--color-periwinkle);
-  transition: width 320ms var(--ease-soft);
-}
-.faq-item[open] summary::after { width: 100%; }
-
-/* The answer — flush left, same baseline as the question */
-.faq-a {
-  padding: 0 0 1.75rem 0 !important;
-  margin: 0;
-  color: var(--color-fg-soft);
-  font-size: var(--text-step-0);
-  line-height: 1.6;
-  max-width: 65ch;
-  animation: faqOpen 400ms var(--ease-out-expo);
-}
-.faq-a p { margin: 0; padding: 0; }
 @keyframes faqOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Slight color shift on open + visual indent line on the left side */
-.faq-item[open] { background: rgba(20,70,103,0.025); }
-.faq-item[open] summary .faq-q { color: var(--color-blue); }
-.faq-item[open] .faq-a {
-  position: relative;
-  padding-left: 1.25rem !important;
-}
-.faq-item[open] .faq-a::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0.4em; bottom: 0.4em;
-  width: 2px;
-  background: var(--color-periwinkle);
-  animation: faqLineGrow 500ms var(--ease-out-expo);
-  transform-origin: top;
-}
-@keyframes faqLineGrow {
-  from { transform: scaleY(0); }
-  to { transform: scaleY(1); }
-}
 
 /* A subtle ambient ornament on the FAQ section background */
 .section-faq {

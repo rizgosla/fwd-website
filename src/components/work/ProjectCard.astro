@@ -1,0 +1,159 @@
+---
+/* ----------------------------------------------------------------------------
+   ProjectCard — one shipped project on /work.
+
+   The whole card is four values: a preview image, a link, a title, and a
+   blurb. Adding a project is a markdown file in src/content/work, never a
+   markup change.
+
+   `image` is optional on purpose. Until a real screenshot exists the frame
+   draws the studio's gridded placeholder rather than a broken <img>, so a
+   project can go up before its capture does.
+   -------------------------------------------------------------------------- */
+interface Props {
+  title: string;
+  url: string;
+  blurb: string;
+  image?: string;
+}
+
+const { title, url, blurb, image } = Astro.props;
+
+// Shown as the link label. Falls back to the raw href if it isn't parseable.
+let host = url;
+try {
+  host = new URL(url).host.replace(/^www\./, "");
+} catch {
+  /* leave `host` as the raw string */
+}
+---
+
+<li class="pc">
+  <a class="pc-link" href={url} target="_blank" rel="noopener noreferrer">
+    <span class="pc-frame">
+      {image ? (
+        <img class="pc-shot" src={image} alt={`The ${title} homepage`} loading="lazy" decoding="async" />
+      ) : (
+        <span class="pc-holder" aria-hidden="true">
+          <img class="pc-holder-mark" src="/assets/fwd-logo.svg" alt="" />
+          <span class="pc-holder-label">Preview coming</span>
+        </span>
+      )}
+    </span>
+
+    <span class="pc-body">
+      <h3 class="pc-title">{title}</h3>
+      <p class="pc-blurb">{blurb}</p>
+      <span class="pc-out">
+        {host}<span class="arrow" aria-hidden="true">→</span>
+      </span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .pc { display: flex; }
+  .pc-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 360ms var(--ease-soft);
+  }
+  .pc-link:hover { transform: translateY(-3px); }
+  .pc-link:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 6px; border-radius: 4px; }
+
+  /* Frame borrows the process-visual chassis from the homepage: 16px radius,
+     hairline border, two stacked shadows with heavy negative spread. */
+  .pc-frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg-soft);
+    overflow: hidden;
+    box-shadow:
+      0 40px 100px -45px rgb(7 23 34 / 0.28),
+      0 16px 36px -16px rgb(7 23 34 / 0.16);
+    transition: box-shadow 360ms var(--ease-soft), border-color 360ms var(--ease-soft);
+  }
+  .pc-link:hover .pc-frame {
+    border-color: var(--color-line-strong);
+    box-shadow:
+      0 50px 110px -40px rgb(7 23 34 / 0.34),
+      0 18px 40px -16px rgb(7 23 34 / 0.20);
+  }
+  .pc-shot { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+  /* Placeholder — the same 38px masked grid the hero showcase panel uses,
+     so an image-less card still reads as designed rather than unfinished. */
+  .pc-holder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: linear-gradient(160deg, #f6f6f8 0%, #eceef5 100%);
+  }
+  .pc-holder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(13, 47, 69, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13, 47, 69, 0.06) 1px, transparent 1px);
+    background-size: 38px 38px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%);
+  }
+  .pc-holder-mark { position: relative; height: clamp(34px, 5vw, 48px); width: auto; opacity: 0.22; }
+  .pc-holder-label {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* flex:1 + margin-top:auto on the link row so the link sits on the same
+     baseline across cards regardless of how long each blurb runs. */
+  .pc-body { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; }
+  .pc-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-3);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-navy);
+    font-variation-settings: "opsz" 144;
+  }
+  .pc-blurb {
+    margin: 0;
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.55;
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+  .pc-out {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+  .pc-out .arrow { transition: transform 320ms var(--ease-soft); }
+  .pc-link:hover .pc-out .arrow { transform: translateX(4px); }
+</style>

@@ -155,7 +155,7 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     display: none;
     margin: 0;
     font-family: var(--font-mono);
-    font-size: clamp(6px, 0.62vw, 9px);
+    font-size: clamp(9px, 0.93vw, 13.5px);
     line-height: 0.62;
     white-space: pre;
     overflow: hidden;
@@ -200,16 +200,34 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
      right. Structurally impossible for them to overlap at any width. */
   @media (min-width: 1100px) {
     .ctc-inner {
-      grid-template-columns: minmax(0, 1fr) clamp(17rem, 33vw, 36rem);
+      /* Max stays at the original 36rem — on a wide screen the mark was
+         limited by the box's *height*, not this track, so the 4:3 ratio below
+         is what makes it bigger and the type column is untouched. The steeper
+         vw term is for 1100-1300px, where the track was the limit; min() keeps
+         38rem back for the gap and the type so it can't eat the headline. */
+      grid-template-columns: minmax(0, 1fr) clamp(17rem, min(49.5vw, 100% - 38rem), 36rem);
       column-gap: clamp(2rem, 4vw, 4.5rem);
       align-items: center;
     }
     .ctc-main { grid-column: 1; grid-row: 1; }
+    /* Ratio rather than min-height, and this is what actually made the mark
+       bigger. The fit is bounded by both axes of this box; with the old
+       square raster and a box that stretched to whatever the type column
+       happened to be (~390px), the mark was pinned to that height and used
+       barely two thirds of its own column. build() now rasterises the
+       wordmark band alone, so a 4:3 box fits it at full width — ~1.5x the old
+       mark, with the font-size above scaled to match so the character texture
+       scales with it instead of the grid just getting finer.
+
+       The mark still needs slack above and below or the letterforms run into
+       the element edge and get clipped; at 4:3 it lands at ~78% of the box
+       height, which is the air the square raster used to give it for free.
+       Centred, not stretched, so it tracks the type block. */
     .ctc-ascii {
       display: block;
       grid-column: 2; grid-row: 1;
-      align-self: stretch;
-      min-height: 22rem;
+      align-self: center;
+      aspect-ratio: 4 / 3;
     }
     .ctc-ticker { grid-column: 1 / -1; grid-row: 2; }
   }
@@ -393,7 +411,24 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
       // Fit the logo inside the grid, preserving its aspect against the
       // non-square character cell.
       // The element is now its own column, so the mark just fits its own box.
-      const imgAR = img.naturalWidth / img.naturalHeight;
+      //
+      // Only the wordmark band of the source is rasterised. The artwork is a
+      // 160x160 square but the mark itself sits between y 33.6 and y 127.4, so
+      // a fifth of the square is empty above and below. Those bands are
+      // invisible either way — they rasterise to spaces — but they count
+      // against the fit: with them included the mark only reaches full width
+      // when the box is as tall as it is wide. Cropping them is what lets a
+      // wide, short column render the mark at the column's full width.
+      //
+      // Cropped by drawing the whole square oversized and offset up, not with
+      // drawImage's source-rect form: the svg carries no width/height, so
+      // naturalWidth/Height report the 150px default object size rather than
+      // the viewBox, and Chrome scales a source rect given in those units into
+      // a corner of the destination. The 5-arg form takes no source units and
+      // is unaffected.
+      const CROP_Y = 0.2038;  // 32.6 / 160
+      const CROP_H = 0.5925;  // 94.8 / 160
+      const imgAR = img.naturalWidth / (img.naturalHeight * CROP_H);
       const cellAR = cell.w / cell.h;
       let dw = cols;
       let dh = Math.round(dw / imgAR * cellAR);
@@ -402,11 +437,14 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
       const cv = document.createElement("canvas");
       cv.width = dw; cv.height = dh;
       const ctx = cv.getContext("2d", { willReadFrequently: true });
-      ctx.drawImage(img, 0, 0, dw, dh);
+      const fullH = dh / CROP_H;
+      ctx.drawImage(img, 0, -CROP_Y * fullH, dw, fullH);
       const data = ctx.getImageData(0, 0, dw, dh).data;
 
-      const offX = Math.floor((cols - dw) / 2);
-      const offY = Math.floor((rows - dh) / 2);
+      // Rounded, not floored: the grid is ~50 rows now rather than ~90, so a
+      // floored half-row is a visible bias upward against the box's centre.
+      const offX = Math.round((cols - dw) / 2);
+      const offY = Math.round((rows - dh) / 2);
 
       // base[] holds the ramp index per cell, -1 for empty. live[] indexes only
       // the cells that are part of the mark, so the per-frame loop touches

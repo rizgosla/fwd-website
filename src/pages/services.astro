@@ -1,39 +1,63 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaClose from "../components/CtaClose.astro";
+import BrandMark from "../components/BrandMark.astro";
+
+// The timeline is 20 business days. Each phase owns a contiguous run of day
+// cells, so the calendar itself carries the sequence and the buttons below are
+// just labels. Ranges use hyphens, never en-dashes.
+const PHASES = [
+  { day: "Day 1", label: "Inquiry", from: 1, to: 1 },
+  { day: "Day 2-3", label: "Intro call", from: 2, to: 3 },
+  { day: "Day 4", label: "Proposal", from: 4, to: 4 },
+  { day: "Day 5-19", label: "Build", from: 5, to: 19 },
+  { day: "Day 20", label: "Launch", from: 20, to: 20 },
+];
+
+const DAYS = Array.from({ length: 20 }, (_, i) => {
+  const n = i + 1;
+  const phase = PHASES.findIndex((p) => n >= p.from && n <= p.to);
+  return { n, phase, start: n === PHASES[phase].from, end: n === PHASES[phase].to };
+});
 ---
 
-<BaseLayout title="Services & pricing — fwd.">
+<BaseLayout title="Services & pricing - Forward Design Consulting">
   <!-- ============ HERO — editorial split with a spec index card ============ -->
   <section class="svc-hero">
     <div class="full svc-hero-grid">
+      {/* No eyebrow here: the h1 says what the page is, and the page's
+          eyebrow budget goes to the timeline and the close. */}
       <div class="svc-hero-copy mv-rise" data-mv-watch>
-        <p class="eyebrow"><span>Services &amp; pricing</span></p>
         <h1 class="display svc-hero-title">One way to <em>get online</em>. One flat fee.</h1>
-        <p class="lede svc-hero-lede">No retainers, no scope creep, no hidden hourlies. A full website, designed and built around your brand, shipped on a fixed timeline. You own everything when we're done.</p>
+        <p class="lede svc-hero-lede">No retainers, no scope creep, no hidden hourlies. One fixed price, one fixed timeline.</p>
         <div class="svc-hero-actions">
           <a href="/contact" class="btn btn-primary">Start a project <span class="arrow" aria-hidden="true">→</span></a>
           <a href="#offer" class="btn btn-ghost">See what's included</a>
         </div>
       </div>
 
-      <aside class="svc-hero-card mv-soften" data-mv-watch aria-label="The essentials">
-        <div class="shc-top">
-          <span class="shc-eyebrow"><span class="shc-dot" aria-hidden="true"></span>Full Site</span>
-          <span class="shc-flag">Flat fee</span>
+      {/* The old spec card restated the bento 400px below it. This shows the
+          one promise the bento states but never pictures: eight pages, drawn
+          from the same wireframe primitives the hero showcase uses. Exactly
+          eight children, which is where .mv-stagger's nth-child list ends. */}
+      <figure class="svc-pages-fig">
+        <div class="svc-pages mv-stagger" data-mv-watch aria-hidden="true">
+          {Array.from({ length: 8 }, () => (
+            <span class="pg">
+              <span class="pg-nav">
+                <span class="pg-logo"></span>
+                <span class="pg-links"><span></span><span></span><span></span></span>
+              </span>
+              <span class="pg-bar"></span>
+              <span class="pg-bar pg-bar-2"></span>
+              <span class="pg-line"></span>
+              <span class="pg-media"></span>
+              <span class="pg-pill"></span>
+            </span>
+          ))}
         </div>
-        <dl class="shc-specs">
-          <div class="shc-row"><dt>Turnaround</dt><dd>20 business days</dd></div>
-          <div class="shc-row"><dt>Pages</dt><dd>Up to 8</dd></div>
-          <div class="shc-row"><dt>Revisions</dt><dd>3 rounds, async</dd></div>
-          <div class="shc-row"><dt>Hosting &amp; domain</dt><dd>Set up &amp; included</dd></div>
-          <div class="shc-row"><dt>Ownership</dt><dd>Everything's yours</dd></div>
-        </dl>
-        <a href="#offer" class="shc-foot">
-          <span class="shc-foot-label">Total, all in</span>
-          <span class="shc-foot-link">See the number <span class="arrow" aria-hidden="true">↓</span></span>
-        </a>
-      </aside>
+        <figcaption class="svc-pages-cap">Up to eight pages, designed as one system</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -141,121 +165,163 @@ import CtaClose from "../components/CtaClose.astro";
         </div>
       </div>
 
-      <div class="walkthrough-track" data-step="0" id="wtTrack" role="tablist" aria-label="Project timeline">
-        <button class="walkthrough-marker" data-step="0" aria-pressed="true" role="tab" aria-controls="wt-panel-0"><span class="day">Day 0</span><span class="lbl">Inquiry</span></button>
-        <button class="walkthrough-marker" data-step="1" aria-pressed="false" role="tab" aria-controls="wt-panel-1"><span class="day">Day 1–2</span><span class="lbl">Intro call</span></button>
-        <button class="walkthrough-marker" data-step="2" aria-pressed="false" role="tab" aria-controls="wt-panel-2"><span class="day">Day 3</span><span class="lbl">Proposal</span></button>
-        <button class="walkthrough-marker" data-step="3" aria-pressed="false" role="tab" aria-controls="wt-panel-3"><span class="day">Week 1–3</span><span class="lbl">Draft &amp; revise</span></button>
-        <button class="walkthrough-marker" data-step="4" aria-pressed="false" role="tab" aria-controls="wt-panel-4"><span class="day">Day 20</span><span class="lbl">Launch</span></button>
+      {/* Twenty business days as an actual calendar. Each phase owns a run of
+          cells and lights up when its panel is active, so the shape of the
+          project is visible before you read a word of it. */}
+      <div class="walkthrough-track" data-step="0" id="wtTrack">
+        <div class="wt-cal">
+          <div class="wt-cal-dow" aria-hidden="true">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span>
+          </div>
+          <div class="wt-cal-grid" aria-hidden="true">
+            {DAYS.map((d) => (
+              <span
+                class:list={["wt-day", d.start && "is-start", d.end && "is-end"]}
+                data-phase={d.phase}
+                style={`--n:${d.n}`}
+              >{d.n}</span>
+            ))}
+          </div>
+        </div>
+
+        <div class="wt-phases" role="tablist" aria-label="Project timeline">
+          {PHASES.map((p, i) => (
+            <button
+              class="walkthrough-marker"
+              data-step={i}
+              aria-pressed={i === 0 ? "true" : "false"}
+              role="tab"
+              aria-controls={`wt-panel-${i}`}
+            >
+              <span class="day">{p.day}</span><span class="lbl">{p.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div class="walkthrough-panel" id="wtPanel" aria-live="polite">
         <div class="walkthrough-step is-active" data-step="0" id="wt-panel-0" role="tabpanel">
-          <span class="when">Day 0 · You send the contact form</span>
-          <h4>An inquiry comes in. <em>Jaiden replies</em>.</h4>
-          <p>One of us reads every inquiry the day it arrives. Jaiden writes back within a day with a couple of clarifying questions and a proposed time for a short call.</p>
-          <span class="deliv">— Reply within 24 hours, every day</span>
+          <span class="when">Day 1 · The inquiry lands</span>
+          <h4>An inquiry comes in. <em>We answer it</em>.</h4>
+          <p>One of us reads every inquiry the day it arrives. You get a written reply with a couple of clarifying questions and a proposed time for a short call.</p>
+          <span class="deliv">Reply within 24 hours, every day</span>
         </div>
         <div class="walkthrough-step" data-step="1" id="wt-panel-1" role="tabpanel">
-          <span class="when">Day 1–2 · The intro call</span>
+          <span class="when">Day 2 to 3 · The intro call</span>
           <h4>15 minutes, <em>the whole studio</em>, no slide deck.</h4>
-          <p>You meet the whole studio at once. We ask what you do, who you serve, and what the site needs to do for you. You ask whatever you need to. No follow-up sequences.</p>
-          <span class="deliv">— No prep required from you</span>
+          <p>You meet everyone at once. We ask what you do, who you serve, and what the site needs to do for you. You ask whatever you need to. No follow-up sequences.</p>
+          <span class="deliv">No prep required from you</span>
         </div>
         <div class="walkthrough-step" data-step="2" id="wt-panel-2" role="tabpanel">
-          <span class="when">Day 3 · Proposal &amp; deposit</span>
-          <h4>One-page proposal. Plain language. <em>50% deposit</em>.</h4>
-          <p>Alex sends a flat-fee proposal and the deposit invoice. There is no long contract — one page, one number, one timeline. Once the deposit lands, the clock starts.</p>
-          <span class="deliv">— Pay by card, bank transfer, or wire</span>
+          <span class="when">Day 4 · Proposal and deposit</span>
+          <h4>One page. Plain language. <em>50% deposit</em>.</h4>
+          <p>A flat-fee proposal and the deposit invoice, together. There is no long contract: one page, one number, one timeline. Once the deposit lands, the clock starts.</p>
+          <span class="deliv">Pay by card, bank transfer, or wire</span>
         </div>
         <div class="walkthrough-step" data-step="3" id="wt-panel-3" role="tabpanel">
-          <span class="when">Week 1 → Week 3 · Design, draft, revise</span>
+          <span class="when">Day 5 to 19 · Design, draft, revise</span>
           <h4>First draft live in your browser by <em>end of week one</em>.</h4>
-          <p>Riz builds the first version and shares a real URL on your phone, not a Figma file. You mark up the changes you want. We revise. Three rounds are included, and everything stays async until you want a call.</p>
-          <span class="deliv">— Average response on revisions: 1 business day</span>
+          <p>We build the first version and share a real URL you can open on your phone, not a Figma file. You mark up the changes you want. We revise. Three rounds are included, and everything stays async until you want a call.</p>
+          <span class="deliv">Average response on revisions: 1 business day</span>
         </div>
         <div class="walkthrough-step" data-step="4" id="wt-panel-4" role="tabpanel">
-          <span class="when">Launch day · Live</span>
-          <h4>Your domain points to the new site.<em> Final invoice sent</em>.</h4>
-          <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written doc so you can update content yourself. The remaining balance invoice lands the same day. You own everything — the domain, the hosting account, the code.</p>
-          <span class="deliv">— Live in 20 business days</span>
+          <span class="when">Day 20 · Live</span>
+          <h4>Your domain points to the new site. <em>Final invoice sent</em>.</h4>
+          <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written doc so you can update content yourself. The remaining balance invoice lands the same day. You own all of it: the domain, the hosting account, the code.</p>
+          <span class="deliv">Live in 20 business days</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ NOT INCLUDED ============ -->
-  <section class="not-included mv-rise" data-mv-watch>
-    <div class="full">
-      <div class="section-head">
-        <h2 class="display section-title">Not included. <em>Honest about it</em>.</h2>
-        <p class="section-sub">Two things we keep out of the flat fee on purpose. One of them can be added if you need it, billed separately so you can see exactly what it costs.</p>
-      </div>
-
-      <div class="ni-grid">
-        <article class="ni-card">
-          <span class="tag">Out of scope</span>
-          <h3>Ongoing maintenance</h3>
-          <p>Small content changes after launch are on us. Larger maintenance work — feature additions, redesigns, monthly updates — is a separate engagement.</p>
-        </article>
-
-        <article class="ni-card">
-          <span class="tag">Add-on available</span>
-          <h3>Photography</h3>
-          <p>If you have your own photos, we will design around them. If you do not, we coordinate a shoot with a photographer we trust, or design with carefully-sourced stock.</p>
-          <span class="addon">Quoted per project</span>
-        </article>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ FAQ ============ -->
   <section class="section section-faq">
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">Questions we get a <em>lot</em>.</h2>
-        <p class="section-sub">If yours is not here, <a class="link-arrow" href="/contact">ask us<span class="arrow">→</span></a> — we add to this list as new ones come up.</p>
+        <p class="section-sub">If yours is not here, <a class="link-arrow" href="/contact">ask us<span class="arrow">→</span></a>. We add to this list as new ones come up.</p>
       </div>
 
-      <div class="faq-list mv-stagger" data-mv-watch>
-        <details class="faq-item" open>
-          <summary><span class="faq-q">What if I only need a single landing page?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $4,000 number is for a full site of up to eight pages.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="faq-q">What counts as a "small change" after launch?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>Text fixes, photo swaps, link updates, hours changes — anything you could send us in a single email and we could ship in an afternoon. Larger changes (new sections, new pages, new features) become a new engagement at a flat fee.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="faq-q">Who hosts the site after launch?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>You do. We set up hosting on a platform you own — usually Cloudflare Pages or Netlify, both free at our scale. We connect your domain, set up DNS, and walk you through how to make a content change. There is no ongoing fee to us.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="faq-q">Can you redesign an existing site?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>Yes — most of our work is redesigns. The flat-fee structure stays the same. We preserve any SEO that is working, port your existing content, and keep your domain authority intact.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="faq-q">How do payments work?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>50% on signed proposal, 50% on launch. Card, bank transfer, or wire — whatever is easiest. Alex sends every invoice and handles every receipt. There are no recurring charges.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="faq-q">What if I want to keep updating the site myself?</span><span class="faq-icon" aria-hidden="true"></span></summary>
-          <div class="faq-a"><p>Every project ships with a handoff doc — screenshots and exact file paths, written so non-developers can change text, swap photos, and add new pages without touching code we wrote.</p></div>
-        </details>
+      {/* The list is paired with the thing it actually is: questions arriving.
+          Bubbles reuse the margin-comment treatment from the homepage's
+          revision step. Labels are "You" and "fwd.", never a person's name. */}
+      <div class="faq-split">
+        <aside class="faq-thread mv-stagger" data-mv-watch aria-hidden="true">
+          <div class="fq-msg">
+            <span class="fq-avatar">You</span>
+            <span class="fq-bubble">
+              <span class="fq-meta"><b>You</b><i>2m</i></span>
+              <span class="fq-text">Can you redesign a site we already have?</span>
+            </span>
+          </div>
+          <div class="fq-msg is-reply">
+            <span class="fq-avatar is-mark"><BrandMark class="fq-mark" decorative={true} /></span>
+            <span class="fq-bubble">
+              <span class="fq-meta"><b>forward</b><i>1m</i></span>
+              <span class="fq-text">Yes. Most of our work is redesigns.</span>
+            </span>
+          </div>
+          <div class="fq-msg">
+            <span class="fq-avatar">You</span>
+            <span class="fq-bubble">
+              <span class="fq-meta"><b>You</b><i>just now</i></span>
+              <span class="fq-text">Does the price change?</span>
+            </span>
+          </div>
+          <div class="fq-msg is-reply">
+            <span class="fq-avatar is-mark"><BrandMark class="fq-mark" decorative={true} /></span>
+            <span class="fq-bubble">
+              <span class="fq-meta"><b>forward</b><i>now</i></span>
+              <span class="fq-text">No. Same flat fee, same 20 days.</span>
+            </span>
+          </div>
+        </aside>
+
+        {/* Cards in a two-column grid rather than stacked hairline rows: a
+            list read as a second column of the chat beside it. Classes are
+            fq-card-* rather than faq-item so the old global list rules do not
+            apply. Still <details>, so it works with no JS. */}
+        <div class="fq-cards mv-stagger" data-mv-watch>
+          <details class="fq-card" open>
+            <summary class="fq-card-q"><span>What if I only need a single landing page?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $4,000 number is for a full site of up to eight pages.</p></div>
+          </details>
+          <details class="fq-card">
+            <summary class="fq-card-q"><span>What counts as a "small change" after launch?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>Text fixes, photo swaps, link updates, hours changes. Anything you could send us in a single email and we could ship in an afternoon. Larger changes become a new engagement at a flat fee.</p></div>
+          </details>
+          <details class="fq-card">
+            <summary class="fq-card-q"><span>Who hosts the site after launch?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>You do. We set up hosting on a platform you own, usually Cloudflare Pages or Netlify, both free at our scale. We connect your domain, set up DNS, and show you how to make a content change. There is no ongoing fee to us.</p></div>
+          </details>
+          <details class="fq-card">
+            <summary class="fq-card-q"><span>Can you redesign an existing site?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>Yes. Most of our work is redesigns, and the flat-fee structure stays the same. We preserve any SEO that is working, port your existing content, and keep your domain authority intact.</p></div>
+          </details>
+          <details class="fq-card">
+            <summary class="fq-card-q"><span>How do payments work?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>50% on signed proposal, 50% on launch. Card, bank transfer, or wire, whichever is easiest. One of us sends every invoice and handles every receipt. There are no recurring charges.</p></div>
+          </details>
+          <details class="fq-card">
+            <summary class="fq-card-q"><span>Can I keep updating the site myself?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+            <div class="fq-card-a"><p>Every project ships with a handoff doc: screenshots and exact file paths, written so non-developers can change text, swap photos, and add new pages without touching code we wrote.</p></div>
+          </details>
+        </div>
       </div>
     </div>
   </section>
 
-  {/* Ink tone: the FAQ above this is --color-bg-soft, so a light close
-      would merge into it. */}
+  {/* The FAQ above this is also --color-bg-soft, so the two surfaces meet with
+      no tone change. The seam is drawn as a hairline on .section-faq instead. */}
   <CtaClose
-    tone="ink"
+    tone="light"
     eyebrow="One number, no surprises"
     lead="Ready to"
     tail="begin?"
     lede="Tell us what you are working on. We will get back to you within a day with a flat-fee proposal."
     note="Flat-fee proposal within a day"
-    ticker={["Up to 8 pages", "~3–4 weeks", "Hosting included", "You own everything"]}
+    ticker={["Up to 8 pages", "About 4 weeks", "Hosting included", "You own everything"]}
   />
 </BaseLayout>
 
@@ -267,7 +333,7 @@ import CtaClose from "../components/CtaClose.astro";
      ============================================================ */
   .svc-hero {
     position: relative;
-    padding-block: clamp(3.5rem, 9vh, 7rem) clamp(3rem, 7vh, 5.5rem);
+    padding-block: clamp(3.5rem, 8vh, 6rem) clamp(3rem, 7vh, 5.5rem);
     border-bottom: 1px solid var(--color-hairline);
     overflow: hidden;
   }
@@ -281,87 +347,61 @@ import CtaClose from "../components/CtaClose.astro";
     .svc-hero-grid { grid-template-columns: 1.25fr 0.9fr; }
   }
   .svc-hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .svc-hero-copy .eyebrow { margin-bottom: 0.25rem; }
-  .svc-hero-title { font-size: var(--text-step-6); margin: 0; max-width: 15ch; }
+  /* "get online" is italic and carries a g. .display runs line-height 0.98,
+     which clips it at this size. Overridden here rather than in global.css,
+     which the locked homepage shares. */
+  /* step-5, not step-6: at step-6 this headline runs to three lines at
+     desktop in a 1.25fr column. Two is the cap. */
+  .svc-hero-title {
+    font-size: var(--text-step-5); margin: 0; max-width: 16ch;
+    line-height: 1.1; padding-bottom: 0.06em;
+  }
   .svc-hero-lede { max-width: 46ch; margin: 0; }
   .svc-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
 
-  /* Spec index card — light, hairlined, editorial */
-  .svc-hero-card {
-    background: var(--color-paper);
+  /* ============================================================
+     HERO VISUAL — eight page thumbnails, built from the same
+     wireframe primitives the hero showcase uses on the homepage.
+     ============================================================ */
+  .svc-pages-fig { margin: 0; display: flex; flex-direction: column; gap: 1.1rem; }
+  .svc-pages { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(0.5rem, 1vw, 0.85rem); }
+  .pg {
+    aspect-ratio: 3 / 4;
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 8px;
+    border-radius: 8px;
     border: 1px solid var(--color-line);
-    border-radius: 16px;
-    padding: clamp(1.5rem, 2.4vw, 2rem);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    box-shadow:
-      0 40px 90px -50px rgb(7 23 34 / 0.35),
-      0 12px 30px -18px rgb(7 23 34 / 0.14);
-    position: relative;
-    isolation: isolate;
+    background: var(--color-paper);
+    box-shadow: 0 14px 30px -20px rgb(7 23 34 / 0.30);
   }
-  .shc-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .shc-eyebrow {
-    display: inline-flex; align-items: center; gap: 0.55rem;
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-1); letter-spacing: -0.01em;
-    color: var(--color-navy); font-variation-settings: "opsz" 72;
+  .pg-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 1px; }
+  .pg-logo { width: 14px; height: 4px; border-radius: 2px; background: rgb(13 47 69 / 0.16); }
+  .pg-links { display: flex; gap: 3px; margin-left: auto; }
+  .pg-links span { width: 7px; height: 3px; border-radius: 1px; background: rgb(13 47 69 / 0.12); }
+  .pg-bar { width: 84%; height: 7px; border-radius: 2px; background: rgb(13 47 69 / 0.18); }
+  .pg-bar-2 { width: 58%; }
+  .pg-line { width: 70%; height: 3px; border-radius: 1px; background: rgb(13 47 69 / 0.12); }
+  .pg-media {
+    flex: 1; min-height: 0; margin-top: 1px;
+    border-radius: 4px;
+    border: 1px dashed rgb(13 47 69 / 0.20);
+    background: repeating-linear-gradient(135deg, rgb(13 47 69 / 0.09) 0 6px, transparent 6px 12px);
   }
-  .shc-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--color-periwinkle);
-    box-shadow: 0 0 0 0 rgba(142,148,184,0.55);
-    animation: mvPulseRing 2.4s var(--ease-soft) infinite;
-  }
-  .shc-flag {
+  .pg-pill { width: 26px; height: 8px; border-radius: 999px; background: var(--color-periwinkle); opacity: 0.55; margin-top: auto; }
+  /* Slight variation so eight thumbnails read as eight pages, not a tiled texture. */
+  .pg:nth-child(3n) .pg-bar { width: 66%; }
+  .pg:nth-child(3n) .pg-bar-2 { width: 44%; }
+  .pg:nth-child(4n) .pg-line { width: 52%; }
+  .svc-pages-cap {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-blue);
-    padding: 0.35rem 0.7rem;
-    border: 1px solid var(--color-line);
-    border-radius: 999px;
-    background: var(--color-bg-soft);
-  }
-  .shc-specs { margin: 0; display: flex; flex-direction: column; }
-  .shc-row {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 1rem;
-    padding-block: 0.8rem;
-    border-top: 1px solid var(--color-line);
-  }
-  .shc-row:first-child { border-top: 0; }
-  .shc-row dt {
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--color-fg-muted);
   }
-  .shc-row dd {
-    margin: 0; text-align: right;
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-0);
-    color: var(--color-fg); letter-spacing: -0.01em;
-    font-variation-settings: "opsz" 40;
+  @media (max-width: 620px) {
+    .svc-pages { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+    .pg { padding: 5px; gap: 3px; border-radius: 6px; }
+    .pg-media { display: none; }
   }
-  .shc-foot {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem;
-    margin-top: 0.25rem;
-    padding-top: 1.1rem;
-    border-top: 1px solid var(--color-line-strong);
-  }
-  .shc-foot-label {
-    font-family: var(--font-mono); font-size: var(--text-step--2);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--color-fg-muted);
-  }
-  .shc-foot-link {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-family: var(--font-sans); font-weight: 500;
-    font-size: var(--text-step--1); color: var(--color-blue);
-  }
-  .shc-foot .arrow { transition: transform 320ms var(--ease-soft); }
-  .svc-hero-card:hover .shc-foot .arrow { transform: translateY(3px); }
 
   /* ============================================================
      THE OFFER — bento spec sheet. Mirrors the homepage services
@@ -598,15 +638,168 @@ import CtaClose from "../components/CtaClose.astro";
   }
   .walkthrough-eyebrow-bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
 
-  .section-faq { background: var(--color-bg-soft); }
-  .faq-list { display: flex; flex-direction: column; border-top: 1px solid var(--color-line); }
-  .faq-item { border-bottom: 1px solid var(--color-line); overflow: hidden; }
-  .faq-q { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-2); color: var(--color-fg); letter-spacing: -0.015em; font-variation-settings: "opsz" 60; line-height: 1.25; text-wrap: balance; }
-  .faq-icon { flex-shrink: 0; width: 24px; height: 24px; position: relative; transition: transform 320ms var(--ease-soft); }
-  .faq-icon::before, .faq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--color-blue); transition: transform 320ms var(--ease-soft); }
-  .faq-icon::before { width: 14px; height: 1.5px; transform: translate(-50%, -50%); }
-  .faq-icon::after  { width: 1.5px; height: 14px; transform: translate(-50%, -50%); }
-  .faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+  /* ============================================================
+     TIMELINE CALENDAR — 20 business days, 5 columns of 4 weeks.
+     Each phase owns a contiguous run and lights when active.
+     ============================================================ */
+  .wt-cal { display: flex; flex-direction: column; gap: 10px; }
+  .wt-cal-dow {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgb(255 255 255 / 0.38); text-align: center;
+  }
+  .wt-cal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .wt-day {
+    display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 3.4 / 1;
+    min-height: 44px;
+    border-radius: 8px;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(255 255 255 / 0.03);
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    color: rgb(255 255 255 / 0.42);
+    /* transform + colour only, no geometry animation */
+    transition:
+      background 320ms var(--ease-soft),
+      color 320ms var(--ease-soft),
+      border-color 320ms var(--ease-soft),
+      transform 320ms var(--ease-out-expo);
+    transition-delay: calc(var(--n) * 12ms);
+  }
+  /* The build run is the bulk of the project, so it stays faintly filled even
+     when another phase is selected. The calendar reads as a schedule at rest. */
+  .wt-day[data-phase="3"] { background: rgb(255 255 255 / 0.06); }
+  .wt-day[data-phase="4"] { border-color: rgb(142 148 184 / 0.45); }
+
+  .walkthrough-track[data-step="0"] .wt-day[data-phase="0"],
+  .walkthrough-track[data-step="1"] .wt-day[data-phase="1"],
+  .walkthrough-track[data-step="2"] .wt-day[data-phase="2"],
+  .walkthrough-track[data-step="3"] .wt-day[data-phase="3"],
+  .walkthrough-track[data-step="4"] .wt-day[data-phase="4"] {
+    background: var(--color-periwinkle);
+    border-color: var(--color-periwinkle);
+    color: var(--color-navy);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 620px) {
+    .wt-cal-dow { font-size: 9px; letter-spacing: 0.08em; }
+    .wt-day { font-size: 10px; aspect-ratio: 1.5 / 1; }
+  }
+
+  /* Hairline seam: the closing CTA below is the same soft surface, so without
+     this the two sections read as one undifferentiated band. */
+  .section-faq { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); }
+
+  /* ============================================================
+     FAQ — the list paired with the thing it is: questions arriving.
+     ============================================================ */
+  .faq-split { display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  /* Narrower chat column now that the questions are a two-up grid. */
+  @media (min-width: 940px) { .faq-split { grid-template-columns: 0.62fr 1.38fr; } }
+
+  .faq-thread { display: flex; flex-direction: column; gap: 0.7rem; }
+  @media (min-width: 940px) { .faq-thread { position: sticky; top: 120px; } }
+  .fq-msg { display: flex; gap: 0.6rem; align-items: flex-start; max-width: 32ch; }
+  .fq-msg.is-reply { margin-left: auto; flex-direction: row-reverse; }
+  .fq-avatar {
+    flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-navy); color: var(--color-paper);
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  /* The studio's replies carry the brand mark instead of an initial. */
+  .fq-avatar.is-mark { background: var(--color-periwinkle); color: var(--color-navy); overflow: hidden; }
+  /* The glyph only fills the middle ~60% of its 160x160 viewBox vertically, so
+     at avatar scale it needs to be drawn larger than the circle and cropped,
+     otherwise it reads as a smudge. */
+  .fq-avatar :global(.fq-mark) { width: 46px; height: 46px; flex-shrink: 0; }
+  /* The mark's shadow layer is periwinkle, which is this avatar's background,
+     so it would vanish. Re-tint it to keep the two-layer offset readable. */
+  .fq-avatar :global(.fq-mark) > g:first-of-type path { fill: rgb(13 47 69 / 0.28); }
+  .fq-bubble {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 0.55rem 0.8rem;
+    border-radius: 12px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    box-shadow: 0 12px 26px -20px rgb(7 23 34 / 0.40);
+  }
+  .is-reply .fq-bubble { background: var(--color-navy); border-color: var(--color-navy); }
+  .fq-meta {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+  .fq-meta b { font-weight: 500; color: var(--color-fg); }
+  .fq-meta i { font-style: normal; }
+  .is-reply .fq-meta { color: rgb(255 255 255 / 0.45); }
+  .is-reply .fq-meta b { color: rgb(255 255 255 / 0.88); }
+  .fq-text { font-size: var(--text-step--1); line-height: 1.4; color: var(--color-fg-soft); }
+  .is-reply .fq-text { color: rgb(255 255 255 / 0.86); }
+
+  /* ---- Question cards ---- */
+  .fq-cards { display: grid; grid-template-columns: 1fr; gap: 0.85rem; align-content: start; }
+  @media (min-width: 700px) { .fq-cards { grid-template-columns: 1fr 1fr; } }
+
+  .fq-card {
+    align-self: start;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    padding: 0 1.1rem;
+    transition:
+      border-color 280ms var(--ease-soft),
+      box-shadow 280ms var(--ease-soft),
+      transform 280ms var(--ease-soft);
+  }
+  .fq-card:hover { border-color: var(--color-line-strong); transform: translateY(-2px); }
+  .fq-card[open] {
+    border-color: var(--color-navy);
+    box-shadow: 0 24px 50px -30px rgb(7 23 34 / 0.32);
+  }
+
+  .fq-card-q {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-1);
+    line-height: 1.25; letter-spacing: -0.012em;
+    color: var(--color-fg);
+    font-variation-settings: "opsz" 60;
+    text-wrap: pretty;
+  }
+  .fq-card-q::-webkit-details-marker, .fq-card-q::marker { display: none; content: ""; }
+  .fq-card[open] .fq-card-q { color: var(--color-blue); }
+
+  /* Plus that becomes a minus. Transform only, no geometry animation. */
+  .fq-card-icon { position: relative; flex-shrink: 0; width: 18px; height: 18px; margin-top: 0.2rem; }
+  .fq-card-icon::before, .fq-card-icon::after {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    background: var(--color-blue);
+    transition: transform 320ms var(--ease-soft), opacity 320ms var(--ease-soft);
+  }
+  .fq-card-icon::before { width: 13px; height: 1.5px; transform: translate(-50%, -50%); }
+  .fq-card-icon::after { width: 1.5px; height: 13px; transform: translate(-50%, -50%); }
+  .fq-card[open] .fq-card-icon::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+
+  .fq-card-a {
+    padding-bottom: 1.15rem;
+    animation: faqOpen 400ms var(--ease-out-expo);
+  }
+  .fq-card-a p {
+    margin: 0;
+    color: var(--color-fg-soft);
+    font-size: var(--text-step--1);
+    line-height: 1.6;
+  }
 
   @media (max-width: 939px) {
     .svc-hero-title { font-size: clamp(2.6rem, 10vw, 4.5rem); }
@@ -692,13 +885,24 @@ import CtaClose from "../components/CtaClose.astro";
       return;
     }
 
+    // The track is a ~600px calendar now, not the ~60px dotted line this was
+    // written for, so a 0.3 threshold needs ~180px on screen and autostart
+    // fired late or never on shorter viewports. Gate on a small fixed slice
+    // of the element instead, and start immediately if it is already in view.
+    const startOnce = () => { if (!started) { started = true; scheduleNext(); } };
+
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting && !started) { started = true; scheduleNext(); }
+          if (e.isIntersecting) { io.disconnect(); startOnce(); }
         });
-      }, { threshold: 0.3 });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
       io.observe(track);
+
+      // Covers a load that already has the timeline on screen, where a single
+      // initial callback can be missed entirely.
+      const r = track.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) { io.disconnect(); startOnce(); }
     } else { scheduleNext(); }
   })();
 </script>
