@@ -52,6 +52,25 @@ const {
 } = Astro.props;
 
 const words = swap?.slice(0, 4) ?? [];
+
+// The ticker scrolls by exactly one copy of `ticker` per cycle, so the strip
+// only reads as continuous while the copies that remain to the right of the
+// window still cover it: (reps - 1) * copyWidth >= container width. Two copies
+// (what this used to render) satisfies that only when a single copy is already
+// wider than the viewport, which these four-item lists never are — so the strip
+// drained to empty on the way through and snapped back at the loop point.
+//
+// The section is full-bleed with --pad-x capped at 4rem, so the widest
+// container to cover is roughly the widest viewport; 3400px covers ultrawides.
+// Copy width is estimated from the text: ~8.5px per character at
+// --text-step--2 in the mono face, plus ~48px per item for the dot and the two
+// 1.25rem gaps around it. The estimate runs slightly under a real measurement,
+// which errs toward one copy too many rather than one too few.
+const TICKER_COVER = 3400;
+const tickerCopyPx = ticker.reduce((n, t) => n + t.length * 8.5 + 48, 0);
+const tickerReps = tickerCopyPx > 0
+  ? Math.max(2, Math.ceil(TICKER_COVER / tickerCopyPx) + 1)
+  : 0;
 // Unique per instance — a fixed id would collide (and break aria-labelledby)
 // the moment two of these render on one page, as the preview route does.
 const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
@@ -96,10 +115,14 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     <pre class:list={["ctc-ascii", mark === "paper" && "is-paper"]} data-ascii aria-hidden="true"></pre>
 
     {ticker.length > 0 && (
-      <div class="ctc-ticker" aria-hidden="true">
+      <div class="ctc-ticker" aria-hidden="true" style={`--ctc-reps:${tickerReps}`}>
         <div class="ctc-ticker-track">
-          {[...ticker, ...ticker].map((t) => (
-            <><span>{t}</span><span class="dot">●</span></>
+          {Array.from({ length: tickerReps }, () => (
+            <div class="ctc-ticker-copy">
+              {ticker.map((t) => (
+                <><span>{t}</span><span class="dot">●</span></>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -336,9 +359,12 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
   }
+  /* max-content, not inline-flex's shrink-to-fit: the keyframe below is a
+     percentage of this box, so the box has to measure the content rather than
+     the container it overflows. */
   .ctc-ticker-track {
-    display: inline-flex; align-items: center; gap: 1.25rem;
-    white-space: nowrap;
+    display: flex;
+    width: max-content;
     animation: ctcTicker 34s linear infinite;
     font-family: var(--font-mono);
     font-size: var(--text-step--2);
@@ -346,8 +372,21 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     text-transform: uppercase;
     color: var(--ctc-muted);
   }
-  .ctc-ticker-track .dot { color: var(--ctc-accent); font-size: 0.6em; }
-  @keyframes ctcTicker { to { transform: translateX(-50%); } }
+  /* padding-right matches the gap so the join between two copies is spaced
+     exactly like every other join inside one. */
+  .ctc-ticker-copy {
+    display: flex; align-items: center; flex: none;
+    gap: 1.25rem;
+    padding-right: 1.25rem;
+    white-space: nowrap;
+  }
+  .ctc-ticker-copy .dot { color: var(--ctc-accent); font-size: 0.6em; }
+  /* One copy, exactly — the copies are identical, so 100%/reps is one of them
+     whatever they measure. A hard -50% only lands on a copy boundary when
+     there are two of them, and even then it is off by the trailing gap.
+     Distance travelled per cycle is one copy either way, so the 34s duration
+     is the same speed regardless of how many copies get rendered. */
+  @keyframes ctcTicker { to { transform: translateX(calc(-100% / var(--ctc-reps))); } }
 
   /* The global reduce rule collapses animation-duration to 0.01ms, which would
      snap every swap word to its final keyframe — opacity 0 — and leave the
