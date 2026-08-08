@@ -682,12 +682,23 @@ import CtaClose from "../components/CtaClose.astro";
   }
   @media (min-width: 900px) {
     .process-step-inner {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-      gap: clamp(2.5rem, 6vw, 5rem);
+      display: flex;
+      justify-content: center;
+      gap: clamp(9rem, 17vw, 16rem);
     }
-    /* Pattern: step 1 text-left, step 2 text-right, step 3 text-left, step 4 text-right */
+    /* Pattern: step 1 text-left, step 2 text-right, step 3 text-left, step 4 text-right.
+       The text+visual pair is content-sized (not stretched to the row), so
+       centering the flex row keeps the same gap and the same horizontal
+       center on every step regardless of which side is swapped. */
     .process-step:nth-child(even) .ps-text { order: 2; }
     .process-step:nth-child(even) .ps-visual { order: 1; }
+    /* .ps-visual-frame's own `width: 100%` (below) is meaningless unless its
+       parent has a definite width — a flex item sized to its content
+       (the default here) doesn't have one, so pin it explicitly on .ps-visual
+       itself. Without this the frame's rendered width silently depended on
+       its mock UI content, so the gap between text and image drifted per
+       step instead of matching the fixed `gap` above. */
+    .ps-visual { width: min(620px, 46vw); flex-shrink: 0; }
     /* Lock every visual frame to step 2's height so the sections match. */
     .ps-visual-frame { min-height: 560px; }
   }
