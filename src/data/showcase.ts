@@ -1,9 +1,11 @@
 /* ============================================================================
-   HERO SHOWCASE — registry of real, shipped fwd. sites
+   HERO SHOWCASE — registry of fwd. site previews
    ----------------------------------------------------------------------------
    The home-page hero cycles through these entries inside a browser frame, one
-   live site at a time. Each object below is a faithful *mini-render* of a site
-   we actually built — its colours, type, and hero copy — not a generic mockup.
+   site at a time. Each object below is a faithful *mini-render* of a real
+   site's colours, type, and hero copy — most are shipped client work; Burnt
+   Crumbs is a self-directed mockup, not a paying client (see the comment on
+   its entry below), matching how it's labeled on /work.
 
    ── HOW TO ADD A NEW SITE ──────────────────────────────────────────────────
    When you hand me another finished site repo, adding it to the cycle is a
@@ -91,6 +93,7 @@ export interface ShowcaseSite {
 }
 
 export const showcase: ShowcaseSite[] = [
+  // Self-directed mockup, not a paying client — same as its "Mockup" badge on /work.
   {
     id: "burnt-crumbs",
     name: "Burnt Crumbs",

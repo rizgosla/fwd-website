@@ -88,6 +88,7 @@ const projects = (await getCollection("work")).sort(
             url={entry.data.url}
             blurb={entry.data.summary}
             image={entry.data.image}
+            kind={entry.data.kind}
           />
         ))}
       </ul>
