@@ -98,7 +98,7 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     {ticker.length > 0 && (
       <div class="ctc-ticker" aria-hidden="true">
         <div class="ctc-ticker-track">
-          {[...ticker, ...ticker].map((t) => (
+          {[...ticker, ...ticker, ...ticker, ...ticker].map((t) => (
             <><span>{t}</span><span class="dot">●</span></>
           ))}
         </div>
@@ -347,7 +347,12 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     color: var(--ctc-muted);
   }
   .ctc-ticker-track .dot { color: var(--ctc-accent); font-size: 0.6em; }
-  @keyframes ctcTicker { to { transform: translateX(-50%); } }
+  /* 4 duplicated copies (not 2) so the track reliably overflows the row even
+     with a short 4-phrase ticker array — with only 2 copies, one copy's
+     width often didn't exceed the row, so the "loop" had nothing to scroll
+     through and just slid the too-narrow content sideways and snapped back.
+     Shift by 1/4 (one copy width), matching the 4x duplication. */
+  @keyframes ctcTicker { to { transform: translateX(-25%); } }
 
   /* The global reduce rule collapses animation-duration to 0.01ms, which would
      snap every swap word to its final keyframe — opacity 0 — and leave the
