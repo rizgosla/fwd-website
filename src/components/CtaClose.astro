@@ -117,8 +117,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     {ticker.length > 0 && (
       <div class="ctc-ticker" aria-hidden="true" style={`--ctc-reps:${tickerReps}`}>
         <div class="ctc-ticker-track">
-          {[...ticker, ...ticker, ...ticker, ...ticker].map((t) => (
-            <><span>{t}</span><span class="dot">●</span></>
           {Array.from({ length: tickerReps }, () => (
             <div class="ctc-ticker-copy">
               {ticker.map((t) => (
@@ -375,12 +373,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     color: var(--ctc-muted);
   }
   .ctc-ticker-track .dot { color: var(--ctc-accent); font-size: 0.6em; }
-  /* 4 duplicated copies (not 2) so the track reliably overflows the row even
-     with a short 4-phrase ticker array — with only 2 copies, one copy's
-     width often didn't exceed the row, so the "loop" had nothing to scroll
-     through and just slid the too-narrow content sideways and snapped back.
-     Shift by 1/4 (one copy width), matching the 4x duplication. */
-  @keyframes ctcTicker { to { transform: translateX(-25%); } }
   /* padding-right matches the gap so the join between two copies is spaced
      exactly like every other join inside one. */
   .ctc-ticker-copy {
