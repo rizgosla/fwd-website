@@ -63,6 +63,11 @@ const serviceLinks = [
       </div>
     </div>
 
+    <div class="ft-legal">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+    </div>
+
     <div class="ft-mark" aria-hidden="true">
       <BrandMark class="ft-mark-svg" decorative={true} />
     </div>
@@ -224,6 +229,41 @@ const serviceLinks = [
     border-radius: 2px;
   }
   .ft-static { color: rgba(255,255,255,0.55); }
+
+  /* Legal line — sits below the link grid, not a fourth column. */
+  .ft-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(255,255,255,0.10);
+  }
+  @media (min-width: 900px) {
+    .ft-legal { grid-column: 1; grid-row: 3; }
+  }
+  .ft-legal a {
+    position: relative;
+    width: fit-content;
+    font-family: var(--font-sans);
+    font-size: var(--text-step--2);
+    color: rgba(255,255,255,0.5);
+    transition: color 200ms var(--ease-soft);
+  }
+  .ft-legal a::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 1px; background: var(--color-periwinkle);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 380ms var(--ease-out-expo);
+  }
+  .ft-legal a:hover { color: var(--color-periwinkle); }
+  .ft-legal a:hover::after { transform: scaleX(1); }
+  .ft-legal a:focus-visible {
+    outline: 2px solid var(--color-periwinkle);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 
   @media (max-width: 699px) {
     .ft-line { max-width: 16ch; }

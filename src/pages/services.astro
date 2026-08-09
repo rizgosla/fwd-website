@@ -184,13 +184,12 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
           </div>
         </div>
 
-        <div class="wt-phases" role="tablist" aria-label="Project timeline">
+        <div class="wt-phases" aria-label="Project timeline">
           {PHASES.map((p, i) => (
             <button
               class="walkthrough-marker"
               data-step={i}
               aria-pressed={i === 0 ? "true" : "false"}
-              role="tab"
               aria-controls={`wt-panel-${i}`}
             >
               <span class="day">{p.day}</span><span class="lbl">{p.label}</span>
@@ -200,33 +199,33 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
       </div>
 
       <div class="walkthrough-panel" id="wtPanel" aria-live="polite">
-        <div class="walkthrough-step is-active" data-step="0" id="wt-panel-0" role="tabpanel">
+        <div class="walkthrough-step is-active" data-step="0" id="wt-panel-0">
           <span class="when">Day 1 · The inquiry lands</span>
-          <h4>An inquiry comes in. <em>We answer it</em>.</h4>
+          <h3>An inquiry comes in. <em>We answer it</em>.</h3>
           <p>One of us reads every inquiry the day it arrives. You get a written reply with a couple of clarifying questions and a proposed time for a short call.</p>
           <span class="deliv">Reply within 24 hours, every day</span>
         </div>
-        <div class="walkthrough-step" data-step="1" id="wt-panel-1" role="tabpanel">
+        <div class="walkthrough-step" data-step="1" id="wt-panel-1">
           <span class="when">Day 2 to 3 · The intro call</span>
-          <h4>15 minutes, <em>the whole studio</em>, no slide deck.</h4>
+          <h3>15 minutes, <em>the whole studio</em>, no slide deck.</h3>
           <p>You meet everyone at once. We ask what you do, who you serve, and what the site needs to do for you. You ask whatever you need to. No follow-up sequences.</p>
           <span class="deliv">No prep required from you</span>
         </div>
-        <div class="walkthrough-step" data-step="2" id="wt-panel-2" role="tabpanel">
+        <div class="walkthrough-step" data-step="2" id="wt-panel-2">
           <span class="when">Day 4 · Proposal and deposit</span>
-          <h4>One page. Plain language. <em>50% deposit</em>.</h4>
+          <h3>One page. Plain language. <em>50% deposit</em>.</h3>
           <p>A flat-fee proposal and the deposit invoice, together. There is no long contract: one page, one number, one timeline. Once the deposit lands, the clock starts.</p>
           <span class="deliv">Pay by card, bank transfer, or wire</span>
         </div>
-        <div class="walkthrough-step" data-step="3" id="wt-panel-3" role="tabpanel">
+        <div class="walkthrough-step" data-step="3" id="wt-panel-3">
           <span class="when">Day 5 to 19 · Design, draft, revise</span>
-          <h4>First draft live in your browser by <em>end of week one</em>.</h4>
+          <h3>First draft live in your browser by <em>end of week one</em>.</h3>
           <p>We build the first version and share a real URL you can open on your phone, not a Figma file. You mark up the changes you want. We revise. Three rounds are included, and everything stays async until you want a call.</p>
           <span class="deliv">Average response on revisions: 1 business day</span>
         </div>
-        <div class="walkthrough-step" data-step="4" id="wt-panel-4" role="tabpanel">
+        <div class="walkthrough-step" data-step="4" id="wt-panel-4">
           <span class="when">Day 20 · Live</span>
-          <h4>Your domain points to the new site. <em>Final invoice sent</em>.</h4>
+          <h3>Your domain points to the new site. <em>Final invoice sent</em>.</h3>
           <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written doc so you can update content yourself. The remaining balance invoice lands the same day. You own all of it: the domain, the hosting account, the code.</p>
           <span class="deliv">Live in 20 business days</span>
         </div>
@@ -637,6 +636,21 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
     color: rgba(255,255,255,0.55);
   }
   .walkthrough-eyebrow-bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
+
+  /* Step panel headings were demoted from h4 to h3 to fix a heading-level
+     skip (the section h2 had no h3 before them). global.css still styles
+     these by the `.walkthrough-step h4` tag selector, which the locked
+     homepage doesn't use, so the h3 rule is mirrored here rather than
+     touching that shared file. Keep in sync with global.css if it changes. */
+  .walkthrough-step h3 {
+    font-family: var(--font-display); font-weight: 350;
+    font-size: var(--text-step-3);
+    color: var(--color-paper); margin: 0;
+    letter-spacing: -0.02em; line-height: 1.12;
+    font-variation-settings: "opsz" 144;
+    max-width: 18ch;
+  }
+  .walkthrough-step h3 em { font-style: italic; color: var(--color-periwinkle); font-variation-settings: "opsz" 144; }
 
   /* ============================================================
      TIMELINE CALENDAR — 20 business days, 5 columns of 4 weeks.

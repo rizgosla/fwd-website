@@ -14,6 +14,10 @@ const work = defineCollection({
      *  card draws its placeholder instead. */
     image: z.string().optional(),
     order: z.number().default(0),
+    /** "client" (default) is shipped work for a paying client. "mockup" is a
+     *  self-directed redesign of an existing site, not commissioned work —
+     *  the card marks it as such. */
+    kind: z.enum(["client", "mockup"]).default("client"),
   }),
 });
 
