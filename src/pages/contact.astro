@@ -16,7 +16,11 @@ const steps = [
 ];
 ---
 
-<BaseLayout title="Contact - Forward Design Consulting">
+<BaseLayout
+  title="Contact — Orange County Web Design | Forward Design"
+  description="Start a web design project with our Orange County studio. Tell us what you are building and get a flat-fee proposal back within a day. No discovery deck."
+  ogImage="/og/contact.jpg"
+>
   <section class="ask">
     {/* Ink panel. The only dark surface above the footer on this page. */}
     <div class="ask-rail">
@@ -79,7 +83,13 @@ const steps = [
         <fieldset class="ask-group" data-step="2">
           <legend class="ask-q">What are you building, in a sentence or two?</legend>
           <p class="ask-help">What it is, who it is for, and what success would look like.</p>
-          <textarea name="brief" rows="5" required aria-required="true" placeholder="A new site for a two-chair dental practice…"></textarea>
+          {/* The legend names the fieldset, not the field inside it, so the
+              textarea needs a label of its own. Hidden because the question
+              above already asks it out loud — and a placeholder is not a label. */}
+          <label class="field">
+            <span class="sr-only">What you are building</span>
+            <textarea name="brief" rows="5" required aria-required="true" placeholder="A new site for a two-chair dental practice…"></textarea>
+          </label>
         </fieldset>
 
         <fieldset class="ask-group" data-step="3">
@@ -113,7 +123,11 @@ const steps = [
         <fieldset class="ask-group" data-step="4">
           <legend class="ask-q">And when would you like to start?</legend>
           <p class="ask-help">Optional — “no rush” is a real answer. We run two builds at a time.</p>
-          <input type="text" name="when" class="ask-line" placeholder="June, ASAP, no rush…" />
+          {/* Same as step 2 — the legend labels the group, not this input. */}
+          <label class="field">
+            <span class="sr-only">When you'd start</span>
+            <input type="text" name="when" class="ask-line" placeholder="June, ASAP, no rush…" />
+          </label>
         </fieldset>
 
         <div class="ask-foot">

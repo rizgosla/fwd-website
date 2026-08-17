@@ -9,7 +9,11 @@ const projects = (await getCollection("work")).sort(
 );
 ---
 
-<BaseLayout title="Selected work - Forward Design Consulting">
+<BaseLayout
+  title="Our Work — Websites for Orange County Businesses"
+  description="Selected work from our Orange County web design studio — a live family dental practice site, plus a law firm and a restaurant brand in progress."
+  ogImage="/og/work.jpg"
+>
   <section class="work-hero">
     <div class="full work-hero-grid">
       {/* No eyebrow: the h1 already names the section, and the page's one

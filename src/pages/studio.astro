@@ -16,21 +16,38 @@ const RUNS = [
 // Split for the per-character reveal. Characters are always present at their
 // real width and only fade in, so the line never reflows — which is what lets
 // this run in the display serif instead of being forced into mono.
+//
+// Grouped by word rather than as one flat run of characters: the line is now
+// title-sized and sits in a two-column cell, so it wraps. Every character is an
+// inline-block, and a flat run gives the browser a break opportunity between
+// any two of them — which would split words mid-stem. Each word is its own
+// nowrap box, so breaks can only land in the spaces between them. The `i`
+// carried on each character is the running index across the whole sentence, so
+// the stagger keeps reading left to right across the wrap.
 const ANSWER = "So we built the third one.";
-const ANSWER_CHARS = [...ANSWER];
+let answerIndex = 0;
+const ANSWER_WORDS = ANSWER.split(" ").map((word) =>
+  [...word].map((ch) => ({ ch, i: answerIndex++ })),
+);
 ---
 
-<BaseLayout title="The studio - Forward Design Consulting">
+<BaseLayout
+  title="About — Orange County Web Design | Forward Design"
+  description="Forward Design Consulting is a small web design studio in Orange County. Three or four projects a quarter — you talk to the people who actually build your site."
+  ogImage="/og/studio.jpg"
+>
   <section class="st-hero">
     <div class="st-hero-glow" aria-hidden="true"></div>
-    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="st-hero-mark" />
+    <img src="/assets/fwd-logo.svg" alt="" aria-hidden="true" class="st-hero-mark" width="160" height="160" />
     <div class="full st-hero-inner">
       <div class="mv-rise" data-mv-watch>
         <span class="st-eyebrow st-eyebrow-dark"><span class="st-eyebrow-bar"></span>The studio</span>
         <h1 class="display st-hero-title">Look <em>twice your size</em>. Not a third of it.</h1>
         <p class="lede st-hero-lede">
-          A small studio building websites for businesses that don't have a marketing
-          department. Fewer people on our side means fairer prices on yours.
+          You'll talk to the team actually building your site. Not a project manager or a
+          middleman. The actual designer and developer, which means lower prices, no
+          guesswork about where things stand, and someone who genuinely cares whether it
+          works.
         </p>
       </div>
     </div>
@@ -38,18 +55,33 @@ const ANSWER_CHARS = [...ANSWER];
 
   <section class="section st-why">
     <div class="full">
-      {/* Eyebrow dropped here: the headline names the section, and the page's
-          remaining eyebrows sit on sections that are locked. */}
       <div class="st-why-head mv-rise" data-mv-watch>
+        <span class="st-eyebrow"><span class="st-eyebrow-bar"></span>The third option</span>
         <h2 class="display st-title st-why-title">For twenty years there were <em>two options</em>.</h2>
       </div>
+
+      {/* The two rejected routes recede to a texture behind the answer, so
+          their documents are aria-hidden and their terms are carried here as
+          real text instead. Placed above the row so the tree still reads
+          "two options … so we built the third one" in that order. */}
+      <p class="sr-only">
+        Option one, an agency: retainers, a kickoff deck, and a launch date that keeps
+        moving. Six months. Option two, a freelancer: live by Monday, and
+        indistinguishable from the next one. One weekend.
+      </p>
 
       {/* Three contracts in a row. The first two get struck out on scroll, the
           third is the one that stands. The copy lives on the documents rather
           than beside them, so the section is the visual. */}
       <div class="st-contracts mv-stagger" data-mv-watch>
-        <article class="st-contract is-void">
-          <span class="st-contract-strike" aria-hidden="true"></span>
+        <article class="st-contract is-void" aria-hidden="true">
+          {/* The stroke is geometry, not a rotated bar: the line is declared
+              corner to corner in the viewBox and the viewBox is stretched over
+              whatever shape the card happens to be. See the CSS. */}
+          <svg class="st-contract-strike" aria-hidden="true" focusable="false"
+               viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line x1="0" y1="100" x2="100" y2="0" vector-effect="non-scaling-stroke" />
+          </svg>
           <header class="st-contract-top">
             <span class="st-contract-k">Custom</span>
           </header>
@@ -64,8 +96,14 @@ const ANSWER_CHARS = [...ANSWER];
           </footer>
         </article>
 
-        <article class="st-contract is-void">
-          <span class="st-contract-strike" aria-hidden="true"></span>
+        <article class="st-contract is-void" aria-hidden="true">
+          {/* The stroke is geometry, not a rotated bar: the line is declared
+              corner to corner in the viewBox and the viewBox is stretched over
+              whatever shape the card happens to be. See the CSS. */}
+          <svg class="st-contract-strike" aria-hidden="true" focusable="false"
+               viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line x1="0" y1="100" x2="100" y2="0" vector-effect="non-scaling-stroke" />
+          </svg>
           <header class="st-contract-top">
             <span class="st-contract-k">Template</span>
           </header>
@@ -94,13 +132,32 @@ const ANSWER_CHARS = [...ANSWER];
             <span class="st-contract-term">20 business days</span>
           </footer>
         </article>
+
+        {/* The answer is a fourth item in the same grid, centred on top of the
+            two cells the voided documents occupy. They stay where they are and
+            fade well back, so this lands in front of them rather than in a hole
+            they left behind. Ordered last in the DOM so it is read after the
+            three routes it resolves. */}
+        <div class="st-answer">
+          {/* aria-label is prohibited on a <p> — it has no role that takes a
+              name from it, so the sentence was dropped entirely for screen
+              readers. The split line is decorative markup, so it is hidden
+              wholesale and the sentence is carried alongside it, the same way
+              the fold below pairs its animation with an .sr-only paragraph. */}
+          <p class="display st-decode" aria-hidden="true">
+            {ANSWER_WORDS.map((word, w) => (
+              <Fragment>
+                {w > 0 ? " " : ""}
+                <span class="st-decode-w">
+                  {word.map(({ ch, i }) => <span style={`--i:${i}`} aria-hidden="true">{ch}</span>)}
+                </span>
+              </Fragment>
+            ))}
+          </p>
+        </div>
       </div>
 
-      <p class="display st-decode" data-mv-watch aria-label={ANSWER}>
-        {ANSWER_CHARS.map((ch, i) =>
-          ch === " " ? " " : <span style={`--i:${i}`} aria-hidden="true">{ch}</span>,
-        )}
-      </p>
+      <p class="sr-only">{ANSWER}</p>
 
     </div>
   </section>
@@ -212,7 +269,7 @@ const ANSWER_CHARS = [...ANSWER];
   </section>
 
   {/* mark="paper" is dropped with the tone change: a paper mark on the light
-      surface would sit at 24% white on #f6f6f8 and disappear. */}
+      surface would sit at 24% white on --color-bg-soft and disappear. */}
   <CtaClose
     tone="light"
     eyebrow="One studio, no middlemen"
@@ -226,6 +283,67 @@ const ANSWER_CHARS = [...ANSWER];
 
 <style>
   /* ============================================================
+     LOCAL PALETTE
+
+     Every colour on this page is either a global token or one of
+     the values below. These exist because a scrim over ink, a rule
+     drawn on the periwinkle card, or a cast shadow cannot be a flat
+     token — but they are a fixed, named set drawn from the
+     palette's own hues, not a fresh alpha invented at each use.
+     Named for the job rather than the number, so a later edit picks
+     a role instead of guessing a percentage.
+
+     Replaces 30 hardcoded colour literals (28 distinct values) that
+     mixed legacy `rgba(r,g,b,a)` and modern `rgb(r g b / a)`
+     syntax, wrote the same colour two different ways in two places,
+     and reached outside the palette for pure black. One syntax now:
+     modern space-separated, matching the newer code in the repo.
+
+     Declared on the four section roots rather than :root because
+     Astro scopes these styles to elements in this file.
+     ============================================================ */
+  .st-hero,
+  .st-why,
+  .st-cap,
+  .st-thread {
+    /* Text and edges on the ink surfaces. */
+    --ink-fg-1: rgb(255 255 255 / 0.78);   /* prose */
+    --ink-fg-2: rgb(255 255 255 / 0.66);   /* secondary text */
+    --ink-fg-3: rgb(255 255 255 / 0.55);   /* eyebrows and labels */
+    --ink-fg-4: rgb(255 255 255 / 0.42);   /* captions on a decorative graphic */
+    --ink-line: rgb(255 255 255 / 0.16);   /* card edge on ink */
+    --ink-seam: rgb(255 255 255 / 0.08);   /* seam between bands */
+    --ink-fill: rgb(255 255 255 / 0.04);   /* raised panel on ink */
+
+    /* Marks drawn on the periwinkle card, where navy is the ink. */
+    --peri-fg-1: rgb(13 47 69 / 0.62);     /* stage descriptions */
+    --peri-fg-2: rgb(13 47 69 / 0.45);     /* the hint line */
+    --peri-rule: rgb(13 47 69 / 0.22);     /* rule, and the mark's shadow layer */
+
+    /* Tints of the palette used as veils and fills. */
+    --peri-veil: rgb(142 148 184 / 0.14);  /* the big background radials */
+    --peri-fill: rgb(142 148 184 / 0.28);  /* a booked-but-not-started bar */
+    --peri-glow: rgb(142 148 184 / 0.70);
+    --peri-glow-strong: rgb(142 148 184 / 0.85);
+    --blue-veil: rgb(20 70 103 / 0.50);    /* the hero's second radial */
+    --blue-fill: rgb(20 70 103 / 0.12);    /* clause bars on the signed contract */
+
+    /* Cast shadows. All ink — the palette has no black in it. */
+    --shadow-soft: rgb(7 23 34 / 0.14);
+    --shadow-rest: rgb(7 23 34 / 0.26);
+    --shadow-raised: rgb(7 23 34 / 0.35);
+    --shadow-deep: rgb(7 23 34 / 0.60);
+  }
+
+  /* One rhythm for the three interior bands, matching the homepage.
+     They were running at three different paddings — `.section`'s
+     clamp(3rem, 6vh, 5rem) for two of them and clamp(4rem, 10vh, 7rem)
+     for the thread. The hero keeps its own, larger, on purpose. */
+  .st-why,
+  .st-cap,
+  .st-thread { padding-block: clamp(4.5rem, 9vh, 7rem); }
+
+  /* ============================================================
      Shared studio bits
      ============================================================ */
   .st-eyebrow {
@@ -236,7 +354,7 @@ const ANSWER_CHARS = [...ANSWER];
     margin-bottom: 1.25rem;
   }
   .st-eyebrow-bar { width: 24px; height: 1px; background: var(--color-blue); }
-  .st-eyebrow-dark { color: rgba(255,255,255,0.55); }
+  .st-eyebrow-dark { color: var(--ink-fg-3); }
   .st-eyebrow-dark .st-eyebrow-bar { background: var(--color-periwinkle); }
 
   .st-title { font-size: var(--text-step-4); margin: 0; max-width: 18ch; line-height: 1.0; }
@@ -249,7 +367,7 @@ const ANSWER_CHARS = [...ANSWER];
     color: var(--color-fg-soft); font-variation-settings: "opsz" 60;
     text-wrap: pretty;
   }
-  .st-body-dark { color: rgba(255,255,255,0.78); }
+  .st-body-dark { color: var(--ink-fg-1); }
 
   /* ============================================================
      01 — HERO
@@ -258,13 +376,13 @@ const ANSWER_CHARS = [...ANSWER];
     position: relative; isolation: isolate; overflow: hidden;
     background: var(--color-ink); color: var(--color-paper);
     padding-block: clamp(5rem, 15vh, 10rem);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid var(--ink-seam);
   }
   .st-hero-glow {
     position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 55% 60% at 18% 28%, rgb(142 148 184 / 0.16), transparent 70%),
-      radial-gradient(ellipse 60% 60% at 88% 92%, rgb(20 70 103 / 0.50), transparent 70%);
+      radial-gradient(ellipse 55% 60% at 18% 28%, var(--peri-veil), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 88% 92%, var(--blue-veil), transparent 70%);
   }
   .st-hero-mark {
     position: absolute; right: -8%; top: 50%;
@@ -284,9 +402,13 @@ const ANSWER_CHARS = [...ANSWER];
     letter-spacing: -0.03em; max-width: 15ch;
   }
   .st-hero-title em { font-style: italic; color: var(--color-periwinkle); }
+  /* 54ch rather than 46: the lede is three sentences now, and at 46ch it stacked
+     into six short lines under a title set at step-6 — a narrow grey column
+     hanging off a very wide headline. Wider measure, four or five lines, and the
+     block reads as one paragraph against the title instead of a list. */
   .st-hero-lede {
-    margin: 2rem 0 0; color: rgba(255,255,255,0.74);
-    max-width: 46ch; font-size: var(--text-step-1);
+    margin: 2rem 0 0; color: var(--ink-fg-1);
+    max-width: 54ch; font-size: var(--text-step-1);
   }
   @media (max-width: 800px) {
     .st-hero-mark { right: -30%; height: 110%; }
@@ -300,15 +422,15 @@ const ANSWER_CHARS = [...ANSWER];
   /* Was `max-width: 46ch`, which resolves against the wrapper's body font
      (~17px), not the display type inside it. That capped the block near 390px
      and forced the headline into three cramped lines. Same trap as the hero. */
-  /* The heading steps back here: the struck lines below are the display
-     moment, so a second step-4 headline above them would fight for the same
-     job. Muted and one step down. */
+  /* Set like every other section heading on the site: step-4 and the default
+     ink from .st-title, and the blue italic that global.css gives .display em.
+     It ran a step down and muted for a while, on the argument that the struck
+     documents below were the display moment and a second step-4 line above
+     them would fight for the same job. Overruled — this band gets the same
+     heading as the others. Only the measure and leading stay local, and they
+     are layout rather than emphasis: 26ch keeps the sentence to two lines. */
   .st-why-head { max-width: min(46rem, 100%); }
-  .st-why-title {
-    font-size: var(--text-step-3); max-width: 26ch;
-    line-height: 1.1; color: var(--color-fg-muted);
-  }
-  .st-why-title em { color: var(--color-fg-soft); }
+  .st-why-title { max-width: 26ch; line-height: 1.1; }
 
   /* ============================================================
      THREE CONTRACTS. Two get voided on scroll, one stands. The
@@ -323,6 +445,18 @@ const ANSWER_CHARS = [...ANSWER];
   }
   @media (min-width: 820px) { .st-contracts { grid-template-columns: repeat(3, 1fr); } }
 
+  /* Every item is placed by hand. .st-answer deliberately overlaps the two
+     voided cells, and auto-placement refuses to put anything in a cell that is
+     already claimed — left to itself it would push the documents into rows of
+     their own below the answer. */
+  .st-contract:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .st-contract:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .st-contract:nth-child(3) { grid-column: 1; grid-row: 3; }
+  @media (min-width: 820px) {
+    .st-contract:nth-child(2) { grid-column: 2; grid-row: 1; }
+    .st-contract:nth-child(3) { grid-column: 3; grid-row: 1; }
+  }
+
   .st-contract {
     position: relative; overflow: hidden; isolation: isolate;
     display: flex; flex-direction: column;
@@ -331,7 +465,7 @@ const ANSWER_CHARS = [...ANSWER];
     background: var(--color-paper);
     border: 1px solid var(--color-line);
     border-radius: 14px;
-    box-shadow: 0 24px 50px -34px rgb(7 23 34 / 0.26);
+    box-shadow: 0 24px 50px -34px var(--shadow-rest);
     transition: box-shadow 360ms var(--ease-soft), transform 360ms var(--ease-soft);
   }
 
@@ -363,7 +497,7 @@ const ANSWER_CHARS = [...ANSWER];
   }
   .st-contract-clauses span {
     height: 5px; border-radius: 2px;
-    background: rgb(13 47 69 / 0.09);
+    background: var(--color-line);
   }
   .st-contract-clauses span.is-short { width: 58%; }
 
@@ -386,63 +520,226 @@ const ANSWER_CHARS = [...ANSWER];
   .st-contract.is-void .st-contract-h { color: var(--color-fg-muted); }
   .st-contract.is-void .st-contract-p { color: var(--color-fg-muted); }
 
-  /* One pen stroke corner to corner. Anchored at the bottom-left and rotated
-     up through the top-right; overshoot is clipped by the card's overflow.
+  /* One pen stroke, bottom-left corner to top-right corner.
      Ink, not the blue accent: blue marks the contract that stands, so using it
-     to cancel two others would have the accent saying both things at once. */
+     to cancel two others would have the accent saying both things at once.
+
+     This was a 2px bar rotated a hardcoded -44deg and run out to width: 160%,
+     with the overshoot left to the card's overflow to crop. A fixed angle and
+     a fixed length only meet the opposite corner at one aspect ratio, and
+     these cards are fluid in both axes — three columns at 1440, one at 390,
+     min-height 250px against 400px — so it landed short or ran past at almost
+     every width. The endpoints are now declared as geometry: (0,100) to
+     (100,0) in a square viewBox that preserveAspectRatio="none" stretches onto
+     whatever box the card actually is. Corner to corner by construction, at
+     any size, with no number to keep in sync.
+
+     preserveAspectRatio="none" is a non-uniform scale, which would smear a
+     stroked line into a wedge — thick where the box stretches, thin where it
+     doesn't. vector-effect="non-scaling-stroke" takes the stroke out of that
+     transform, so it stays a uniform 2 CSS px along the whole diagonal. */
   .st-contract-strike {
-    position: absolute; z-index: 2;
-    left: 0; top: 100%; width: 160%;
-    height: 2px; background: var(--color-navy); opacity: 0.55;
-    transform: rotate(-44deg) scaleX(0); transform-origin: left center;
-    transition: transform 900ms var(--ease-out-expo);
+    position: absolute; inset: 0; z-index: 2;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.55;
+    /* Drawn by opening a clip rather than by scaling the line. Scaling a
+       diagonal squeezes it — the whole stroke stays on screen and just gets
+       steeper — where a left-to-right wipe uncovers it. x rises monotonically
+       along this diagonal, so the leading tip travels the line exactly as the
+       rotated bar's did. Same 900ms, same easing, same delays: the second
+       strike still completes at 1800ms, which is what the recede is cut to. */
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 900ms var(--ease-out-expo);
   }
-  .st-contracts.is-inview .st-contract:nth-child(1) .st-contract-strike { transition-delay: 640ms; transform: rotate(-44deg) scaleX(1); }
-  .st-contracts.is-inview .st-contract:nth-child(2) .st-contract-strike { transition-delay: 900ms; transform: rotate(-44deg) scaleX(1); }
+  .st-contract-strike line { stroke: var(--color-navy); stroke-width: 2; }
+  .st-contracts.is-inview .st-contract:nth-child(1) .st-contract-strike { transition-delay: 640ms; clip-path: inset(0); }
+  .st-contracts.is-inview .st-contract:nth-child(2) .st-contract-strike { transition-delay: 900ms; clip-path: inset(0); }
+
+  /* ---- and then they step back ----
+     The second strike lands at 1800ms (900ms delay + 900ms draw), so the two
+     voided documents fade back from there. They do not move and they do not
+     leave: the argument is that these two receded behind the answer, not that
+     they were deleted, and on a phone the pair is what stops the stacked
+     column reading as a hole under the sentence.
+
+     0.3 is far enough back that the pair is a texture rather than something to
+     read — which is why both documents are aria-hidden and their terms are
+     carried by the .sr-only paragraph above the row. Display-sized type laid
+     over body copy is unreadable whatever the contrast ratio says, so that
+     copy is not left in the tree pretending otherwise.
+
+     This has to be a second animation rather than a transition. Every child of
+     .mv-stagger carries mvRise with `forwards`, and a filled animation outranks
+     any normal declaration, so a transition to a lower opacity here would
+     simply never take: mvRise pins these cards at opacity 1 for good. Listing
+     the recede after mvRise hands it the shared properties once its delay is
+     up, and re-declaring mvRise keeps the entry the shorthand would otherwise
+     drop. */
+  .st-contract.is-void { --rise: 0ms; --recede: 1800ms; }
+  .st-contract.is-void:nth-child(2) {
+    --rise: var(--motion-stagger-step); --recede: 1940ms;
+  }
+  .st-contracts.is-inview .st-contract.is-void {
+    animation:
+      mvRise var(--motion-dur-base) var(--ease-out-expo) var(--rise) both,
+      stVoidRecede 800ms var(--ease-out-expo) var(--recede) forwards;
+    /* Nothing to hover on a document that has stepped back, and a live card
+       under the answer would take the pointer and the text selection off it. */
+    pointer-events: none;
+  }
+  @keyframes stVoidRecede {
+    from { opacity: 1; }
+    to { opacity: 0.3; }
+  }
 
   /* ---- the one that stands ---- */
   .st-contract.is-signed {
     border-color: var(--color-blue);
-    box-shadow: 0 34px 64px -30px rgb(7 23 34 / 0.34);
+    box-shadow: 0 34px 64px -30px var(--shadow-raised);
   }
   .st-contract.is-signed .st-contract-k { color: var(--color-blue); font-weight: 500; }
   .st-contract.is-signed .st-contract-p { color: var(--color-fg); }
   .st-contract.is-signed .st-contract-term { color: var(--color-blue); }
   .st-contract.is-signed .st-contract-rule { background: var(--color-blue); opacity: 0.35; }
-  .st-contract.is-signed .st-contract-clauses span { background: rgb(20 70 103 / 0.12); }
+  .st-contract.is-signed .st-contract-clauses span { background: var(--blue-fill); }
   .st-contract.is-signed:hover { transform: translateY(-3px); }
 
-  @media (prefers-reduced-motion: reduce) {
-    .st-contract-strike { transform: rotate(-44deg) scaleX(1); }
+  /* ============================================================
+     THE ANSWER, ON TOP OF THE PAIR
+     A fourth grid item laid over the two voided cells. It waits
+     out the strikes and the recede, then writes itself across the
+     front of the two routes it replaces.
+     ============================================================ */
+  .st-answer {
+    /* Stacked layout: the two voided documents are rows 1 and 2. */
+    grid-column: 1; grid-row: 1 / 3;
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    /* Symmetric so the centring stays true, and wide enough to keep the line
+       off the signed document beside it. */
+    padding-inline: clamp(1rem, 2vw, 2.5rem);
+    /* .st-contracts carries .mv-stagger, which hands every child a paused
+       mvRise at opacity 0. This item runs its own choreography off the
+       container's .is-inview instead, so it opts out of that entirely. */
+    animation: none; opacity: 1; transform: none;
+  }
+  @media (min-width: 820px) {
+    /* Three across: the voided pair is columns 1 and 2 of the single row. */
+    .st-answer { grid-column: 1 / 3; grid-row: 1; }
+  }
+  /* Stacked, the answer is laid over two documents deep. Nothing is empty
+     behind it now that the pair stays put, but the documents are only four
+     short lines, a clause block and a footer — 250px is all three of them
+     need to still read as documents, and it keeps the band from running
+     three full-height cards down a phone. */
+  @media (max-width: 819px) {
+    .st-contract { min-height: 250px; }
   }
 
-  /* Display serif, full width. Every character occupies its real width from
-     first paint and only fades in, so nothing reflows mid-animation — that is
-     what makes a proportional face workable here. */
+  /* Nothing in here is visible before .st-contracts is observed — the
+     container is held at opacity 0 by [data-mv-watch] until then. So the
+     start state lives in the keyframes with `both` fill rather than as a
+     static opacity: 0, which means script-off leaves the answer legible
+     instead of blank, and the noscript rule that reveals [data-mv-watch]
+     reveals a finished line rather than an empty box. */
+
+  /* Display serif at title scale — the same step the section headings use, so
+     the resolution reads as a heading rather than as a caption under the cards.
+     Every character occupies its real width from first paint and only fades in,
+     so nothing reflows mid-animation; the wrap is fixed before a single
+     character has arrived. */
   .st-decode {
-    margin: clamp(2.25rem, 5vh, 3.25rem) 0 0;
-    font-size: var(--text-step-5);
-    /* No cap tight enough to force a wrap: this reads as one line. */
-    line-height: 1.1;
-    padding-bottom: 0.06em;
-    color: var(--color-navy);
-    max-width: 30ch;
+    margin: 0;
+    /* Its own ramp rather than --text-step-4, tuned so the line has real
+       clearance in the band where it nearly didn't.
+
+       The answer spans two of the three contract columns, which is ~0.58 of
+       the viewport, while --text-step-4 grows at 2.6vw. Between 820px (where
+       the three-column layout starts) and ~1020px (where the 18ch cap takes
+       over) those two rates leave the sentence at 435px inside a 468px box —
+       a 7% margin, close enough that a fallback serif, a different platform
+       rasteriser or a nudge to the copy flips it between one line and two.
+       At 2.4vw the same point has 23% clearance, and the top of the ramp is
+       within a hair of step-4's 3.85rem, so the desktop size is unchanged. */
+    font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.85rem);
+    /* .st-title's measure, as the *text's* measure. Everything is border-box
+       here, so the plate's padding has to be added back or the 18ch line
+       becomes a 13ch one and the sentence stacks three lines deep. On a wide
+       screen it still holds one line inside it; below that it breaks by word
+       rather than running the full width of the two cells it has been given. */
+    --plate-x: clamp(1.5rem, 3vw, 2.75rem);
+    --plate-y: clamp(1.1rem, 2.2vw, 1.75rem);
+    max-width: calc(18ch + var(--plate-x) * 2);
+    line-height: 1.05;
+    /* Insurance for the case the clearance above is still not enough: if it
+       does wrap, it wraps into two even lines rather than five words and an
+       orphan. */
+    text-wrap: balance;
+
+    /* ---- the plate ----
+       Its own object rather than type resting on the pair. Inverted rather
+       than paper: the three documents are the only white surfaces in this
+       band, so a paper panel with a hairline and a lift would read as a fourth
+       contract arguing with the signed one. Navy also leaves blue to the
+       signed document, which is the only thing on the page wearing it. No
+       kicker, no clause bars, no signature rule, and it hugs its own text
+       instead of filling a cell — none of the document furniture, so it reads
+       as a statement laid over the two routes it retires. */
+    padding: var(--plate-y) var(--plate-x);
+    background: var(--color-navy);
+    color: var(--color-paper);
+    /* Off the documents' 14px on purpose — near enough to belong to the same
+       family, far enough not to be mistaken for one of them. */
+    border-radius: 10px;
+    box-shadow: 0 30px 60px -26px var(--shadow-deep);
   }
-  .st-decode span {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(0.22em);
+  /* The plate is opaque, so unlike a bare line it cannot wait for its
+     characters to arrive — it would sit over the pair through the whole strike
+     sequence as an empty navy slab. It lands just before the first character
+     does. No static opacity: 0, so script-off still shows a finished plate. */
+  .st-contracts.is-inview .st-decode {
+    animation: stPlate 620ms var(--ease-out-expo) 2180ms both;
   }
-  .st-decode[data-mv-watch] { opacity: 1; }
-  /* Held back until both strike rules have finished drawing. The second rule
-     lands around 1460ms, so the answer starts writing just after it. */
-  .st-decode.is-inview span {
-    animation: stChar 520ms var(--ease-out-expo) forwards;
-    animation-delay: calc(1500ms + var(--i) * 28ms);
+  @keyframes stPlate {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.97); }
+    to { opacity: 1; transform: none; }
   }
-  @keyframes stChar { to { opacity: 1; transform: translateY(0); } }
+  /* One nowrap box per word — see the comment on ANSWER_WORDS. */
+  .st-decode-w { display: inline-block; white-space: nowrap; }
+  .st-decode-w > span { display: inline-block; }
+  /* Held until the pair is on its way back: the second document starts fading
+     at 1940ms, and the line writes itself across the plate as they settle. */
+  .st-contracts.is-inview .st-decode-w > span {
+    animation: stChar 480ms var(--ease-out-expo) both;
+    animation-delay: calc(2380ms + var(--i) * 26ms);
+  }
+  @keyframes stChar {
+    from { opacity: 0; transform: translateY(0.22em); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .st-decode span { opacity: 1; transform: none; animation: none; }
+    /* Fully drawn from the start. This is the strike's resting value rather
+       than a transition to run, so there is no delay left to collapse. */
+    .st-contract-strike { clip-path: inset(0); }
+
+    /* The overlap holds with motion off, because the pair no longer has to
+       leave for it to work — the recede just arrives instantly. Reduced motion
+       collapses durations but not delays, so it is re-declared here at a zero
+       delay rather than left to land two seconds after the section is read.
+       The plate's arrival and the character reveal both carry delays that
+       reduced motion would leave in place, so both are cancelled outright
+       rather than left to land two seconds after the section is read. */
+    .st-contracts.is-inview .st-contract.is-void {
+      animation:
+        mvRise var(--motion-dur-base) var(--ease-out-expo) var(--rise) both,
+        stVoidRecede 800ms var(--ease-out-expo) 0ms forwards;
+    }
+    .st-contracts.is-inview .st-decode { animation: none; }
+    .st-contracts.is-inview .st-decode-w > span { animation: none; }
   }
 
   /* ============================================================
@@ -460,8 +757,8 @@ const ANSWER_CHARS = [...ANSWER];
     border: 1px solid var(--color-line);
     border-radius: 16px;
     padding: clamp(1.5rem, 2.6vw, 2.25rem);
-    --sheen: rgb(13 47 69 / 0.10);
-    box-shadow: 0 40px 90px -50px rgb(7 23 34 / 0.35), 0 12px 30px -18px rgb(7 23 34 / 0.14);
+    --sheen: var(--color-line);
+    box-shadow: 0 40px 90px -50px var(--shadow-raised), 0 12px 30px -18px var(--shadow-soft);
     transition: transform 360ms var(--ease-soft), box-shadow 360ms var(--ease-soft);
   }
   .st-cap-card:hover { transform: translateY(-3px); }
@@ -495,7 +792,7 @@ const ANSWER_CHARS = [...ANSWER];
     display: grid; grid-template-columns: repeat(13, 1fr);
   }
   .st-cap-slots span {
-    border-right: 1px solid rgba(13,47,69,0.07);
+    border-right: 1px solid var(--color-hairline);
     border-radius: 2px;
   }
   .st-cap-slots span:last-child { border-right: 0; }
@@ -510,9 +807,9 @@ const ANSWER_CHARS = [...ANSWER];
     animation-delay: var(--d);
   }
   @keyframes stRun { from { transform: scaleX(0.02); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
-  .st-cap-run.is-done { background: rgba(13,47,69,0.10); color: var(--color-fg-soft); }
-  .st-cap-run.is-live { background: var(--color-navy); color: var(--color-paper); box-shadow: 0 10px 24px -12px rgba(7,23,34,0.6); }
-  .st-cap-run.is-next { background: rgba(142,148,184,0.28); color: var(--color-navy); }
+  .st-cap-run.is-done { background: var(--color-line); color: var(--color-fg-soft); }
+  .st-cap-run.is-live { background: var(--color-navy); color: var(--color-paper); box-shadow: 0 10px 24px -12px var(--shadow-deep); }
+  .st-cap-run.is-next { background: var(--peri-fill); color: var(--color-navy); }
   .st-cap-run.is-open {
     background: transparent; color: var(--color-blue);
     border: 1px dashed var(--color-line-strong);
@@ -541,14 +838,15 @@ const ANSWER_CHARS = [...ANSWER];
   /* ============================================================
      03 — THE CHAIN. One label, four times.
      ============================================================ */
+  /* padding-block comes from the shared band rule at the top of this
+     stylesheet — this band sits on the same rhythm as the other two. */
   .st-thread {
     position: relative; overflow: hidden;
     background: var(--color-ink); color: var(--color-paper);
-    padding-block: clamp(4rem, 10vh, 7rem);
   }
   .st-thread::before {
     content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(ellipse 60% 60% at 20% 0%, rgb(142 148 184 / 0.12), transparent 70%);
+    background: radial-gradient(ellipse 60% 60% at 20% 0%, var(--peri-veil), transparent 70%);
   }
   .st-thread .full { position: relative; z-index: 1; }
   .st-thread-grid {
@@ -580,7 +878,7 @@ const ANSWER_CHARS = [...ANSWER];
     letter-spacing: 0.14em; text-transform: uppercase;
     transition: opacity 500ms var(--ease-soft);
   }
-  .st-fold-cap-before { color: rgba(255,255,255,0.42); opacity: 1; }
+  .st-fold-cap-before { color: var(--ink-fg-4); opacity: 1; }
   .st-fold-cap-after { color: var(--color-periwinkle); opacity: 0; }
 
   /* Fixed height so the collapse never reflows the page around it. */
@@ -604,14 +902,18 @@ const ANSWER_CHARS = [...ANSWER];
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.04em; line-height: 1.35;
     /* Spread from centre by index, with a little rotation so they read as
-       separate physical objects rather than a row of divs. */
-    --spread: calc((var(--i) - 2) * clamp(112px, 18vw, 168px));
+       separate physical objects rather than a row of divs.
+       The step was 18vw / 168px, which at 1440 laid the five cards across
+       824px inside a ~700px column — the outer two ran past the section's
+       right edge and were clipped by its overflow, which reads as a bug
+       rather than as a crop. 9vw / 126px keeps the spread in the column. */
+    --spread: calc((var(--i) - 2) * clamp(84px, 9vw, 126px));
     --rot: calc((var(--i) - 2) * 2.5deg);
     margin: -42px 0 0 calc(clamp(104px, 17vw, 152px) * -0.5);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.16);
-    color: rgba(255,255,255,0.66);
-    box-shadow: 0 18px 40px -22px rgba(0,0,0,0.7);
+    background: var(--ink-fill);
+    border: 1px solid var(--ink-line);
+    color: var(--ink-fg-2);
+    box-shadow: 0 18px 40px -22px var(--shadow-deep);
     transform: translateX(var(--spread)) rotate(var(--rot));
     opacity: 1;
     /* Held spread for 1.3s before collapsing — the observer fires as soon as
@@ -636,7 +938,7 @@ const ANSWER_CHARS = [...ANSWER];
     background: var(--color-periwinkle);
     border: 1px solid var(--color-periwinkle);
     color: var(--color-navy);
-    box-shadow: 0 26px 60px -24px rgba(142,148,184,0.7);
+    box-shadow: 0 26px 60px -24px var(--peri-glow);
     opacity: 0;
     transition:
       opacity 700ms var(--ease-soft) 4300ms,
@@ -649,7 +951,7 @@ const ANSWER_CHARS = [...ANSWER];
   /* The mark's shadow layer is periwinkle, which is this card's background —
      it would vanish. Re-tint it so the mark keeps its two-layer offset. */
   .st-fold-solo :global(.st-fold-mark) > g:first-of-type path {
-    fill: rgba(13, 47, 69, 0.22);
+    fill: var(--peri-rule);
   }
   .st-fold-solo-label {
     font-family: var(--font-mono); font-size: var(--text-step--2);
@@ -659,7 +961,7 @@ const ANSWER_CHARS = [...ANSWER];
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem 0.9rem;
     padding-top: 0.8rem;
-    border-top: 1px solid rgba(13,47,69,0.22);
+    border-top: 1px solid var(--peri-rule);
     width: 100%;
   }
   .st-fold-stg { display: flex; flex-direction: column; gap: 0.15rem; text-align: center; }
@@ -674,18 +976,18 @@ const ANSWER_CHARS = [...ANSWER];
     font-style: normal;
     font-family: var(--font-mono); font-size: 10px;
     line-height: 1.35; letter-spacing: 0.02em;
-    color: rgba(13,47,69,0.62);
+    color: var(--peri-fg-1);
     max-height: 0; opacity: 0; overflow: hidden;
     transition: max-height 420ms var(--ease-soft), opacity 300ms var(--ease-soft);
   }
   @media (hover: hover) and (pointer: fine) {
     .st-fold-solo:hover .st-fold-stg i { max-height: 4rem; opacity: 1; }
-    .st-fold-solo:hover { box-shadow: 0 34px 70px -22px rgba(142,148,184,0.85); }
+    .st-fold-solo:hover { box-shadow: 0 34px 70px -22px var(--peri-glow-strong); }
   }
   .st-fold-solo-hint {
     font-family: var(--font-mono); font-size: 9px;
     letter-spacing: 0.16em; text-transform: uppercase;
-    color: rgba(13,47,69,0.45);
+    color: var(--peri-fg-2);
     transition: opacity 300ms var(--ease-soft);
   }
   @media (hover: hover) and (pointer: fine) {

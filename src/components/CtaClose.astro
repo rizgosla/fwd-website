@@ -114,19 +114,26 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
 
     <pre class:list={["ctc-ascii", mark === "paper" && "is-paper"]} data-ascii aria-hidden="true"></pre>
 
-    {ticker.length > 0 && (
-      <div class="ctc-ticker" aria-hidden="true" style={`--ctc-reps:${tickerReps}`}>
-        <div class="ctc-ticker-track">
-          {[...ticker, ...ticker, ...ticker, ...ticker].map((t) => (
-            <><span>{t}</span><span class="dot">●</span></>
-          {Array.from({ length: tickerReps }, () => (
-            <div class="ctc-ticker-copy">
-              {ticker.map((t) => (
-                <><span>{t}</span><span class="dot">●</span></>
+    {/* One row for everything that never stops moving: the ticker, and the
+        button that halts it *and* the cycling word above. The button has to be
+        a sibling of .ctc-ticker rather than a child — the ticker's edge mask
+        would fade the control out along with the text. */}
+    {(ticker.length > 0 || words.length > 0) && (
+      <div class="ctc-motion" style={`--ctc-reps:${tickerReps}`}>
+        {ticker.length > 0 && (
+          <div class="ctc-ticker" aria-hidden="true">
+            <div class="ctc-ticker-track">
+              {Array.from({ length: tickerReps }, () => (
+                <div class="ctc-ticker-copy">
+                  {ticker.map((t) => (
+                    <><span>{t}</span><span class="dot">●</span></>
+                  ))}
+                </div>
               ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+        <button type="button" class="ctc-pause" data-ctc-pause>Pause</button>
       </div>
     )}
   </div>
@@ -254,7 +261,7 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
       align-self: center;
       aspect-ratio: 4 / 3;
     }
-    .ctc-ticker { grid-column: 1 / -1; grid-row: 2; }
+    .ctc-motion { grid-column: 1 / -1; grid-row: 2; }
   }
 
   .ctc-eyebrow {
@@ -352,11 +359,20 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     color: var(--color-navy);
   }
 
-  .ctc-ticker {
+  /* The rule and the spacing above it belong to the row, not the ticker, so
+     they still span the full width now that the button shares the line. */
+  .ctc-motion {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
     width: 100%;
     margin-top: clamp(2rem, 5vh, 3.5rem);
     padding-top: 1.25rem;
     border-top: 1px solid var(--ctc-line);
+  }
+  .ctc-ticker {
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
@@ -390,6 +406,39 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     white-space: nowrap;
   }
   .ctc-ticker-copy .dot { color: var(--ctc-accent); font-size: 0.6em; }
+
+  /* WCAG 2.2.2 — the cycling word and the ticker both run forever, and
+     prefers-reduced-motion only covers people who set it. One control stops
+     both: they are the only moving parts of this section, so a second button
+     would only ask the reader to work out which is which. Sits at the end of
+     the ticker line, in the zone the mask has already faded out, so it takes
+     nothing away from the strip. Styled after .walkthrough-controls button on
+     /services, in this section's tone tokens rather than that band's fixed
+     white. Focus ring comes from the global :focus-visible rule. */
+  .ctc-pause {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ctc-muted);
+    background: transparent;
+    border: 1px solid var(--ctc-line);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    /* PAUSE and PLAY differ in width; a fixed slot stops the pill resizing
+       under the cursor when it is clicked. */
+    min-width: 7ch;
+    text-align: center;
+    cursor: pointer;
+    transition: color 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
+  }
+  .ctc-pause:hover { color: var(--ctc-fg); border-color: var(--ctc-accent); }
+
+  /* Freezes both animations mid-flight rather than resetting them, so the word
+     showing when you press Pause is the word that stays. */
+  .ctc.is-paused .ctc-swap-item,
+  .ctc.is-paused .ctc-ticker-track { animation-play-state: paused; }
   /* One copy, exactly — the copies are identical, so 100%/reps is one of them
      whatever they measure. A hard -50% only lands on a copy boundary when
      there are two of them, and even then it is off by the trailing gap.
@@ -405,6 +454,8 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     .ctc-swap-item:first-child { opacity: 1; }
     .ctc-ticker-track { animation: none; }
     .ctc-dot { animation: none; }
+    /* Nothing left to pause, so the control would be dead weight. */
+    .ctc-pause { display: none; }
   }
 
   @media (max-width: 700px) {
@@ -412,6 +463,23 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     .ctc-ascii { opacity: 0.13; }
   }
 </style>
+
+<script is:inline>
+  // Pause control. The label carries the state instead of aria-pressed: for a
+  // pause control the accessible name IS the state, and doing both announces
+  // contradictions like "Play, pressed". Scoped to the button's own section so
+  // two of these on one page (as the preview route renders) stay independent.
+  (() => {
+    if (window.__ctcPause) return; // one initialiser per page, not per instance
+    window.__ctcPause = true;
+    document.querySelectorAll("[data-ctc-pause]").forEach((btn) => {
+      const section = btn.closest(".ctc");
+      btn.addEventListener("click", () => {
+        btn.textContent = section.classList.toggle("is-paused") ? "Play" : "Pause";
+      });
+    });
+  })();
+</script>
 
 <script is:inline>
   // ASCII render of the brand mark. Rasterises /assets/fwd-logo.svg into a

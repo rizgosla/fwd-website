@@ -15,9 +15,11 @@ const work = defineCollection({
     image: z.string().optional(),
     order: z.number().default(0),
     /** "client" (default) is shipped work for a paying client. "mockup" is a
-     *  self-directed redesign of an existing site, not commissioned work —
-     *  the card marks it as such. */
-    kind: z.enum(["client", "mockup"]).default("client"),
+     *  self-directed redesign of an existing site, not commissioned work.
+     *  "in-progress" is commissioned work that has not launched yet — the
+     *  linked site is still the old one. Anything but "client" gets a badge,
+     *  so a visitor is never told a project is finished when it isn't. */
+    kind: z.enum(["client", "mockup", "in-progress"]).default("client"),
   }),
 });
 

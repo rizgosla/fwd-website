@@ -43,7 +43,7 @@ const navLinks = site.navLinks ?? [];
       {/* dark nav — logo + real links + order pill, just like the live site */}
       <div class="sp-bar">
         {site.logo
-          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="lazy" />
+          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="eager" />
           : <span class="sp-logo-text">{site.name}</span>}
         {navLinks.length > 0 ? (
           <nav class="sp-bar-nav" aria-hidden="true">
@@ -70,10 +70,17 @@ const navLinks = site.navLinks ?? [];
         </div>
       )}
 
-      {/* photo hero */}
+      {/* photo hero.
+
+          Eager + high priority because this component only ever renders inside
+          the home-page hero, above the fold — `lazy` bought nothing there (an
+          in-viewport image is fetched immediately regardless) and cost the
+          image its shot at being the LCP candidate. alt is empty on purpose:
+          it is a scrimmed backdrop for the copy sitting on top of it, and the
+          whole slide is already labelled "Visit <name>" by HeroShowcase. */}
       <div class="sp-hero">
         {site.image && (
-          <img class="sp-photo" src={site.image} alt="" loading="lazy" decoding="async" />
+          <img class="sp-photo" src={site.image} alt="" loading="eager" fetchpriority="high" decoding="async" />
         )}
         <div class="sp-scrim" aria-hidden="true"></div>
         <div class="sp-hero-copy">
@@ -91,7 +98,7 @@ const navLinks = site.navLinks ?? [];
       {/* faux nav */}
       <div class="sp-nav">
         {site.logo
-          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="lazy" />
+          ? <img class="sp-logo" src={site.logo} alt={site.name} loading="eager" />
           : <span class="sp-logo-text">{site.name}</span>}
         <span class="sp-nav-links" aria-hidden="true">
           <span></span><span></span><span></span>

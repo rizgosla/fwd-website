@@ -55,9 +55,42 @@ const serviceLinks = [
 
       <div class="ft-col">
         <h2 id="ft-contact-heading" class="ft-label">Contact</h2>
+        {/*
+          Phone, email and place are plain text nodes on purpose — this column
+          is the site's NAP block, and a crawler only counts what it can read.
+          Nothing here is CSS content or an image.
+
+          The number is formatted for a human, (949) 529-6035, and dialled as
+          E.164 in the href so a phone doesn't have to guess the country.
+
+          "Orange County, CA" rather than the city: the business is registered
+          in Orange and works across the county, so it's both the truer answer
+          and the phrase people actually search.
+        */}
         <ul>
+          <li><a href="tel:+19495296035">(949) 529-6035</a></li>
           <li><a href="mailto:fwddesignconsulting@gmail.com">fwddesignconsulting@gmail.com</a></li>
-          <li><span class="ft-static">Irvine, CA</span></li>
+          <li><span class="ft-static">Orange County, CA</span></li>
+          {/*
+            The one social link on the site, and it lives here rather than in a
+            row of its own: LinkedIn is how a prospective client checks a studio
+            is real, which is the same job as the phone number sitting above it.
+            A separate social row would also mean a fourth block competing with
+            the legal line for the space under the grid.
+
+            The glyph is aria-hidden and the visible word carries the accessible
+            name, so this reads as "LinkedIn" out of context rather than as an
+            unnamed link. It paints in currentColor, so it inherits the 0.78
+            white and turns periwinkle on hover along with the text.
+          */}
+          <li>
+            <a class="ft-social" href="https://www.linkedin.com/company/forward-design-consulting-llc" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+              </svg>
+              LinkedIn
+            </a>
+          </li>
           <li><a href="/contact">Start a project</a></li>
         </ul>
       </div>
@@ -229,6 +262,21 @@ const serviceLinks = [
     border-radius: 2px;
   }
   .ft-static { color: rgba(255,255,255,0.55); }
+
+  /* Only what's needed to sit a glyph next to a word: inline-flex so the two
+     stay on one line, and an em-sized icon so it tracks --text-step--1 instead
+     of needing its own number. Everything else — colour, the underline wipe,
+     the focus ring — is already inherited from .ft-col a. */
+  .ft-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ft-social svg {
+    width: 0.95em;
+    height: 0.95em;
+    flex: none;
+  }
 
   /* Legal line — sits below the link grid, not a fourth column. */
   .ft-legal {
