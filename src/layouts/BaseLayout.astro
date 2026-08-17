@@ -6,12 +6,152 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
   description?: string;
+  /** Path under /public to a 1200x630 share image. Defaults to /og/default.jpg. */
+  ogImage?: string;
 }
 
 const {
-  title = "Forward Design Consulting - Websites that earn their place online",
-  description = "Forward Design Consulting is a small web design studio crafting clean, considered websites for practices and small businesses. Flat pricing. Honest timelines.",
+  title = "Web Design in Orange County | Forward Design Consulting",
+  description = "Forward Design Consulting builds clean, fast websites for Orange County businesses. A small studio, flat fee, no retainers.",
+  /* Every page gets a share image whether or not it asks for one. Left
+     undefined, a link pasted into LinkedIn or iMessage renders as a bare
+     text card, which reads as an unfinished site regardless of the copy. */
+  ogImage = "/og/default.jpg",
 } = Astro.props;
+
+/* Self-referencing canonical. Without this, www/non-www and trailing-slash
+   variants of the same page split their ranking signal between each other. */
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+/* og:image must be an absolute URL — the spec requires it and most scrapers
+   will not resolve a root-relative path against the page they fetched. */
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+/* Constant rather than derived from `title`: the alt describes the artwork in
+   the card, which is the same picture on every page, not the page's subject. */
+const ogImageAlt =
+  "Forward Design Consulting — web design studio serving Orange County, California";
+
+/* Declared once and reused by both the Organization and the LocalBusiness.
+   These two entities describe the same real company, so a profile URL that
+   drifted between them would look like two different businesses to a
+   crawler — the same inconsistent-NAP failure that breaks local ranking. */
+const sameAs = [
+  "https://www.linkedin.com/company/forward-design-consulting-llc",
+];
+
+/* Structured data as a single @graph rather than a lone business node.
+   Three separate concerns are being asserted and Google reads them from
+   different entity types:
+     - Organization  — who the company is, for the Knowledge Panel and for
+       anything that needs a stable publisher to point at.
+     - WebSite       — what this *site* is called. The site name Google
+       prints above the URL in a result comes from here, not from <title>.
+     - LocalBusiness — the Orange County web design studio, which is what
+       distinguishes this "Forward Design Consulting" from the architecture
+       practice in Kansas City with nearly the same name.
+   They are wired together by @id so Google treats them as one company with
+   three facets instead of three unrelated things that happen to share a name.
+
+   ProfessionalService was used here before. schema.org has since deprecated
+   it as a vague catch-all and Google's LocalBusiness documentation no longer
+   references it, so the concrete LocalBusiness type replaces it.
+
+   NAP values below must stay identical to the Google Business Profile
+   listing — inconsistent name/address/phone data is what breaks local
+   ranking, and it breaks it silently.
+
+   Three properties are omitted on purpose, not by oversight:
+     - openingHoursSpecification — we have no verified, published hours.
+       Invented hours are a factual claim we would have to honour.
+     - geo — there is no public office. A lat/long would assert a physical
+       location that a customer could show up to, and none exists.
+     - aggregateRating / review — Google prohibits self-serving review
+       markup on your own business, and there are no real reviews to cite. */
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://fwddesignconsulting.com/#organization",
+      name: "Forward Design Consulting",
+      url: "https://fwddesignconsulting.com",
+      /* Logo as a full ImageObject with explicit dimensions: Google requires
+         a logo it can fetch and measure, and the bare-URL shorthand leaves
+         it guessing at the aspect ratio. */
+      logo: {
+        "@type": "ImageObject",
+        url: "https://fwddesignconsulting.com/icon-512.png",
+        width: 512,
+        height: 512,
+      },
+      image: "https://fwddesignconsulting.com/og/default.jpg",
+      sameAs,
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+1-949-529-6035",
+        contactType: "customer service",
+        areaServed: "US",
+        availableLanguage: "English",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://fwddesignconsulting.com/#website",
+      url: "https://fwddesignconsulting.com",
+      name: "Forward Design Consulting",
+      publisher: { "@id": "https://fwddesignconsulting.com/#organization" },
+      /* No potentialAction/SearchAction here. Google retired the sitelinks
+         searchbox on 2024-11-21, so that markup is now inert weight. */
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://fwddesignconsulting.com/#localbusiness",
+      name: "Forward Design Consulting",
+      description:
+        "Web design studio serving Orange County, California. Flat-fee websites for small businesses and practices.",
+      url: "https://fwddesignconsulting.com",
+      telephone: "+1-949-529-6035",
+      email: "fwddesignconsulting@gmail.com",
+      priceRange: "$$",
+      image: "https://fwddesignconsulting.com/og/default.jpg",
+      /* LocalBusiness requires an address, so this is the service area only —
+         no street line, because there is no walk-in office. Deliberately the
+         county rather than a city: every visible mention on the site says
+         "Orange County", and the one thing that reliably breaks local ranking
+         is the markup disagreeing with the copy or the Business Profile. */
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Orange County",
+        addressRegion: "CA",
+        addressCountry: "US",
+      },
+      sameAs,
+      parentOrganization: {
+        "@id": "https://fwddesignconsulting.com/#organization",
+      },
+      /* The county is an AdministrativeArea, not a City — it was typed as one
+         alongside the cities before, which asserts a place that doesn't
+         exist. The cities stay City. */
+      areaServed: [
+        ...[
+          "Irvine",
+          "Newport Beach",
+          "Costa Mesa",
+          "Tustin",
+          "Santa Ana",
+          "Anaheim",
+          "Huntington Beach",
+        ].map((name) => ({ "@type": "City", name })),
+        { "@type": "AdministrativeArea", name: "Orange County" },
+      ],
+      knowsAbout: [
+        "Web design",
+        "Website redesign",
+        "Small business websites",
+        "Responsive web design",
+      ],
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -22,13 +162,52 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0D2F45" />
+    <link rel="canonical" href={canonical} />
 
-    {/* Inline-SVG favicon — same mark as the original, periwinkle dot accent */}
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href={`data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D2F45'/><text x='50%25' y='58%25' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='16' fill='white'>n</text><circle cx='22' cy='22' r='2' fill='%238E94B8'/></svg>`}
+    {/* Open Graph / Twitter — without these, a link shared to LinkedIn, Slack
+        or iMessage renders as a bare URL with no title, blurb or image. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Forward Design Consulting" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    {/* Guards kept even though ogImage now defaults: a page can still opt out
+        by passing ogImage={undefined} explicitly, and an og:image tag with an
+        empty content attribute is worse than no tag at all. */}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta property="og:image:width" content="1200" />}
+    {ogImageUrl && <meta property="og:image:height" content="630" />}
+    {ogImageUrl && <meta property="og:image:alt" content={ogImageAlt} />}
+    {ogImageUrl && <meta property="og:image:type" content="image/jpeg" />}
+    <meta
+      name="twitter:card"
+      content={ogImageUrl ? "summary_large_image" : "summary"}
     />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    {/* Organization + WebSite + LocalBusiness graph. Sitewide rather than
+        homepage-only so the entity is reinforced on whichever page Google
+        crawls first. */}
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
+
+    {/* Favicons as real files. The previous mark was an inline data: URI,
+        which renders fine in a browser tab but has no URL for Googlebot to
+        fetch — so it could never appear beside the result in search. These
+        paths must exist under /public.
+        .ico covers legacy browsers and is what Google prefers to crawl,
+        .svg scales and can respond to dark mode, the apple-touch-icon is
+        used when the site is saved to an iOS home screen, and the manifest
+        supplies the name and larger icons for Android install prompts. */}
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     {/* Fonts: Fraunces (display serif) + Inter Tight (body).
         Oswald + Lora are loaded too — the hero showcase renders shipped sites

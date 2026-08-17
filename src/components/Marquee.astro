@@ -11,8 +11,11 @@ const phrases = [
 ];
 ---
 
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
+{/* aria-hidden sits on the track, not the band: the band now also holds the
+    pause button, and a focusable control inside an aria-hidden subtree is
+    reachable by keyboard but absent from the accessibility tree. */}
+<div class="marquee">
+  <div class="marquee-track" aria-hidden="true">
     <div class="marquee-row">
       {phrases.map((p) => (
         <span class="marquee-item">
@@ -28,10 +31,14 @@ const phrases = [
       ))}
     </div>
   </div>
+
+  <button type="button" class="marquee-pause" data-marquee-pause>Pause</button>
 </div>
 
 <style>
   .marquee {
+    /* positioning context for the pause control */
+    position: relative;
     border-block: 1px solid var(--color-line);
     background: var(--color-paper);
     overflow: hidden;
@@ -42,6 +49,9 @@ const phrases = [
     width: max-content;
     animation: marquee 40s linear infinite;
   }
+  /* Freezes the strip where it stands rather than resetting it, so pausing
+     does not jump the phrases sideways. */
+  .marquee.is-paused .marquee-track { animation-play-state: paused; }
   .marquee-row {
     display: flex;
     gap: 44px;
@@ -68,7 +78,56 @@ const phrases = [
   @keyframes marquee {
     to { transform: translateX(-50%); }
   }
+
+  /* WCAG 2.2.2 — the band scrolls forever, so it needs a stop that is not
+     conditional on an OS setting. Hover-pause alone (what the pre-component
+     version of this CSS did) never reaches a keyboard user, so this is a real
+     button instead. It floats over the right end of the band rather than
+     taking a column out of it, which would have pulled the full-bleed strip in
+     from the viewport edge. Aligned to --pad-x so it sits on the same right
+     margin as the page content above and below. */
+  .marquee-pause {
+    position: absolute;
+    right: var(--pad-x);
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    /* PAUSE and PLAY differ in width; a fixed slot stops the pill resizing
+       under the cursor when it is clicked. */
+    min-width: 7ch;
+    text-align: center;
+    cursor: pointer;
+    transition: color 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
+  }
+  .marquee-pause:hover { color: var(--color-fg); border-color: var(--color-periwinkle); }
+
   @media (prefers-reduced-motion: reduce) {
     .marquee-track { animation: none; }
+    /* Nothing left to pause, so the control would be dead weight. */
+    .marquee-pause { display: none; }
   }
 </style>
+
+<script is:inline>
+  // The label carries the state instead of aria-pressed: for a pause control
+  // the accessible name IS the state, and doing both announces contradictions
+  // like "Play, pressed".
+  (() => {
+    if (window.__marqueePause) return; // one initialiser per page, not per instance
+    window.__marqueePause = true;
+    document.querySelectorAll("[data-marquee-pause]").forEach((btn) => {
+      const band = btn.closest(".marquee");
+      btn.addEventListener("click", () => {
+        btn.textContent = band.classList.toggle("is-paused") ? "Play" : "Pause";
+      });
+    });
+  })();
+</script>

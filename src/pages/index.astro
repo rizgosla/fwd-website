@@ -5,9 +5,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Marquee from "../components/Marquee.astro";
 import HeroShowcase from "../components/HeroShowcase.astro";
 import CtaClose from "../components/CtaClose.astro";
+import BrandMark from "../components/BrandMark.astro";
 ---
 
-<BaseLayout title="Forward Design Consulting - Websites that earn their place online">
+<BaseLayout
+  title="Web Design in Orange County | Forward Design Consulting"
+  description="A small web design studio in Orange County building fast, flat-fee websites for local businesses. One price, about four weeks, and you own everything."
+  ogImage="/og/home.jpg"
+>
 <!-- ============ HERO with idle motion baked in ============ -->
   <section class="hero-outer">
     <div class="hero">
@@ -35,7 +40,7 @@ import CtaClose from "../components/CtaClose.astro";
       <div class="meta-strip-grid mv-stagger" data-mv-watch>
         <div class="meta-cell">
           <span class="meta-key">Studio size</span>
-          <strong class="meta-val">Small, on purpose</strong>
+          <strong class="meta-val">Agency Style: Personalized team for every need</strong>
         </div>
         <div class="meta-cell">
           <span class="meta-key">Typical turnaround</span>
@@ -142,226 +147,419 @@ import CtaClose from "../components/CtaClose.astro";
     </div>
   </section>
 
-  <!-- ============ PROCESS — alternating stacked layout, large visuals ============ -->
+  <!-- ============ PROCESS — 4-up grid, one card expands at a time ============ -->
   <section class="section section-process">
     <div class="full">
+      {/* Wrapped so this head sits on the same two-column .section-head grid as
+          the offer and service-area heads — eyebrow + title in column one, the
+          sub in column two. It used to be a full-width flex column, which put
+          three section heads on the page with three different measures. */}
       <div class="section-head mv-rise" data-mv-watch>
-        <span class="section-eyebrow"><span class="section-eyebrow-bar"></span>The process</span>
-        <h2 class="display section-title">A simple, <em>honest</em> process.</h2>
+        <div class="section-head-lead">
+          <span class="section-eyebrow"><span class="section-eyebrow-bar"></span>The process</span>
+          <h2 class="display section-title">A simple, <em>honest</em> process.</h2>
+        </div>
         <p class="section-sub">Four steps. About a month, start to live. No long discovery, no kickoff deck, no signed contract for a chat.</p>
       </div>
+
+      {/* Four cards in one row that trade space with each other.
+
+          At rest each card IS its step's mockup: numeral, step, title, then the
+          graphic filling everything below them. Hover or focus brings the words
+          — summary, detail and caption — up over the graphic on an ink panel.
+          The graphic is the card's identity; the copy is what you get for
+          asking.
+
+          Each card's head is a real link, so the reveal is reachable with Tab
+          (:focus-within, not :hover alone). The copy is *clipped* by the
+          window's overflow, never hidden — no display:none, no
+          visibility:hidden — so a screen reader reads all four cards in full
+          whatever the visual state. Below 1040px, and under reduced motion at
+          any width, the panel is a plain block in the flow and every card
+          stands open. */}
+      <ol class="process-grid mv-rise" data-mv-watch>
+        <li class="process-card">
+          <a class="pc-head" href="/services">
+            <span class="pc-glyph" aria-hidden="true">i.</span>
+            <span class="pc-step">Step 01<span class="pc-cue" aria-hidden="true">→</span></span>
+            <h3 class="pc-title">A short call.</h3>
+          </a>
+          <div class="pc-window">
+            <div class="pc-reveal">
+              <p class="pc-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.</p>
+              <p class="pc-more">No deck, no discovery phase, no contract to have a conversation. If we're not the right fit, we'll say so on the call.</p>
+              <span class="pc-meta">— No prep required</span>
+            </div>
+          <div class="pc-visual" aria-hidden="true">
+            <div class="pc-stage">
+              <div class="ps-visual-frame ps-frame-call">
+                <div class="ps-cal">
+                  <div class="ps-cal-head">
+                    <div class="ps-cal-head-l">
+                      <span class="ps-cal-eyebrow">Pick a time that works</span>
+                      <h4 class="ps-cal-month">May 2026</h4>
+                    </div>
+                    <span class="ps-cal-pill">15 MIN · INTRO</span>
+                  </div>
+                  <div class="ps-cal-dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+                  <div class="ps-cal-grid">
+                    <span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span>1</span><span>2</span>
+                    <span>3</span><span class="avail">4</span><span class="avail">5</span><span>6</span><span class="avail">7</span><span class="avail">8</span><span>9</span>
+                    <span>10</span><span class="avail">11</span><span>12</span><span class="avail">13</span><span class="avail picked">14</span><span class="avail">15</span><span>16</span>
+                    <span>17</span><span>18</span><span class="avail">19</span><span class="avail">20</span><span class="avail">21</span><span>22</span><span>23</span>
+                    <span>24</span><span class="avail">25</span><span class="avail">26</span><span>27</span><span class="avail">28</span><span class="avail">29</span><span>30</span>
+                  </div>
+                  <div class="ps-cal-foot">
+                    <div class="ps-cal-slot">
+                      <span class="ps-cal-slot-dot"></span>
+                      <div class="ps-cal-slot-meta">
+                        <span class="ps-cal-slot-day">Thursday, May 14</span>
+                        <span class="ps-cal-slot-time">2:00 PM EST</span>
+                      </div>
+                      <span class="ps-cal-slot-cta">Confirmed →</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </li>
+
+        <li class="process-card">
+          <a class="pc-head" href="/services">
+            <span class="pc-glyph" aria-hidden="true">ii.</span>
+            <span class="pc-step">Step 02<span class="pc-cue" aria-hidden="true">→</span></span>
+            <h3 class="pc-title">Design draft <em>in your browser</em>.</h3>
+          </a>
+          <div class="pc-window">
+            <div class="pc-reveal">
+              <p class="pc-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.</p>
+              <p class="pc-more">It arrives as a live draft URL. Open it on your phone, send it to a business partner, click every link. What you're looking at is the site that ships.</p>
+              <span class="pc-meta">— Delivered in week one</span>
+            </div>
+          <div class="pc-visual" aria-hidden="true">
+            <div class="pc-stage">
+              <div class="ps-visual-frame ps-frame-draft">
+                <div class="ps-draft">
+                  <div class="ps-draft-chrome">
+                    <div class="ps-draft-dots"><span></span><span></span><span></span></div>
+                    <div class="ps-draft-url"><span class="ps-draft-lock"></span>draft.fwddesignconsulting.com</div>
+                    <span class="ps-draft-tag">DRAFT · V1</span>
+                  </div>
+                  <div class="ps-draft-body">
+                    <div class="ps-draft-nav">
+                      <div class="ps-draft-logo"></div>
+                      <div class="ps-draft-links"><span></span><span></span><span></span><span></span></div>
+                      <div class="ps-draft-navcta"></div>
+                    </div>
+                    <div class="ps-draft-hero">
+                      <div class="ps-draft-eye"></div>
+                      <div class="ps-draft-h1"></div>
+                      <div class="ps-draft-h1 w2"></div>
+                      <div class="ps-draft-lede"></div>
+                      <div class="ps-draft-lede short"></div>
+                      <div class="ps-draft-cta mv-sweep"></div>
+                    </div>
+                    <div class="ps-draft-cards">
+                      <div class="ps-draft-card"><span></span><span class="sm"></span></div>
+                      <div class="ps-draft-card"><span></span><span class="sm"></span></div>
+                      <div class="ps-draft-card"><span></span><span class="sm"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </li>
+
+        <li class="process-card">
+          <a class="pc-head" href="/services">
+            <span class="pc-glyph" aria-hidden="true">iii.</span>
+            <span class="pc-step">Step 03<span class="pc-cue" aria-hidden="true">→</span></span>
+            <h3 class="pc-title">Three rounds of <em>revisions</em>.</h3>
+          </a>
+          <div class="pc-window">
+            <div class="pc-reveal">
+              <p class="pc-body">Comments in the margin, edits the same week. Three rounds are included — we adjust until it feels right, then lock it.</p>
+              <p class="pc-more">Leave notes whenever it suits you. We work through them in batches instead of chasing you for approvals, and nothing here is billed by the hour.</p>
+              <span class="pc-meta">— Async, on your time</span>
+            </div>
+          <div class="pc-visual" aria-hidden="true">
+            <div class="pc-stage">
+              <div class="ps-visual-frame ps-frame-rev">
+                <div class="ps-rev">
+                  <div class="ps-rev-doc">
+                    <div class="ps-rev-doc-head">
+                      <span class="ps-rev-doc-tab">draft.fwddesignconsulting.com</span>
+                      <span class="ps-rev-doc-saved">Saved · 2m ago</span>
+                    </div>
+                    <div class="ps-rev-doc-body">
+                      <div class="ps-rev-eye"></div>
+                      <div class="ps-rev-h"></div>
+                      <div class="ps-rev-line" style="width:98%"></div>
+                      <div class="ps-rev-line edit" style="width:92%"><span class="ps-rev-caret"></span></div>
+                      <div class="ps-rev-line struck" style="width:82%"></div>
+                      <div class="ps-rev-line added" style="width:95%"></div>
+                      <div class="ps-rev-line" style="width:88%"></div>
+                      <div class="ps-rev-line" style="width:73%"></div>
+                      <div class="ps-rev-h sub" style="width:44%"></div>
+                      <div class="ps-rev-line" style="width:96%"></div>
+                      <div class="ps-rev-line" style="width:99%"></div>
+                      <div class="ps-rev-line" style="width:90%"></div>
+                      <div class="ps-rev-line" style="width:97%"></div>
+                      <div class="ps-rev-line" style="width:64%"></div>
+                    </div>
+                  </div>
+                  <div class="ps-rev-comments">
+                    <div class="ps-rev-comment">
+                      <div class="ps-rev-avatar">J</div>
+                      <div class="ps-rev-bubble">
+                        <div class="ps-rev-meta"><span class="ps-rev-name">Jess</span><span class="ps-rev-time">2m</span></div>
+                        <div class="ps-rev-text">Punchier headline?</div>
+                      </div>
+                    </div>
+                    <div class="ps-rev-comment offset">
+                      <div class="ps-rev-avatar alt">F</div>
+                      <div class="ps-rev-bubble">
+                        <div class="ps-rev-meta"><span class="ps-rev-name">forward</span><span class="ps-rev-time">just now</span></div>
+                        <div class="ps-rev-text">Updated ✓</div>
+                      </div>
+                    </div>
+                    <div class="ps-rev-comment">
+                      <div class="ps-rev-avatar">J</div>
+                      <div class="ps-rev-bubble">
+                        <div class="ps-rev-meta"><span class="ps-rev-name">Jess</span><span class="ps-rev-time">now</span></div>
+                        <div class="ps-rev-text">Perfect — lock it in.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </li>
+
+        <li class="process-card">
+          <a class="pc-head" href="/services">
+            <span class="pc-glyph" aria-hidden="true">iv.</span>
+            <span class="pc-step">Step 04<span class="pc-cue" aria-hidden="true">→</span></span>
+            <h3 class="pc-title">Launch.</h3>
+          </a>
+          <div class="pc-window">
+            <div class="pc-reveal">
+              <p class="pc-body">We connect your domain, set up hosting, and hand over a clean doc you can actually read. Live the same day.</p>
+              <p class="pc-more">Domain, hosting, SSL and analytics are set up for you. You get a handoff doc, every file is yours to keep, and we're an email away when something needs changing.</p>
+              <span class="pc-meta">— Up in minutes, not weeks</span>
+            </div>
+          <div class="pc-visual" aria-hidden="true">
+            <div class="pc-stage">
+              <div class="ps-visual-frame ps-frame-launch">
+                <div class="ps-launch">
+                  <div class="ps-launch-bar-top">
+                    <span class="ps-launch-lock"></span>
+                    <span class="ps-launch-domain">https://<strong>fwddesignconsulting.com</strong></span>
+                    <span class="ps-launch-live"><span class="ps-launch-live-dot"></span>LIVE</span>
+                  </div>
+                  <div class="ps-launch-log">
+                    <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">DNS propagated</span><span class="ps-launch-time">0.4s</span></div>
+                    <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">SSL certificate issued</span><span class="ps-launch-time">1.2s</span></div>
+                    <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">CDN edge cache warm</span><span class="ps-launch-time">0.8s</span></div>
+                    <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">Handoff doc delivered</span><span class="ps-launch-time">—</span></div>
+                    <div class="ps-launch-row active"><span class="ps-launch-check pulse"></span><span class="ps-launch-step">Listening for visitors</span><span class="ps-launch-time">live</span></div>
+                  </div>
+                  <div class="ps-launch-foot">
+                    <div class="ps-launch-stat"><span class="ps-launch-stat-n">99.99%</span><span class="ps-launch-stat-l">uptime · last 30 days</span></div>
+                    <div class="ps-launch-stat"><span class="ps-launch-stat-n">A+</span><span class="ps-launch-stat-l">SSL Labs grade</span></div>
+                    <div class="ps-launch-stat"><span class="ps-launch-stat-n">98</span><span class="ps-launch-stat-l">Lighthouse score</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </li>
+      </ol>
     </div>
-
-    <ol class="process-list">
-      <!-- Step 01 — short call with calendar -->
-      <li class="process-step mv-rise" data-mv-watch>
-        <div class="full process-step-inner">
-          <div class="ps-text">
-            <span class="ps-step">
-              <span class="ps-glyph">i.</span>
-              Step 01
-            </span>
-            <div class="ps-text-body">
-              <h3 class="ps-title">A short call.</h3>
-              <p class="ps-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.</p>
-              <span class="ps-meta">— No prep required</span>
-            </div>
-          </div>
-          <div class="ps-visual" aria-hidden="true">
-            <div class="ps-visual-frame ps-frame-call">
-              <div class="ps-cal">
-                <div class="ps-cal-head">
-                  <div class="ps-cal-head-l">
-                    <span class="ps-cal-eyebrow">Pick a time that works</span>
-                    <h4 class="ps-cal-month">May 2026</h4>
-                  </div>
-                  <span class="ps-cal-pill">15 MIN · INTRO</span>
-                </div>
-                <div class="ps-cal-dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
-                <div class="ps-cal-grid">
-                  <span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span>1</span><span>2</span>
-                  <span>3</span><span class="avail">4</span><span class="avail">5</span><span>6</span><span class="avail">7</span><span class="avail">8</span><span>9</span>
-                  <span>10</span><span class="avail">11</span><span>12</span><span class="avail">13</span><span class="avail picked">14</span><span class="avail">15</span><span>16</span>
-                  <span>17</span><span>18</span><span class="avail">19</span><span class="avail">20</span><span class="avail">21</span><span>22</span><span>23</span>
-                  <span>24</span><span class="avail">25</span><span class="avail">26</span><span>27</span><span class="avail">28</span><span class="avail">29</span><span>30</span>
-                  <span>31</span><span class="off">1</span><span class="off">2</span><span class="off">3</span><span class="off">4</span><span class="off">5</span><span class="off">6</span>
-                </div>
-                <div class="ps-cal-foot">
-                  <div class="ps-cal-slot">
-                    <span class="ps-cal-slot-dot"></span>
-                    <div class="ps-cal-slot-meta">
-                      <span class="ps-cal-slot-day">Thursday, May 14</span>
-                      <span class="ps-cal-slot-time">2:00 PM EST</span>
-                    </div>
-                    <span class="ps-cal-slot-cta">Confirmed →</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- Step 02 — design draft (dark) -->
-      <li class="process-step process-step-dark mv-rise" data-mv-watch>
-        <div class="full process-step-inner">
-          <div class="ps-text">
-            <span class="ps-step">
-              <span class="ps-glyph">ii.</span>
-              Step 02
-            </span>
-            <div class="ps-text-body">
-              <h3 class="ps-title">Design draft <em>in your browser</em>.</h3>
-              <p class="ps-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.</p>
-              <span class="ps-meta">— Delivered in week one</span>
-            </div>
-          </div>
-          <div class="ps-visual" aria-hidden="true">
-            <div class="ps-visual-frame ps-frame-draft">
-              <div class="ps-draft">
-                <div class="ps-draft-chrome">
-                  <div class="ps-draft-dots"><span></span><span></span><span></span></div>
-                  <div class="ps-draft-url"><span class="ps-draft-lock"></span>draft.fwddesignconsulting.com</div>
-                  <span class="ps-draft-tag">DRAFT · V1</span>
-                </div>
-                <div class="ps-draft-body">
-                  <div class="ps-draft-nav">
-                    <div class="ps-draft-logo"></div>
-                    <div class="ps-draft-links"><span></span><span></span><span></span><span></span></div>
-                    <div class="ps-draft-navcta"></div>
-                  </div>
-                  <div class="ps-draft-hero">
-                    <div class="ps-draft-eye"></div>
-                    <div class="ps-draft-h1"></div>
-                    <div class="ps-draft-h1 w2"></div>
-                    <div class="ps-draft-lede"></div>
-                    <div class="ps-draft-lede short"></div>
-                    <div class="ps-draft-cta mv-sweep"></div>
-                  </div>
-                  <div class="ps-draft-cards">
-                    <div class="ps-draft-card"><span></span><span class="sm"></span></div>
-                    <div class="ps-draft-card"><span></span><span class="sm"></span></div>
-                    <div class="ps-draft-card"><span></span><span class="sm"></span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- Step 03 — revisions with margin comments -->
-      <li class="process-step mv-rise" data-mv-watch>
-        <div class="full process-step-inner">
-          <div class="ps-text">
-            <span class="ps-step">
-              <span class="ps-glyph">iii.</span>
-              Step 03
-            </span>
-            <div class="ps-text-body">
-              <h3 class="ps-title">A round of <em>revisions</em>.</h3>
-              <p class="ps-body">One or two rounds depending on tier. Comments in the margin, edits the same week. We adjust until it feels right, then lock it.</p>
-              <span class="ps-meta">— Async, on your time</span>
-            </div>
-          </div>
-          <div class="ps-visual" aria-hidden="true">
-            <div class="ps-visual-frame ps-frame-rev">
-              <div class="ps-rev">
-                <div class="ps-rev-doc">
-                  <div class="ps-rev-doc-head">
-                    <span class="ps-rev-doc-tab">draft.fwddesignconsulting.com</span>
-                    <span class="ps-rev-doc-saved">Saved · 2m ago</span>
-                  </div>
-                  <div class="ps-rev-doc-body">
-                    <div class="ps-rev-eye"></div>
-                    <div class="ps-rev-h"></div>
-                    <div class="ps-rev-line" style="width:98%"></div>
-                    <div class="ps-rev-line edit" style="width:92%"><span class="ps-rev-caret"></span></div>
-                    <div class="ps-rev-line struck" style="width:82%"></div>
-                    <div class="ps-rev-line added" style="width:95%"></div>
-                    <div class="ps-rev-line" style="width:88%"></div>
-                    <div class="ps-rev-line" style="width:73%"></div>
-                    <div class="ps-rev-h sub" style="width:44%"></div>
-                    <div class="ps-rev-line" style="width:96%"></div>
-                    <div class="ps-rev-line" style="width:99%"></div>
-                    <div class="ps-rev-line" style="width:90%"></div>
-                    <div class="ps-rev-line" style="width:97%"></div>
-                    <div class="ps-rev-line" style="width:64%"></div>
-                  </div>
-                </div>
-                <div class="ps-rev-comments">
-                  <div class="ps-rev-comment">
-                    <div class="ps-rev-avatar">J</div>
-                    <div class="ps-rev-bubble">
-                      <div class="ps-rev-meta"><span class="ps-rev-name">Jess</span><span class="ps-rev-time">2m</span></div>
-                      <div class="ps-rev-text">Punchier headline?</div>
-                    </div>
-                  </div>
-                  <div class="ps-rev-comment offset">
-                    <div class="ps-rev-avatar alt">F</div>
-                    <div class="ps-rev-bubble">
-                      <div class="ps-rev-meta"><span class="ps-rev-name">forward</span><span class="ps-rev-time">just now</span></div>
-                      <div class="ps-rev-text">Updated ✓</div>
-                    </div>
-                  </div>
-                  <div class="ps-rev-comment">
-                    <div class="ps-rev-avatar">J</div>
-                    <div class="ps-rev-bubble">
-                      <div class="ps-rev-meta"><span class="ps-rev-name">Jess</span><span class="ps-rev-time">now</span></div>
-                      <div class="ps-rev-text">Perfect — lock it in.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <!-- Step 04 — launch / live (dark) -->
-      <li class="process-step process-step-dark mv-rise" data-mv-watch>
-        <div class="full process-step-inner">
-          <div class="ps-text">
-            <span class="ps-step">
-              <span class="ps-glyph">iv.</span>
-              Step 04
-            </span>
-            <div class="ps-text-body">
-              <h3 class="ps-title">Launch.</h3>
-              <p class="ps-body">We connect your domain, set up hosting, and hand over a clean doc you can actually read. Live the same day.</p>
-              <span class="ps-meta">— Up in minutes, not weeks</span>
-            </div>
-          </div>
-          <div class="ps-visual" aria-hidden="true">
-            <div class="ps-visual-frame ps-frame-launch">
-              <div class="ps-launch">
-                <div class="ps-launch-bar-top">
-                  <span class="ps-launch-lock"></span>
-                  <span class="ps-launch-domain">https://<strong>fwddesignconsulting.com</strong></span>
-                  <span class="ps-launch-live"><span class="ps-launch-live-dot"></span>LIVE</span>
-                </div>
-                <div class="ps-launch-log">
-                  <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">DNS propagated</span><span class="ps-launch-time">0.4s</span></div>
-                  <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">SSL certificate issued</span><span class="ps-launch-time">1.2s</span></div>
-                  <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">CDN edge cache warm</span><span class="ps-launch-time">0.8s</span></div>
-                  <div class="ps-launch-row done"><span class="ps-launch-check">✓</span><span class="ps-launch-step">Handoff doc delivered</span><span class="ps-launch-time">—</span></div>
-                  <div class="ps-launch-row active"><span class="ps-launch-check pulse"></span><span class="ps-launch-step">Listening for visitors</span><span class="ps-launch-time">live</span></div>
-                </div>
-                <div class="ps-launch-foot">
-                  <div class="ps-launch-stat"><span class="ps-launch-stat-n">99.99%</span><span class="ps-launch-stat-l">uptime · last 30 days</span></div>
-                  <div class="ps-launch-stat"><span class="ps-launch-stat-n">A+</span><span class="ps-launch-stat-l">SSL Labs grade</span></div>
-                  <div class="ps-launch-stat"><span class="ps-launch-stat-n">98</span><span class="ps-launch-stat-l">Lighthouse score</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-    </ol>
   </section>
 
-  {/* Light tone here on purpose: the sequence is dark process step 04 → close
-      → dark footer, so an ink close would stack three dark bands in a row. */}
+  {/* ============ WHO YOU'LL WORK WITH ============
+      Condensed port of the /studio "thread" section. It sits directly after
+      the process because the process answers *what happens* and this answers
+      *who does it* — the obvious next question, and the one that makes the
+      four-step timeline credible. It also carries the page's only ink band
+      now that the process steps are no longer alternating light/dark, which
+      keeps offer → process → area → close from running as four light surfaces
+      in a row. */}
+  <section class="thread">
+    <div class="full thread-grid">
+      <div class="thread-copy mv-rise" data-mv-watch>
+        <span class="thread-eyebrow"><span class="thread-eyebrow-bar"></span>Who you'll work with</span>
+        <h2 class="display thread-title">You talk to the people who <em>build it</em>.</h2>
+        <p class="thread-body">
+          No account manager, no kickoff deck, no discovery phase. You meet the studio on the
+          first call, and the same people are on every email through launch.
+        </p>
+      </div>
+
+      {/* Five role cards converge into one on scroll. The motion performs the
+          argument in a single gesture rather than asking the reader to compare
+          two static rows. Driven entirely by .is-inview from the existing
+          IntersectionObserver — no extra JS. Timings are roughly half of the
+          /studio original: the homepage is denser and the reader is moving
+          faster through it, so the spread state doesn't get to hold as long.
+          The graphic is decorative; the prose equivalent is the .sr-only
+          paragraph below it. */}
+      <div class="fold" data-mv-watch aria-hidden="true">
+        <span class="fold-cap fold-cap-before">The usual route — four handoffs</span>
+
+        <div class="fold-stage">
+          <span class="fold-card" style="--i:0"><span>Account<br />manager</span></span>
+          <span class="fold-card" style="--i:1"><span>Strategist</span></span>
+          <span class="fold-card" style="--i:2"><span>Designer</span></span>
+          <span class="fold-card" style="--i:3"><span>Developer</span></span>
+          <span class="fold-card" style="--i:4"><span>Support</span></span>
+
+          {/* What's left standing has to be worth arriving at — a lone chip in
+              an empty stage reads as an anticlimax, so the survivor is a full
+              card carrying the four stages it absorbed. The stage descriptions
+              reveal on hover exactly as they do on /studio; nothing is lost by
+              putting them behind a pointer because the whole graphic is
+              aria-hidden and the .sr-only paragraph below carries the same
+              content in prose. Devices without a fine pointer get them
+              standing open instead — see the CSS. */}
+          <span class="fold-solo">
+            <BrandMark class="fold-mark" decorative={true} />
+            <span class="fold-solo-label">the studio</span>
+            <span class="fold-solo-stages">
+              <span class="fold-stg"><b>Inquiry</b><i>Answered within a day</i></span>
+              <span class="fold-stg"><b>Intro call</b><i>Fifteen minutes, no deck</i></span>
+              <span class="fold-stg"><b>Design &amp; build</b><i>Drafted in your browser</i></span>
+              <span class="fold-stg"><b>Launch</b><i>Domain, hosting, handoff</i></span>
+            </span>
+            <span class="fold-solo-hint">Hover for what each covers</span>
+          </span>
+        </div>
+
+        <span class="fold-cap fold-cap-after">Here — none</span>
+      </div>
+
+      {/* The prose equivalent of the graphic above. It carries the stage
+          descriptions as well as the stage names, because the visual version
+          of those descriptions is now a hover reveal. */}
+      <p class="sr-only">
+        Most studios pass a project between an account manager, a strategist, a designer,
+        a developer and a support team. Here the same people handle every stage: your
+        inquiry, answered within a day; the intro call, fifteen minutes with no deck;
+        design and build, drafted in your browser; and launch — domain, hosting and handoff.
+      </p>
+    </div>
+  </section>
+
+  {/* ============ SERVICE AREA ============
+      The only place on the page that says "web design" and "Orange County" in
+      plain words. It sits here rather than higher because the hero earns
+      attention on voice, not on keywords — but a search engine has to find the
+      literal terms somewhere, and this is where they cost the page least. */}
+  <section class="section section-area">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <div class="section-head-lead">
+          <span class="section-eyebrow"><span class="section-eyebrow-bar"></span>Service area</span>
+          <h2 class="display section-title">Web design for <em>Orange County</em> businesses.</h2>
+        </div>
+        <p class="section-sub">
+          We're based in Orange County, and most of our clients are within a
+          half-hour drive of the studio.
+        </p>
+      </div>
+
+      {/* Map and copy are one composition rather than a graphic stacked under
+          a text block. The SVG is aria-hidden on purpose: every place it
+          names is also in the city list beside it as real text, so a
+          role="img" here would only make a screen reader hear the same eight
+          names twice. The outline is a simplified Orange County boundary —
+          Seal Beach round to San Clemente on the coast, the Los Angeles line
+          across the top, the Santa Ana Mountains down the east side. */}
+      <div class="area-grid mv-rise" data-mv-watch>
+        <div class="area-map">
+          <svg viewBox="-12 -14 352 416" aria-hidden="true" focusable="false">
+            <path
+              class="oc-land"
+              d="M7.7 161.2 L31.0 175.5 L65.5 213.9 L87.7 230.6 L129.0 252.3 L154.8 272.8
+                 L179.1 284.0 L215.7 315.0 L258.0 353.4 L275.5 380.7 L319.9 306.9 L319.9 248.0
+                 L309.6 186.0 L273.5 124.0 L255.4 81.8 L242.5 58.9 L233.7 32.9 L177.5 32.9
+                 L134.2 46.5 L98.0 49.6 L67.1 58.9 L48.0 80.6 L35.1 105.4 L23.2 127.1
+                 L15.5 148.8 Z" />
+            <path
+              class="oc-coast"
+              d="M7.7 161.2 L31.0 175.5 L65.5 213.9 L87.7 230.6 L129.0 252.3 L154.8 272.8
+                 L179.1 284.0 L215.7 315.0 L258.0 353.4 L275.5 380.7" />
+
+            <g class="oc-marks">
+              <circle cx="111.5" cy="101.7" r="3.4" />
+              <circle cx="142.9" cy="131.4" r="3.4" />
+              <circle cx="135.2" cy="157.5" r="3.4" />
+              <circle cx="156.9" cy="157.5" r="3.4" />
+              <circle cx="156.9" cy="195.3" r="3.4" />
+              <circle cx="108.9" cy="222.6" r="3.4" />
+              <circle cx="103.7" cy="236.2" r="3.4" />
+              <circle cx="69.7" cy="192.2" r="3.4" />
+            </g>
+
+            <g class="oc-labels">
+              <text x="105" y="99" text-anchor="end">Anaheim</text>
+              <text x="149" y="128" text-anchor="start">Orange</text>
+              <text x="129" y="161" text-anchor="end">Santa Ana</text>
+              <text x="164" y="154" text-anchor="start">Tustin</text>
+              <text x="164" y="199" text-anchor="start">Irvine</text>
+              <text x="116" y="219" text-anchor="start">Costa Mesa</text>
+              <text x="110" y="241" text-anchor="start">Newport Beach</text>
+              <text x="77" y="188" text-anchor="start">Huntington Beach</text>
+            </g>
+
+            <text class="oc-sea" x="24" y="322">Pacific Ocean</text>
+          </svg>
+        </div>
+
+        <div class="area-detail">
+          <div class="area-block">
+            <span class="area-key">Cities we work in</span>
+            <ul class="area-cities">
+              <li>Newport Beach</li>
+              <li>Costa Mesa</li>
+              <li>Irvine</li>
+              <li>Tustin</li>
+              <li>Santa Ana</li>
+              <li>Orange</li>
+              <li>Anaheim</li>
+              <li>Huntington Beach</li>
+            </ul>
+          </div>
+          <div class="area-block">
+            <span class="area-key">Who we build for</span>
+            <p class="area-text">
+              Dental and medical practices, restaurants, contractors, and small firms that
+              need one good website rather than an ongoing marketing relationship.
+            </p>
+          </div>
+          <div class="area-block">
+            <span class="area-key">Outside the county</span>
+            <p class="area-text">
+              We work with clients outside California too. Being local just means we can
+              meet you in person if that helps.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Light tone here on purpose: the sequence is ink "who you'll work with" →
+      soft service area → close → dark footer, so an ink close would put three
+      dark bands inside four sections. */}
   <CtaClose
     tone="light"
     eyebrow="Ready when you are"
@@ -398,25 +596,136 @@ import CtaClose from "../components/CtaClose.astro";
   .marquee-dot { color: var(--color-periwinkle); font-style: normal; font-size: 0.5em; }
   @keyframes marquee { to { transform: translateX(-50%); } }
 
-  .meta-strip { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 4vh, 3.5rem); }
-  .meta-strip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem 2.5rem; }
-  .meta-cell { display: flex; flex-direction: column; gap: 0.35rem; }
-  .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); }
-  .meta-val { font-family: var(--font-display); font-weight: 400; font-size: var(--text-step-1); font-variation-settings: "opsz" 60; color: var(--color-fg); letter-spacing: -0.01em; }
+  /* ============================================================
+     META STRIP — a spec table, not four independent tiles.
 
-  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: 3rem; }
+     The first value ("Agency Style: Personalized team for every
+     need") is three to four times the length of the other three,
+     and as four separate flex columns that made cell one two to
+     five lines tall while its neighbours stayed at one — so the
+     cell towered and the strip's height was set by its longest
+     string.
+
+     Fixed as a layout problem, not a copy one. The strip is now a
+     two-row grid — keys in row one, values in row two — and each
+     cell adopts those rows with `grid-template-rows: subgrid`. The
+     long value can take as many lines as it needs and every other
+     value still starts on exactly the same baseline, because no
+     cell owns its own height any more. The first column is also
+     given ~1.7× the width of the others, which is what the copy
+     actually asks for, and hairline rules between the columns make
+     the unequal lengths read as a table rather than as a row that
+     failed to line up.
+     ============================================================ */
+  .meta-strip { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 4vh, 3.25rem); }
+  .meta-strip-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    column-gap: clamp(1.25rem, 2.5vw, 2.25rem);
+    row-gap: 1.5rem;
+  }
+  @media (min-width: 620px) { .meta-strip-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 960px) { .meta-strip-grid { grid-template-columns: 1.7fr 1fr 1fr 1fr; row-gap: 0; } }
+  /* span 2 + subgrid: the cell keeps being a real element (so .mv-stagger
+     still animates it) while its key and value land in the strip's shared
+     rows rather than in a box of the cell's own. */
+  .meta-cell { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0.4rem; }
+  @media (min-width: 960px) {
+    .meta-cell + .meta-cell {
+      border-left: 1px solid var(--color-hairline);
+      padding-left: clamp(1.25rem, 2.5vw, 2.25rem);
+    }
+  }
+  .meta-key { font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .meta-val {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-1); font-variation-settings: "opsz" 60;
+    color: var(--color-fg); letter-spacing: -0.01em;
+    line-height: 1.28;
+    /* Two even lines rather than a full line and an orphaned word. */
+    text-wrap: balance;
+  }
+
+  /* One band rhythm for the whole page. `.section` ships at
+     clamp(3rem, 6vh, 5rem) and the offer band was overriding it to
+     clamp(6rem, 11vh, 9rem), so two adjacent sections differed by
+     nearly 4rem of padding for no reason a reader could see. */
+  .section-offer,
+  .section-process,
+  .section-area,
+  .thread { padding-block: clamp(4.5rem, 9vh, 7rem); }
+
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: clamp(2.5rem, 5vh, 3.75rem); }
   @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  .section-head-lead { display: flex; flex-direction: column; align-items: flex-start; gap: 0.9rem; }
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+
+  /* ============================================================
+     SERVICE AREA — quiet by design. It follows the dark process
+     band and precedes the light close, so it takes the soft tone
+     to keep three light surfaces from running together.
+     ============================================================ */
+  .section-area { background: var(--color-bg-soft); border-block: 1px solid var(--color-hairline); }
+  /* Same two columns and same gap as .section-head above it, so the copy
+     column starts on exactly the x of the section sub. */
+  .area-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+  @media (min-width: 760px) { .area-grid { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+
+  .area-map { display: flex; justify-content: center; }
+  .area-map svg { display: block; width: 100%; max-width: 380px; height: auto; }
+  /* Hairlines and one accent, nothing else — this band is the quiet one on
+     the page and a map is loud enough on its own. */
+  .oc-land { fill: var(--color-paper); stroke: var(--color-line-strong); stroke-width: 1; stroke-linejoin: round; }
+  .oc-coast { fill: none; stroke: var(--color-navy); stroke-width: 1.75; stroke-opacity: 0.5; stroke-linecap: round; stroke-linejoin: round; }
+  .oc-marks circle { fill: var(--color-blue); stroke: var(--color-paper); stroke-width: 1.4; }
+  .oc-labels text {
+    font-family: var(--font-sans); font-size: 10.5px; font-weight: 500;
+    letter-spacing: 0.01em; fill: var(--color-fg-soft);
+  }
+  .oc-sea {
+    font-family: var(--font-display); font-style: italic; font-size: 12px;
+    letter-spacing: 0.02em; fill: var(--color-fg-muted);
+  }
+  /* Under ~430px the eight labels start to touch each other. Drop them
+     rather than ship overlap — the same eight names sit beside the map in
+     real text, so nothing is lost. */
+  @media (max-width: 430px) {
+    .oc-labels, .oc-sea { display: none; }
+  }
+
+  .area-detail { display: flex; flex-direction: column; gap: 2rem; }
+  .area-block { display: flex; flex-direction: column; gap: 0.6rem; }
+  /* Same key/value grammar as the meta strip at the top of the page. */
+  .area-key {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted);
+  }
+  .area-text { margin: 0; max-width: 50ch; color: var(--color-fg-soft); text-wrap: pretty; }
+  .area-cities {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem 1.5rem;
+  }
+  @media (min-width: 520px) { .area-cities { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .area-cities li {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-0); color: var(--color-fg);
+    font-variation-settings: "opsz" 40;
+  }
+  .area-cities li::before {
+    content: ""; flex: 0 0 auto;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--color-blue);
+  }
 
   /* ============================================================
      SERVICES — bento spec sheet. The single offer becomes an
      editorial composition: a dark centerpiece (price + CTA) and
      six annotation tiles, each with its own mouse-spotlight sheen.
      ============================================================ */
-  .section-offer { padding-block: clamp(6rem, 11vh, 9rem); }
-  .section-offer .section-head { margin-bottom: clamp(2.5rem, 5vh, 4rem); }
-
   .offer-bento {
     display: grid;
     grid-template-columns: 1fr;
@@ -646,107 +955,593 @@ import CtaClose from "../components/CtaClose.astro";
     max-width: 32ch;
   }
 
-  /* The last step is a full-bleed ink band and CtaClose is the next full-bleed
-     band; the section's own bottom padding left a strip of paper between the
-     two. Each step already carries its own padding-block. */
-  .section-process { padding-bottom: 0; }
-  /* Was margin-bottom: 3rem (from .section-head) *plus* this padding, which put
-     ~93px under the process heading against the offer heading's ~45px. One
-     mechanism, same value as .section-offer's. */
-  .section-process .section-head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 0;
-    padding-bottom: clamp(2.5rem, 5vh, 4rem);
-    text-align: left;
-  }
-  .section-process .section-head .section-title { text-align: left; max-width: 22ch; }
-  .section-process .section-head .section-sub { text-align: left; max-width: 52ch; }
+  /* This head now uses the shared two-column .section-head grid — the only
+     thing left to say is the measure, which runs a little wider here because
+     the title is the longest of the three. */
+  .section-process .section-head .section-title { max-width: 20ch; }
   .section-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
   .section-eyebrow-bar { width: 24px; height: 1px; background: var(--color-blue); }
 
-  .process-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--color-line); }
-  .process-step { border-bottom: 1px solid var(--color-line); transition: background 450ms var(--ease-soft); position: relative; }
-  .process-step:last-child { border-bottom: 0; }
-  .process-step-dark { border-bottom-color: rgba(255,255,255,0.06); }
+  /* ============================================================
+     PROCESS — four cards in one row that trade space.
 
-  /* Side-by-side layout, alternating left/right */
-  .process-step-inner {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(2rem, 4vw, 3rem);
-    padding-block: clamp(3rem, 7vh, 5.5rem);
-    align-items: center;
+     This replaced four full-bleed alternating rows, each carrying a
+     620px browser/calendar mockup. Those rows were the reason the
+     section ran nearly four screens tall on desktop. The mockups
+     themselves are kept — see the PROCESS STEP GRAPHICS block below
+     for how they are sized down into a card.
+
+     Flex rather than grid on purpose: `flex-grow` is animatable on
+     the child, so "this card takes the room, the others give it up"
+     is one declaration on .process-card instead of four :has() rules
+     on the container.
+
+     Nothing here is hover-only. The detail copy is clipped, never
+     hidden — no display:none, no visibility:hidden — so a screen
+     reader reads every card in full regardless of visual state, and
+     .pc-head is a real link so Tab reaches the expansion via
+     :focus-within.
+     ============================================================ */
+  .process-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    /* 1px gaps over a line-coloured backing draw the seams — a spec
+       sheet rather than four detached tiles. Cheaper than borders,
+       which would double up on wrap. */
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    overflow: hidden;
   }
-  @media (min-width: 900px) {
-    .process-step-inner {
-      display: flex;
-      justify-content: center;
-      gap: clamp(9rem, 17vw, 16rem);
-    }
-    /* Pattern: step 1 text-left, step 2 text-right, step 3 text-left, step 4 text-right.
-       The text+visual pair is content-sized (not stretched to the row), so
-       centering the flex row keeps the same gap and the same horizontal
-       center on every step regardless of which side is swapped. */
-    .process-step:nth-child(even) .ps-text { order: 2; }
-    .process-step:nth-child(even) .ps-visual { order: 1; }
-    /* .ps-visual-frame's own `width: 100%` (below) is meaningless unless its
-       parent has a definite width — a flex item sized to its content
-       (the default here) doesn't have one, so pin it explicitly on .ps-visual
-       itself. Without this the frame's rendered width silently depended on
-       its mock UI content, so the gap between text and image drifted per
-       step instead of matching the fixed `gap` above. */
-    .ps-visual { width: min(620px, 46vw); flex-shrink: 0; }
-    /* Lock every visual frame to step 2's height so the sections match. */
-    .ps-visual-frame { min-height: 560px; }
+
+  .process-card {
+    position: relative;
+    flex: 1 1 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    /* Named because the step graphic below bleeds through it and has to
+       add it back to work out how wide the card actually is. */
+    --pc-pad: clamp(1.5rem, 2.2vw, 2.25rem);
+    padding: var(--pc-pad);
+    background: var(--color-bg-soft);
+    transition:
+      background 420ms var(--ease-soft),
+      flex-grow 620ms var(--ease-out-expo);
+  }
+  /* Accent rail across the top of the card. In the stacked layout it
+     just stands there quietly, marking the head of each step; in the
+     four-up regime it draws itself across whichever card is open. */
+  .process-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--color-periwinkle);
+    transform: scaleX(1);
+    opacity: 0.35;
+    transform-origin: left;
+    transition: transform 520ms var(--ease-out-expo);
+    z-index: 3;
+  }
+  @media (min-width: 640px) { .process-card { flex-basis: calc(50% - 1px); } }
+
+  .pc-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  /* --focus-ring rather than periwinkle: the card only turns ink in the
+     four-up regime above, and periwinkle on the resting bg-soft surface
+     is 2.75:1 — under the 3:1 WCAG 1.4.11 asks. --focus-ring clears it
+     on both surfaces (4.00:1 on paper, 4.55:1 on ink). */
+  .pc-head:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 6px;
+    border-radius: 4px;
   }
 
-  .ps-text { display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; max-width: 52ch; }
-  .ps-text-body { display: flex; flex-direction: column; }
+  /* The numeral leads the card on its own line rather than sitting
+     inline next to "Step 01" as it did in the old wide rows — at a
+     quarter of the page width an inline glyph cost the title a whole
+     line of measure. Same shape as .bf-num in the offer bento above,
+     which is the page's existing vocabulary for a numbered tile. */
+  .pc-glyph {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-step-4);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-blue);
+    font-variation-settings: "opsz" 144;
+    transition: color 420ms var(--ease-soft);
+  }
+  .pc-step {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    color: var(--color-blue);
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: color 420ms var(--ease-soft);
+  }
+  .pc-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 350;
+    /* Between step-2 and step-3. Step-3 is the right weight for a card
+       this size but overshoots the measure of a collapsed column. */
+    font-size: clamp(1.55rem, 1.05rem + 1.35vw, 2.15rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-variation-settings: "opsz" 96;
+    color: var(--color-fg);
+    text-wrap: balance;
+    transition: color 420ms var(--ease-soft);
+  }
+  .pc-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
+  /* Inline in the step label and always present, rather than an arrow
+     that only existed on hover. The head is a link at every width, so
+     its affordance has to be there at every width too. */
+  .pc-cue {
+    display: inline-block;
+    margin-left: 0.5rem;
+    transition: transform 380ms var(--ease-out-expo);
+  }
+  .process-card:hover .pc-cue,
+  .process-card:focus-within .pc-cue { transform: translateX(3px); }
 
-  .ps-step { font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-blue); letter-spacing: 0.1em; font-weight: 500; text-transform: uppercase; display: inline-flex; align-items: baseline; gap: 0.75rem; }
-  .ps-glyph { font-family: var(--font-display); font-style: italic; font-size: var(--text-step-3); line-height: 1; color: var(--color-blue); font-variation-settings: "opsz" 144; letter-spacing: -0.02em; }
-  .ps-title { margin: 0; font-family: var(--font-display); font-weight: 350; font-size: var(--text-step-4); letter-spacing: -0.02em; line-height: 1.02; font-variation-settings: "opsz" 144; color: var(--color-fg); }
-  .ps-title em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 144; }
-  .ps-body { margin: 0.85rem 0 0; color: var(--color-fg-soft); font-size: var(--text-step-1); line-height: 1.45; font-family: var(--font-display); font-weight: 300; max-width: 42ch; }
-  .ps-meta { display: block; font-family: var(--font-mono); font-size: var(--text-step--2); color: var(--color-fg-muted); letter-spacing: 0.05em; margin-top: 1.25rem; text-transform: none; }
+  /* ============================================================
+     THE COPY.
 
-  .process-step-dark { background: var(--color-ink); border-color: rgba(255,255,255,0.08); }
-  .process-step-dark .ps-step { color: var(--color-periwinkle); }
-  .process-step-dark .ps-glyph { color: var(--color-periwinkle); }
-  .process-step-dark .ps-title { color: var(--color-paper); }
-  .process-step-dark .ps-title em { color: var(--color-periwinkle); }
-  .process-step-dark .ps-body { color: rgba(255,255,255,0.82); }
-  .process-step-dark .ps-meta { color: rgba(255,255,255,0.5); }
+     Default — below 1040px and under reduced motion at any width —
+     it is simply the next block in the card's flow, between the
+     head and the graphic, standing open with nothing to reveal.
+     The four-up query above lifts it onto an ink sheet instead.
+     ============================================================ */
+  .pc-window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Grows into whatever height the tallest card in the row forces, so
+       the free space lands above the graphic rather than below it. */
+    flex: 1 1 auto;
+    min-height: 0;
+    /* No longer bled through the card's padding: the graphic floats
+       inside it instead, so the card's own padding is the inset on the
+       left, the right and the bottom, and this top margin is the only
+       one that has to be declared. Same value, so all four match. */
+    margin: var(--pc-pad) 0 0;
+  }
+  /* Takes the slack, which puts the four graphics on one baseline across
+     a row whose cards carry different amounts of copy. */
+  .pc-reveal {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* No horizontal padding: it existed to undo .pc-window's negative
+       side margins, and the window no longer has them. Left in, it
+       indents the copy past the title it belongs to. */
+    padding: 0 0 1.75rem;
+  }
+  .pc-body {
+    margin: 0;
+    color: var(--color-fg-soft);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-step-1);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  /* A step below .pc-body, so the card reads title → summary → detail,
+     and a step above the .pc-meta caption line. */
+  .pc-more {
+    margin: 0;
+    color: var(--color-fg-soft);
+    font-size: var(--text-step-0);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .pc-meta {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--1);
+    letter-spacing: 0.05em;
+    color: var(--color-fg-muted);
+  }
 
-  /* Visual frame — sized for the visual column */
-  .ps-visual { display: flex; align-items: center; justify-content: center; min-width: 0; }
+  /* ============================================================
+     PROCESS STEP GRAPHICS — the resting state of every card.
+
+     These are what a card *is* when nobody is touching it, so the
+     job here is legibility at rest, not on expand.
+
+     They lay out at a fixed design size and get scaled to the card
+     rather than reflowed into it — reflowing keeps the 10–13px mono
+     at full size inside a quarter-width box and tears every one of
+     these compositions apart.
+
+     The design box is 470 × 500, which is the box these compositions
+     were drawn in and the one /services still renders them at.
+
+     It was briefly 410 × 316 — landscape, to fit a card that was not
+     tall enough for a portrait graphic — and the missing height came
+     out of the CONTENT: the calendar lost its fifth week, the deploy
+     log lost a row, the draft browser's hero lost its lede lines and
+     its CTA, and the date cells were flattened from 1.4:1 to 1.75:1.
+     That shrunken box was then scaled back UP by 1.08 to fill the
+     card, so what shipped was an upscaled crop of a portrait design.
+     The card is sized for the graphic now instead, so nothing has to
+     be deleted and nothing is enlarged past the size it was drawn at.
+
+     The scale comes from a container query on .pc-visual (not on the
+     card) so that it tracks the *graphic column* as the card opens
+     and the text panel pushes in from the left, frame by frame, with
+     no transition of its own.
+     ============================================================ */
+
+  /* Registered so that an engine without length-by-length division in
+     calc() falls back to a usable 0.8 rather than dropping the height
+     and the transform outright. */
+  @property --pc-scale {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0.8;
+  }
+
+  .pc-visual {
+    --stage-w: 470px;
+    --stage-h: 500px;
+    container-type: inline-size;
+    position: relative;
+    overflow: hidden;
+    /* Stacked layout: the window takes the composition's own aspect
+       rather than a fixed crop height, so a full-width card shows the
+       whole graphic instead of the top 60% of it. Unitless on purpose
+       — `470px / 500px` is not a valid aspect-ratio — so keep these
+       two numbers in step with --stage-w / --stage-h above. */
+    height: auto;
+    aspect-ratio: 470 / 500;
+    /* No paper here. The frame floats now and carries its own paper,
+       border and shadow; leaving a background on the column as well
+       draws a second white panel behind the frame, which shows the
+       moment the column is taller than the frame. */
+    background: transparent;
+    border-radius: 14px;
+    /* No mask. It existed to soften a bottom edge that was being
+       cropped; nothing is cropped now — the stage scales to fit both
+       axes — so there is no hard edge left to hide. */
+  }
+  .pc-stage {
+    /* Declared on the stage, not on .pc-visual: an element cannot query
+       itself, and .pc-visual is the container. */
+    --pc-scale: clamp(0.3, calc(100cqi / var(--stage-w)), 1.6);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--stage-w);
+    height: var(--stage-h);
+    margin-left: calc(var(--stage-w) / -2);
+    transform: scale(var(--pc-scale));
+    transform-origin: top center;
+  }
+
+  /* The frame chassis. It lived in this file before the grid rewrite too —
+     global.css only ever carried the graphics *inside* the frame.
+
+     Floating rather than seated: the frame is inset from the card on
+     every side by the card's own --pc-pad, so head room and foot room
+     are the same number and match the left and right margins. Seated,
+     it met the card's bottom edge and the whole of the slack in the
+     card landed above it in one dead band — 109px of it at 1440. */
   .ps-visual-frame {
     position: relative;
     width: 100%;
-    max-width: 620px;
+    height: 100%;
     background: var(--color-paper);
-    border-radius: 16px;
+    border-radius: 14px;
     border: 1px solid var(--color-line);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow:
-      0 40px 100px -45px rgba(7,23,34,0.28),
-      0 16px 36px -16px rgba(7,23,34,0.16);
-    transition: transform 420ms var(--ease-soft);
+    box-shadow: 0 18px 44px -26px rgb(7 23 34 / 0.35);
   }
-  /* The inner graphic fills the frame so every step is the same height. */
   .ps-visual-frame > * { flex: 1; min-height: 0; }
-  .process-step:hover .ps-visual-frame { transform: translateY(-4px); }
-  .process-step-dark .ps-visual-frame {
-    background: var(--color-paper);
-    border-color: rgba(255,255,255,0.10);
-    box-shadow:
-      0 50px 120px -45px rgba(0,0,0,0.55),
-      0 18px 44px -18px rgba(0,0,0,0.35);
+
+  /* ------------------------------------------------------------
+     The compositions render at the sizes global.css ships them at —
+     the same ones /services renders — so there is nothing here
+     re-proportioning them and nothing hiding parts of them.
+
+     Two blocks used to sit at this point. One de-aired every
+     composition to fit a 410px-wide stage; the other took height out
+     of them as CONTENT to fit a 316px-tall one, hiding the calendar's
+     fifth week, the draft hero's lede and CTA, and the deploy log's
+     fourth row. Both existed only because the stage was landscape.
+     The stage is 470 × 500 again, which is what these were drawn for,
+     so both blocks are gone rather than retuned.
+
+     The one thing kept from them is below: the calendar's chip.
+     ------------------------------------------------------------ */
+
+  /* The chip is positioned bottom-right in global.css and floats in a
+     band of bare paper, which is the one pocket of dead space the
+     restored box does not fix by itself. Seated as a full-width bar it
+     fills the band, and it is what gives this composition the same
+     bottom margin as the other three. */
+  .ps-cal { justify-content: flex-start; }
+  .ps-cal-foot { position: static; margin-top: auto; }
+  .ps-cal-slot { width: 100%; }
+
+  /* Contrast fix. The out-of-month days were rgb(13 47 69 / 0.22), which
+     composites to 1.52:1 against the darkest end of .ps-frame-call's
+     gradient (#eef0f6). --color-fg-muted lands at 4.79:1 there and 5.42:1
+     at the light end, and still sits a step back from the in-month days
+     (--color-fg-soft), so the hierarchy the greying was for survives.
+     Overridden here because the rule itself lives in global.css. */
+  .ps-cal-grid .off { color: var(--color-fg-muted); }
+
+  /* ============================================================
+     FOUR-UP — the open/closed regime.
+
+     Everything that depends on one card being open lives inside
+     this one query, gated on width, on a real pointer, AND on the
+     reader tolerating motion. Below 1040px, on touch at any width,
+     and under reduced motion at any width, the cards fall through to
+     the stacked layout above: head, copy, graphic, every card
+     standing open, no hover state at all. That is why this section
+     needs no separate prefers-reduced-motion block.
+
+     The reveal is horizontal, not vertical. The window is a two
+     column row — text panel first, graphic second — and opening a
+     card grows the panel while the card itself grows. Nothing is
+     ever laid over the graphic; the graphic is pushed across, and
+     the panel's flex-basis is written as `100% - 25cqi` against the
+     *grid* so that whatever is left for the graphic is exactly one
+     resting card width, plus 5px. The graphic therefore comes out
+     fractionally larger on open and can never come out smaller, at
+     any viewport this query applies at. The container query on
+     .pc-visual keeps the mockup filling that column frame by frame.
+
+     It sits at the end of the section on purpose — it overrides the
+     stacked rules for .pc-window, .pc-visual and .pc-reveal at the
+     same specificity, so it has to come after them.
+     ============================================================ */
+  /* 1200, not 1040. At 1040 the three cards that yield are already at
+     the width of the longest word in their own titles, so an opening
+     card has nothing to take and does not grow at all — measured 232px
+     open against 232px at rest, which left the copy panel 97px wide and
+     cut two thirds of the text off. Below 1200 the stacked layout is
+     simply the better one: it shows every card's copy outright and asks
+     for no pointer at all. */
+  @media (min-width: 1200px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    /* Queried by .pc-reveal below to work out what a resting card is
+       worth: (100cqi - 3px of seams) / 4. */
+    .process-grid { flex-wrap: nowrap; container-type: inline-size; }
+    .process-card {
+      flex: 1 1 0;
+      /* Unchanged from the vertical-reveal version — the row is no
+         taller than it was. `height` rather than `min-height` because
+         the copy panel is now a real in-flow flex item: at a resting
+         width of 0 its text wraps to one word per line, and against a
+         min-height the card would grow to 1,600px to fit it. A
+         definite height means .pc-window's `overflow: hidden` is what
+         deals with that, as it already did for the parked sheet. */
+      /* A quarter of the row is ~0.25vw wide, so a 470:500 graphic on
+         it is ~0.266vw tall, and the ~10.1rem is the head and padding
+         above it, which barely moves across the range.
+
+         The 41vw this replaces was flat above 1405px — the card was a
+         fixed 576px while the landscape graphic kept shrinking with
+         the column, so at 1440 there were 109px of empty card above
+         the graphic and only 0 below it. That band is what read as the
+         graphic sitting awkwardly in its cell. */
+      height: clamp(30rem, 26.6vw + 10.1rem, 46rem);
+    }
+    /* Two lines reserved whatever a title actually needs, so the four
+       graphics start on one line across the row instead of two of them
+       hanging 36px below the others. */
+    .pc-title { min-height: calc(2 * 1.05em); }
+
+    /* 2.75 is the floor, not a taste call. With the text panel at 47%
+       of the open card, the graphic keeps 53% of 2.75/5.75 = 25.3% of
+       the row against the 25% it holds at rest — so it comes out very
+       slightly larger, never smaller. Anything below ~2.68 and the
+       graphic shrinks on open, which is the one thing this layout is
+       not allowed to do. The three that yield hold 17.4% (227px at
+       1440) against the 18.9% they held before. */
+    .process-card:hover,
+    .process-card:focus-within { flex-grow: 2.75; }
+
+    /* The window is everything below the head, and in this regime it is
+       a row: copy on the left, graphic on the right. Its height comes
+       from the card, so nothing inside it can move the row. */
+    .pc-window {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    /* Clipped, not hidden. At rest the panel is exactly 0 wide and
+       `overflow: hidden` is the only thing keeping its copy off screen
+       — no display:none, no visibility:hidden, no hidden attribute. A
+       screen reader reads all three paragraphs of all four cards
+       whatever is on screen, and Tab reaches the reveal because
+       .pc-head is a real link and the card opens on :focus-within. */
+    .pc-reveal {
+      flex: 0 0 0%;
+      min-width: 0;
+      overflow: hidden;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 2;
+      /* Vertical padding only. Horizontal padding cannot compress below
+         its own sum, so a padded panel would still be ~48px wide at a
+         flex-basis of 0 and would show a strip of ink down the left of
+         every resting card. The inset lives on the children instead. */
+      padding: 1.15rem 0;
+      background: var(--color-ink);
+      /* The panel is inset with the graphic now rather than bleeding to
+         the card's edges, so it rounds its own left corners. */
+      border-radius: 14px 0 0 14px;
+      transition: flex-basis 620ms var(--ease-out-expo);
+    }
+    .pc-reveal > * { margin-inline: 1.25rem 1rem; }
+    /* 42, not 47. The three cards that yield cannot go below the width
+       of the longest word in their own title (~244px at 1440), so an
+       open card tops out around 560px rather than the 619px its
+       flex-grow would otherwise buy it — and at 47% of 560 the graphic
+       came out 26px NARROWER than it is at rest, which is the one thing
+       this layout must never do. 42% keeps it a couple of px wider than
+       resting at every width the query covers. */
+    .process-card:hover .pc-reveal,
+    .process-card:focus-within .pc-reveal { flex-basis: 42%; }
+    /* The column is roughly half a card rather than a whole one, so the
+       two paragraphs each step down one size to keep a workable
+       measure. The strings are untouched.
+
+       Stepped down again with the panel: at 42% of an open card the
+       measure is ~188px, and against the trimmed card height the three
+       blocks overran the panel by 31px and lost the last line of the
+       second paragraph to overflow: hidden. Nothing is truncated now. */
+    .pc-body { font-size: var(--text-step--1); line-height: 1.45; }
+    .pc-more { font-size: var(--text-step--2); line-height: 1.45; }
+
+    /* The graphic's height is no longer derived from its width.
+
+       It used to be: aspect-ratio against a flex-driven width. Opening
+       a card widened the column, which made the graphic taller than the
+       window, and .pc-window's overflow: hidden took the difference off
+       — evenly at the top and the bottom, because the graphic is
+       centred, which is why both ends of it went at once.
+
+       Now the column simply fills the window (a definite height, since
+       the card's is definite) and the stage below scales to fit
+       whichever axis runs out first. Nothing can exceed its box on
+       either axis at any card width or any frame of the open, so there
+       is nothing left to crop and no height curve to keep in step. */
+    .pc-visual {
+      flex: 1 1 0%;
+      min-width: 0;
+      align-self: stretch;
+      height: auto;
+      aspect-ratio: auto;
+      container-type: size;
+    }
+    .pc-stage {
+      --pc-scale: clamp(0.3, min(100cqi / var(--stage-w), 100cqb / var(--stage-h)), 1.6);
+      top: 50%;
+      margin-top: calc(var(--stage-h) / -2);
+      transform-origin: center center;
+    }
+
+    /* Open card: ink, and every colour set for paper has to flip. */
+    .process-card:hover,
+    .process-card:focus-within { background: var(--color-ink); }
+    .process-card::before { transform: scaleX(0); opacity: 1; }
+    .process-card:hover::before,
+    .process-card:focus-within::before { transform: scaleX(1); }
+    .pc-body { color: rgb(255 255 255 / 0.92); }
+    .pc-more { color: rgb(255 255 255 / 0.76); }
+    .pc-meta { color: var(--color-periwinkle); }
+    .process-card:hover .pc-step,
+    .process-card:focus-within .pc-step { color: var(--color-periwinkle); }
+    /* Full periwinkle, not the 34% wash it used to carry — the numeral
+       is the card's mark and it should read as one. 6.20:1 on ink. */
+    .process-card:hover .pc-glyph,
+    .process-card:focus-within .pc-glyph { color: var(--color-periwinkle); }
+    .process-card:hover .pc-title,
+    .process-card:focus-within .pc-title { color: var(--color-paper); }
+    .process-card:hover .pc-title em,
+    .process-card:focus-within .pc-title em { color: var(--color-periwinkle); }
+    /* border-color, not border-top-color: the frame carries all four
+       sides now that it floats. */
+    .process-card:hover .ps-visual-frame,
+    .process-card:focus-within .ps-visual-frame {
+      border-color: rgb(255 255 255 / 0.14);
+      box-shadow: 0 22px 60px -30px rgb(7 23 34 / 0.7);
+    }
+  }
+
+  /* ============================================================
+     BELOW THE FOUR-UP BREAKPOINT — the copy opens on tap.
+
+     What was here before: every card stood fully open, one under the
+     other, so on a phone the section ran four full-height cards deep
+     and you scrolled past three blocks of copy you had not asked for.
+
+     Now the graphic is what a card shows at rest — the same contract
+     the four-up regime keeps — and the copy is collapsed until the
+     card is tapped. Clipped by max-height, never display:none and
+     never hidden, so a screen reader still reads all four cards in
+     full whatever is open on screen.
+     ============================================================ */
+  @media (max-width: 1199px) {
+    /* Never render a composition larger than the 470px box it was
+       drawn in. An open card on a tablet is ~817px wide and the
+       graphic followed it all the way up, hitting the scale clamp's
+       1.6 ceiling and rendering the 11px mono at 17.6px — which more
+       than doubled the height of the grid on one tap.
+
+       align-self, not margin-inline: auto — an auto cross-axis margin
+       cancels the stretch a flex item gets by default, and this one
+       has no in-flow content to size to (the stage is absolutely
+       positioned), so the column would collapse to 0x0. */
+    .pc-visual { width: 100%; max-width: var(--stage-w); align-self: center; }
+
+    .pc-reveal {
+      max-height: 0;
+      padding-block: 0;
+      overflow: hidden;
+      transition: max-height 460ms var(--ease-out-expo);
+    }
+    /* A ceiling, not a height — it only has to clear the tallest of the
+       four bodies, and a transition needs a length to land on. */
+    .process-card.is-open .pc-reveal { max-height: 32rem; padding-bottom: 1.5rem; }
+
+    /* The arrow is the only affordance saying the card does something,
+       so it points down while the card is closed.
+
+       The hover selectors are repeated because the nudge-right rule
+       above is (0,3,0) and a bare .pc-cue is (0,1,0) — without them a
+       mouse user in a window under 1200px un-rotates the arrow just by
+       pointing at the card. */
+    .pc-cue,
+    .process-card:hover .pc-cue,
+    .process-card:focus-within .pc-cue { transform: rotate(90deg); }
+    .process-card.is-open .pc-cue,
+    .process-card.is-open:hover .pc-cue,
+    .process-card.is-open:focus-within .pc-cue { transform: rotate(-90deg); }
+  }
+
+  /* Two up from 600px, not the base rule's 640px, so tablets get the
+     2x2 rather than a column of full-width cards. An open card takes a
+     whole row, which leaves the fourth alone on the last one — hence
+     flex-grow 0, or that card stretched to full width and read as a
+     second open card. */
+  @media (min-width: 600px) and (max-width: 1199px) {
+    .process-card { flex: 0 1 calc(50% - 1px); }
+    .process-card.is-open { flex-basis: 100%; }
+  }
+
+  /* Phones stay one column. In a 2x2 at 390px a card is 170px wide,
+     which puts the mockup frame at 141px and its 11px mono at 3.3px —
+     and the scale had already bottomed out on the clamp's 0.3 floor,
+     so it cannot be fixed by scaling. Full width the same frame is
+     ~293px and reads. */
+  @media (max-width: 599px) {
+    .process-card,
+    .process-card.is-open { flex-basis: 100%; }
   }
 
   .process-step-featured { background: var(--color-ink); color: var(--color-paper); border-block: 0; }
@@ -761,6 +1556,228 @@ import CtaClose from "../components/CtaClose.astro";
   .ps-body-on-dark { color: rgba(255,255,255,0.78); max-width: 42ch; }
   .ps-meta-on-dark { color: rgba(255,255,255,0.4); }
 
+  /* ============================================================
+     WHO YOU'LL WORK WITH — condensed port of /studio's .st-thread.
+     Astro styles are component-scoped, so the rules below are a copy
+     rather than a reference; the class prefix is changed to `thread-`
+     / `fold-` so nobody later mistakes them for the /studio originals
+     and edits one expecting both to move.
+
+     Differences from /studio, all deliberate: the stage detail is
+     always shown instead of revealed on hover (nothing on the
+     homepage should sit behind a pointer), the "Hover for what each
+     covers" hint is gone with it, and every delay is roughly halved —
+     /studio holds the spread state for 3s before collapsing, which is
+     far too long for a reader who is scrolling a homepage.
+     ============================================================ */
+  /* padding-block comes from the shared band rule near the top of this
+     stylesheet — this band sits on the same rhythm as the rest. */
+  .thread {
+    position: relative; overflow: hidden;
+    background: var(--color-ink); color: var(--color-paper);
+  }
+  .thread::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 60% 60% at 20% 0%, rgb(142 148 184 / 0.12), transparent 70%);
+  }
+  .thread .full { position: relative; z-index: 1; }
+  .thread-grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem); align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .thread-grid { grid-template-columns: 0.9fr 1.1fr; }
+    .fold { margin-top: 0; }
+  }
+  .thread-copy { max-width: 46ch; }
+  .thread-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 1.25rem;
+  }
+  .thread-eyebrow-bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
+  .thread-title { font-size: var(--text-step-4); margin: 0; max-width: 18ch; line-height: 1.0; color: var(--color-paper); }
+  .thread-title em { color: var(--color-periwinkle); }
+  .thread-body {
+    margin: 1.25rem 0 0; max-width: 46ch;
+    font-family: var(--font-display); font-weight: 300;
+    font-size: var(--text-step-1); line-height: 1.5;
+    color: rgba(255,255,255,0.78); font-variation-settings: "opsz" 60;
+    text-wrap: pretty;
+  }
+
+  .fold {
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 1.25rem;
+  }
+  .fold-cap {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    transition: opacity 600ms var(--ease-soft) 1100ms;
+  }
+  .fold-cap-before { color: rgba(255,255,255,0.42); opacity: 1; }
+  .fold-cap-after { color: var(--color-periwinkle); opacity: 0; }
+
+  /* Fixed height so the collapse never reflows the page around it. */
+  .fold-stage {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .fold-card {
+    position: absolute; top: 50%; left: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    width: clamp(104px, 17vw, 152px); height: 84px;
+    padding: 0.5rem;
+    border-radius: 12px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.04em; line-height: 1.35;
+    /* Spread from centre by index, with a little rotation so they read
+       as separate physical objects rather than a row of divs.
+       The step was 18vw / 168px, which at 1440 put the five cards across
+       824px inside a 700px column — the outer two ran off the section's
+       right edge and got clipped, which read as a bug rather than as a
+       crop. 9vw / 126px keeps the whole spread inside the column. */
+    --spread: calc((var(--i) - 2) * clamp(84px, 9vw, 126px));
+    --rot: calc((var(--i) - 2) * 2.5deg);
+    margin: -42px 0 0 calc(clamp(104px, 17vw, 152px) * -0.5);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.66);
+    box-shadow: 0 18px 40px -22px rgba(0,0,0,0.7);
+    transform: translateX(var(--spread)) rotate(var(--rot));
+    transition:
+      transform 1200ms var(--ease-out-expo),
+      opacity 700ms var(--ease-soft);
+    transition-delay: calc(1200ms + var(--i) * 60ms);
+  }
+
+  .fold-solo {
+    position: absolute; top: 50%; left: 50%;
+    width: min(560px, 100%);
+    /* translate, not a negative margin: `margin-left: min(-280px, -50%)`
+       picks the *more negative* value, so on a wide stage it resolves to
+       -50% of the container and throws the card left of centre. */
+    transform: translate(-50%, -50%) scale(0.94);
+    display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+    padding: 1.15rem 1.25rem;
+    border-radius: 14px;
+    background: var(--color-periwinkle);
+    border: 1px solid var(--color-periwinkle);
+    color: var(--color-navy);
+    box-shadow: 0 26px 60px -24px rgba(142,148,184,0.7);
+    opacity: 0;
+    transition:
+      opacity 600ms var(--ease-soft) 2000ms,
+      transform 800ms var(--ease-out-expo) 2000ms;
+  }
+  .fold-solo :global(.fold-mark) {
+    height: clamp(44px, 6vw, 60px); width: auto; display: block;
+    color: var(--color-navy);
+  }
+  /* The mark's shadow layer is periwinkle, which is this card's
+     background — it would vanish. Re-tint it so the mark keeps its
+     two-layer offset. */
+  .fold-solo :global(.fold-mark) > g:first-of-type path {
+    fill: rgba(13, 47, 69, 0.22);
+  }
+  .fold-solo-label {
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .fold-solo-stages {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(13,47,69,0.22);
+    width: 100%;
+  }
+  .fold-stg { display: flex; flex-direction: column; gap: 0.2rem; text-align: center; }
+  .fold-stg b {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-0); color: var(--color-navy);
+    font-variation-settings: "opsz" 40;
+  }
+  .fold-stg i {
+    font-style: normal;
+    font-family: var(--font-mono); font-size: 10px;
+    line-height: 1.35; letter-spacing: 0.02em;
+    color: rgba(13,47,69,0.68);
+  }
+  /* Detail reveals on hover, as on /studio: the collapsed card stays tight
+     and hovering expands it to say what each stage actually covers.
+
+     Nothing is put out of reach by that. The whole graphic is
+     aria-hidden, and the .sr-only paragraph beneath it carries the same
+     four descriptions in prose — so assistive tech already has the
+     content and the reveal can stay purely presentational.
+
+     Keyboard parity is handled in two ways, because :focus-within alone
+     cannot carry it here. There is deliberately nothing focusable inside
+     the graphic — a tab stop inside an aria-hidden subtree is its own
+     WCAG failure (axe `aria-hidden-focus`), so adding one to hang the
+     reveal on would trade a small problem for a real one. So instead:
+     the .sr-only prose below carries all four descriptions verbatim, and
+     the *collapse* is gated on a fine pointer rather than the reveal, so
+     a reader who cannot hover — touch, or switch control — gets the
+     descriptions standing open rather than a hint they can never act on.
+     :focus-within is still paired with :hover below so the reveal fires
+     if focus ever does land inside, but it is the belt, not the braces. */
+  .fold-solo-hint { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .fold-stg i {
+      max-height: 0; opacity: 0; overflow: hidden;
+      transition: max-height 420ms var(--ease-soft), opacity 300ms var(--ease-soft);
+    }
+    .fold-solo:hover .fold-stg i,
+    .fold-solo:focus-within .fold-stg i { max-height: 4rem; opacity: 1; }
+    .fold-solo:hover,
+    .fold-solo:focus-within { box-shadow: 0 34px 70px -22px rgba(142,148,184,0.85); }
+    .fold-solo-hint {
+      display: block;
+      font-family: var(--font-mono); font-size: 9px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(13,47,69,0.45);
+      transition: opacity 300ms var(--ease-soft);
+    }
+    .fold-solo:hover .fold-solo-hint,
+    .fold-solo:focus-within .fold-solo-hint { opacity: 0; }
+  }
+
+  /* Collapse, on scroll into view. */
+  .fold.is-inview .fold-card { transform: translateX(0) rotate(0deg) scale(0.86); opacity: 0; }
+  .fold.is-inview .fold-solo { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .fold.is-inview .fold-cap-before { opacity: 0; }
+  .fold.is-inview .fold-cap-after { opacity: 1; }
+
+  /* [data-mv-watch] holds elements at opacity 0 until observed; this one
+     animates its children instead, so the container itself stays visible. */
+  .fold[data-mv-watch] { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fold-card { opacity: 0; transform: none; }
+    .fold-solo { opacity: 1; transform: translate(-50%, -50%); }
+    .fold-cap-before { opacity: 0; }
+    .fold-cap-after { opacity: 1; }
+  }
+
+  @media (max-width: 700px) {
+    .fold-card {
+      --spread: calc((var(--i) - 2) * clamp(52px, 14vw, 72px));
+      --rot: calc((var(--i) - 2) * 5deg);
+      width: 100px; font-size: 10px;
+      margin-left: -50px;
+    }
+    .fold-solo { width: 100%; }
+    .fold-solo-stages { grid-template-columns: repeat(2, 1fr); gap: 0.6rem 0.75rem; }
+  }
+
   @media (max-width: 1000px) {
     .hero-outer { min-height: 0; padding-block: 2rem 3rem; }
     .hero { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -770,6 +1787,51 @@ import CtaClose from "../components/CtaClose.astro";
 </style>
 
 <script is:inline>
+  // Process cards — tap to open, below the four-up breakpoint.
+  //
+  // .pc-head stays the real link it already is: the first tap on a
+  // closed card opens it instead of navigating, and a second tap on an
+  // open card follows the link through to /services as before. No
+  // markup changes, so the desktop hover regime and the screen-reader
+  // reading order are untouched, and above the breakpoint this does
+  // nothing at all — the link behaves like a link and the card opens
+  // on hover and focus as it always has.
+  (() => {
+    const grid = document.querySelector('.process-grid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('.process-card'));
+    const mq = window.matchMedia('(max-width: 1199px)');
+
+    const sync = () => {
+      cards.forEach((card) => {
+        const head = card.querySelector('.pc-head');
+        if (mq.matches) {
+          head.setAttribute('aria-expanded', String(card.classList.contains('is-open')));
+        } else {
+          // Leaving aria-expanded on a plain link above the breakpoint
+          // would announce a disclosure that no longer exists.
+          head.removeAttribute('aria-expanded');
+          card.classList.remove('is-open');
+        }
+      });
+    };
+
+    cards.forEach((card) => {
+      card.querySelector('.pc-head').addEventListener('click', (event) => {
+        if (!mq.matches) return;
+        if (card.classList.contains('is-open')) return;
+        event.preventDefault();
+        // One open at a time, so the grid never grows past two rows.
+        cards.forEach((other) => other.classList.remove('is-open'));
+        card.classList.add('is-open');
+        sync();
+      });
+    });
+
+    mq.addEventListener('change', sync);
+    sync();
+  })();
+
   // Services bento — count up the headline price when it enters the viewport.
   (() => {
     const el = document.getElementById('bhAmount');

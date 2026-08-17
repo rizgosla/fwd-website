@@ -15,7 +15,7 @@ interface Props {
   url: string;
   blurb: string;
   image?: string;
-  kind?: "client" | "mockup";
+  kind?: "client" | "mockup" | "in-progress";
 }
 
 const { title, url, blurb, image, kind } = Astro.props;
@@ -36,11 +36,15 @@ try {
         <img class="pc-shot" src={image} alt={`The ${title} homepage`} loading="lazy" decoding="async" />
       ) : (
         <span class="pc-holder" aria-hidden="true">
-          <img class="pc-holder-mark" src="/assets/fwd-logo.svg" alt="" />
+          <img class="pc-holder-mark" src="/assets/fwd-logo.svg" alt="" width="160" height="160" />
           <span class="pc-holder-label">Preview coming</span>
         </span>
       )}
-      {kind === "mockup" && <span class="pc-badge">Mockup</span>}
+      {/* Only "client" ships unbadged. Everything else says what it actually
+          is, so a card never implies a launched project that isn't one. */}
+      {kind && kind !== "client" && (
+        <span class="pc-badge">{kind === "mockup" ? "Mockup" : "In progress"}</span>
+      )}
     </span>
 
     <span class="pc-body">

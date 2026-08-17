@@ -63,6 +63,18 @@
    collapsed to viewport edges. */
 :root {
   --pad-x: clamp(1.5rem, 4.5vw, 4rem);
+
+  /* Focus-ring colour. Periwinkle itself is only 2.97:1 on paper, just under
+     the 3:1 WCAG 1.4.11 asks of a focus indicator, so the default ring failed
+     on every light page. This is periwinkle held at the same hue and
+     saturation and darkened ~8% in lightness, which clears 3:1 on BOTH the
+     light surfaces and the ink/navy bands — 4.00:1 on paper, 3.48:1 on
+     surface, 4.55:1 on ink, 3.48:1 on navy. One value rather than a
+     light/dark pair because focusable elements sit on ink in CtaClose, the
+     services walkthrough and the contact rail, and a surface-specific default
+     would silently fail again the next time a dark band is added. Kept out of
+     @theme so Tailwind doesn't mint bg-/text- utilities for it. */
+  --focus-ring: #757da8;
 }
 
 /* ========================================================================
@@ -455,7 +467,7 @@ img, svg { max-width: 100%; display: block; }
 
 /* G-06: every interactive element gets a visible focus ring */
 :focus-visible {
-  outline: 2px solid var(--color-periwinkle);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -479,7 +491,7 @@ img, svg { max-width: 100%; display: block; }
 .skip-link:focus,
 .skip-link:focus-visible {
   top: 1rem;
-  outline: 2px solid var(--color-periwinkle);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
