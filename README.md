@@ -15,8 +15,9 @@ npm run preview  # serve the build
 ## Project structure
 
 ```
-fwd-astro/
-├── astro.config.mjs       # registers @tailwindcss/vite
+fwd-website/
+├── astro.config.mjs       # registers @tailwindcss/vite + @astrojs/cloudflare adapter
+├── wrangler.jsonc          # Cloudflare Worker config (main, assets, compat flags)
 ├── package.json
 ├── tsconfig.json
 ├── public/                # static assets served as-is
@@ -30,21 +31,20 @@ fwd-astro/
 │   │   ├── Footer.astro
 │   │   ├── BrandMark.astro    # the fwd. logo SVG (reusable)
 │   │   ├── Marquee.astro
-│   │   ├── PageHero.astro
-│   │   ├── SectionRule.astro  # "§ 01 / Services / Two tiers · Flat fee"
-│   │   ├── SectionHead.astro
-│   │   ├── ServiceCard.astro
-│   │   ├── ProcessStep.astro
-│   │   ├── TeamMember.astro
-│   │   ├── WorkItem.astro
-│   │   └── CtaStrip.astro
+│   │   ├── HeroShowcase.astro
+│   │   ├── CtaClose.astro
+│   │   ├── showcase/SitePreview.astro
+│   │   └── work/ProjectCard.astro
 │   └── pages/
 │       ├── index.astro      → /
 │       ├── services.astro   → /services
+│       ├── studio.astro     → /studio
 │       ├── work.astro       → /work
-│       ├── team.astro       → /team
-│       ├── about.astro      → /about
-│       └── contact.astro    → /contact
+│       ├── contact.astro    → /contact
+│       ├── privacy.astro    → /privacy
+│       ├── terms.astro      → /terms
+│       └── api/
+│           └── inquiry.ts   → POST /api/inquiry (contact form handler)
 ```
 
 ## What changed in the conversion
@@ -89,9 +89,20 @@ well as a long chain of utilities. They live in `@layer components` inside
 
 ## Hosting / contact form
 
-The contact form on `/contact` ships as a no-op placeholder that displays a
-success message. Wire it to your form service of choice (Formspree, Resend,
-your own endpoint) by changing the `submit` handler in `src/pages/contact.astro`.
+The site deploys to Cloudflare as a Worker via the `@astrojs/cloudflare`
+adapter (`npm run build && wrangler deploy`; see `wrangler.jsonc`).
+
+The `/contact` form is a real, working submission handler — `src/pages/api/inquiry.ts`
+sends the inquiry to Resend's REST API (`fetch`, no SDK needed) and also
+sends a confirmation email back to the submitter. It requires a
+`RESEND_API_KEY` Cloudflare secret:
+
+```bash
+npx wrangler secret put RESEND_API_KEY
+```
+
+Until that secret is set the endpoint returns a real error instead of a fake
+success. See `.dev.vars.example` for local development.
 
 ## License
 

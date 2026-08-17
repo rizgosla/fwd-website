@@ -58,10 +58,19 @@ const steps = [
     {/* Paper panel */}
     <div class="ask-panel">
       <form id="askForm" class="ask-form" method="POST" action="/api/inquiry" novalidate>
-        {/* Honeypot — off-screen rather than display:none, which some bots skip. */}
-        <div class="hp" aria-hidden="true">
-          <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
-        </div>
+        {/* Spam trap — off-screen rather than display:none, which some bots skip.
+            No aria-hidden wrapper: it would wrap a focusable input, which
+            every automated scanner flags as aria-hidden-focus, and
+            tabindex="-1" doesn't mitigate it since the field can still be
+            focused by click or script. The off-screen CSS already hides it
+            from sighted users, and bots fill any input they find regardless
+            of ARIA, so the trap still works without the violation.
+            Name/id/label avoid words like "website" or "company" on purpose —
+            browser and password-manager autofill match those against saved
+            address/business data even on off-screen fields, which would fill
+            this trap for a real visitor and cause their genuine submission
+            to be silently discarded as spam. */}
+        <label class="hp">Leave blank<input type="text" name="hp_verify" id="hp_verify" tabindex="-1" autocomplete="off" aria-label="Leave this field blank" /></label>
 
         <p class="ask-counter" id="askCounter" data-stepper-only hidden>Question 01 of 04</p>
 

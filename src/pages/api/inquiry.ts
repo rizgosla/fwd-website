@@ -97,7 +97,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   /* Honeypot. Real people never see this field, so anything in it is a bot.
      Return 200 so the bot learns nothing and doesn't retry. */
-  if (field(data, "website", 100)) {
+  if (field(data, "hp_verify", 100)) {
     return reply(200, { ok: true, replyBy: replyBy(new Date()) });
   }
 
