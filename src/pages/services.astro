@@ -19,9 +19,57 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
   const phase = PHASES.findIndex((p) => n >= p.from && n <= p.to);
   return { n, phase, start: n === PHASES[phase].from, end: n === PHASES[phase].to };
 });
+
+// One source for both the rendered <details> list and the FAQPage schema
+// below it. Google requires the structured data to match the visible answer
+// word for word, so the two cannot be maintained separately.
+const FAQS = [
+  {
+    q: "What if I only need a single landing page?",
+    a: "Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $4,000 number is for a full site of up to eight pages.",
+  },
+  {
+    q: 'What counts as a "small change" after launch?',
+    a: "Text fixes, photo swaps, link updates, hours changes. Anything you could send us in a single email and we could ship in an afternoon. Larger changes become a new engagement at a flat fee.",
+  },
+  {
+    q: "Who hosts the site after launch?",
+    a: "You do. We set up hosting on a platform you own, usually Cloudflare Pages or Netlify, both free at our scale. We connect your domain, set up DNS, and show you how to make a content change. There is no ongoing fee to us.",
+  },
+  {
+    q: "Can you redesign an existing site?",
+    a: "Yes. Most of our work is redesigns, and the flat-fee structure stays the same. We preserve any SEO that is working, port your existing content, and keep your domain authority intact.",
+  },
+  {
+    q: "How do payments work?",
+    a: "50% on signed proposal, 50% on launch. One of us sends every invoice and handles every receipt. There are no recurring charges.",
+  },
+  {
+    q: "Who updates the site after launch?",
+    a: "Send us an email with what you need changed and we will take care of it, subject to our availability. You also get a written handoff doc at launch, in plain language, if you would rather do it yourself.",
+  },
+  {
+    q: "Do you work with businesses outside Orange County?",
+    a: "Most of our clients are in Orange County — we are based here too — but we are happy to work with people anywhere in North America. The process is the same either way. Being nearby just means we can meet in person if you would rather.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
 ---
 
-<BaseLayout title="Services & pricing - Forward Design Consulting">
+<BaseLayout
+  title="Flat-Fee Web Design, $4,000 | Orange County | Forward Design"
+  description="Full website design for $4,000 flat — up to eight pages in about four weeks. No retainers, no hourly billing. Serving Irvine and all of Orange County."
+  ogImage="/og/services.jpg"
+>
   <!-- ============ HERO — editorial split with a spec index card ============ -->
   <section class="svc-hero">
     <div class="full svc-hero-grid">
@@ -39,22 +87,292 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
       {/* The old spec card restated the bento 400px below it. This shows the
           one promise the bento states but never pictures: eight pages, drawn
           from the same wireframe primitives the hero showcase uses. Exactly
-          eight children, which is where .mv-stagger's nth-child list ends. */}
+          eight children, which is where .mv-stagger's nth-child list ends.
+
+          Each .pg stacks TWO layers in one grid cell:
+            .pg-wire — the blank wireframe this block used to be. It is now the
+                       "pre-load" state: a page nobody has designed yet.
+            .pg-art  — a design specific to that page type, which resolves in
+                       on top of the wireframe once the block scrolls into
+                       view (see the transition rules in the style block).
+          --i is the child's index. Both layers read it to stagger the reveal
+          in step with .mv-stagger's own nth-child delays, so each page
+          finishes rising before its design lands. The wireframe layer is
+          written out per page rather than looped because the eight designs
+          have to sit next to their own pre-load state to stay readable.
+
+          Every .pg-art runs FOUR BANDS: nav → primary band → secondary band →
+          footer. The footer is the load-bearing one. Before it existed each
+          card was nav → content → the content ran out, and a page with a
+          header and no bottom reads as a screenshot that got cropped rather
+          than as a whole page. Nothing here floats: content bottoms out on the
+          footer on all eight, at every width. Keep both properties if you add
+          or edit a page. */}
       <figure class="svc-pages-fig">
         <div class="svc-pages mv-stagger" data-mv-watch aria-hidden="true">
-          {Array.from({ length: 8 }, () => (
-            <span class="pg">
-              <span class="pg-nav">
-                <span class="pg-logo"></span>
-                <span class="pg-links"><span></span><span></span><span></span></span>
-              </span>
-              <span class="pg-bar"></span>
-              <span class="pg-bar pg-bar-2"></span>
-              <span class="pg-line"></span>
-              <span class="pg-media"></span>
-              <span class="pg-pill"></span>
+          {/* 01 · HOME — photo hero carrying the headline and CTA, three feature cards under it. */}
+          <span class="pg" style="--i:0">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
             </span>
-          ))}
+            <span class="pg-art pg-home">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-hero">
+                <span class="a-h" style="width:78%"></span>
+                <span class="a-h" style="width:46%"></span>
+                <span class="a-l" style="width:64%"></span>
+                <span class="a-cta"></span>
+              </span>
+              {/* The feature cards were three empty outlines. Their marks are
+                  --a-ink-mid, NOT the accent: the accent is already spent on
+                  the nav CTA and the hero CTA, and a third and fourth
+                  appearance is what the note above warns turns it into a
+                  second brand colour. */}
+              <span class="a-cards">
+                <span class="a-card"><span class="a-card-mark"></span><span class="a-l" style="width:86%"></span><span class="a-l" style="width:58%"></span></span>
+                <span class="a-card"><span class="a-card-mark"></span><span class="a-l" style="width:78%"></span><span class="a-l" style="width:64%"></span></span>
+                <span class="a-card"><span class="a-card-mark"></span><span class="a-l" style="width:90%"></span><span class="a-l" style="width:52%"></span></span>
+              </span>
+              <span class="a-strip"><span></span><span></span><span></span><span></span></span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 02 · SERVICES — page title over three offer rows, the middle one selected. */}
+          <span class="pg" style="--i:1">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-svc">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:56%"></span>
+              {/* Each row carries an offer NAME over a description line, not one
+                  anonymous bar. Two weights in a row is what separates a
+                  services list from a checklist. */}
+              <span class="a-list">
+                <span class="a-item"><span class="a-sq"></span><span class="a-item-copy"><span class="a-h-sm" style="width:58%"></span><span class="a-l" style="width:92%"></span></span></span>
+                <span class="a-item is-on"><span class="a-sq"></span><span class="a-item-copy"><span class="a-h-sm" style="width:72%"></span><span class="a-l" style="width:86%"></span></span></span>
+                <span class="a-item"><span class="a-sq"></span><span class="a-item-copy"><span class="a-h-sm" style="width:64%"></span><span class="a-l" style="width:96%"></span></span></span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 03 · ABOUT — a squarish portrait beside its opening paragraph, a
+              stats row, then a closing section. The portrait used to run the
+              whole height of the card, which made it a tall flat slab of one
+              colour — the single biggest thing wrong with this page. */}
+          <span class="pg" style="--i:2">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-about">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:58%"></span>
+              <span class="a-split">
+                <span class="a-img a-portrait"></span>
+                <span class="a-copy">
+                  <span class="a-h-sm" style="width:72%"></span>
+                  {/* A paragraph, not a column of loose lines. The lines sit at
+                      --a-gap-tight leading inside .a-p and the sections around
+                      it separate at --a-gap; one even pitch for every line on
+                      the card is what read as a barcode. */}
+                  <span class="a-p">
+                    <span class="a-l" style="width:98%"></span><span class="a-l" style="width:92%"></span>
+                    <span class="a-l" style="width:100%"></span><span class="a-l" style="width:88%"></span>
+                    <span class="a-l" style="width:96%"></span><span class="a-l" style="width:94%"></span>
+                    <span class="a-l" style="width:99%"></span><span class="a-l" style="width:61%"></span>
+                  </span>
+                </span>
+              </span>
+              {/* Three numbers under a rule — the one band on this card that is
+                  neither image nor prose, which is what keeps the two apart. */}
+              <span class="a-stats">
+                <span class="a-stat"><span class="a-h" style="width:62%"></span><span class="a-l" style="width:90%"></span></span>
+                <span class="a-stat"><span class="a-h" style="width:78%"></span><span class="a-l" style="width:82%"></span></span>
+                <span class="a-stat"><span class="a-h" style="width:54%"></span><span class="a-l" style="width:94%"></span></span>
+              </span>
+              <span class="a-close">
+                <span class="a-h-sm" style="width:52%"></span>
+                <span class="a-p">
+                  <span class="a-l" style="width:95%"></span><span class="a-l" style="width:99%"></span>
+                  <span class="a-l" style="width:90%"></span><span class="a-l" style="width:97%"></span>
+                  <span class="a-l" style="width:93%"></span><span class="a-l" style="width:54%"></span>
+                </span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 04 · CONTACT — labelled fields, a message box, and a submit on a
+              real actions row. The one page here whose PALETTE changed too:
+              petrol and apricot out, ink and lime in. */}
+          <span class="pg" style="--i:3">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-contact">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:52%"></span>
+              {/* The one supporting line in the set. A contact page always has
+                  a sentence telling you what to write, and without it the form
+                  floats under a lone headline. */}
+              <span class="a-l" style="width:72%"></span>
+              <span class="a-form">
+                {/* Name and email share a row — the standard two-up. Every
+                    field now carries a label bar above it: without labels a
+                    form is a stack of boxes, and at this size one 2px bar is
+                    the entire difference. */}
+                <span class="a-row">
+                  <span class="a-fieldset"><span class="a-lab" style="width:52%"></span><span class="a-field"></span></span>
+                  <span class="a-fieldset"><span class="a-lab" style="width:44%"></span><span class="a-field"></span></span>
+                </span>
+                <span class="a-fieldset"><span class="a-lab" style="width:26%"></span><span class="a-field"></span></span>
+                <span class="a-fieldset a-fieldset-tall"><span class="a-lab" style="width:34%"></span><span class="a-field a-field-tall"></span></span>
+                {/* Fine print left, button right — where a submit lives. It
+                    used to be a 58%-wide pill hard against the left edge with
+                    nothing opposite it. */}
+                <span class="a-actions"><span class="a-l" style="width:38%"></span><span class="a-submit"></span></span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 05 · GALLERY — nine landscape thumbnails on a 3-up grid. Five
+              near-square tiles gave every cell a block of flat colour big
+              enough to read as "image missing"; nine small ones read as a
+              gallery, because the eye registers the repetition. */}
+          <span class="pg" style="--i:4">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-gallery">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:38%"></span>
+              <span class="a-l" style="width:64%"></span>
+              <span class="a-filters"><span class="is-on"></span><span></span><span></span></span>
+              <span class="a-mosaic">
+                <span class="a-img"></span><span class="a-img"></span><span class="a-img"></span>
+                <span class="a-img"></span><span class="a-img"></span><span class="a-img"></span>
+                <span class="a-img"></span><span class="a-img"></span><span class="a-img"></span>
+              </span>
+              <span class="a-more"></span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 06 · PRICING — three plan columns at ~40% of the card, the middle
+              one filled and standing proud, with an FAQ accordion filling the
+              height the columns used to waste. */}
+          <span class="pg" style="--i:5">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-pricing">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:50%"></span>
+              <span class="a-l" style="width:64%"></span>
+              {/* Name, price, rule, features, CTA. The rule under the price is
+                  what separates the header of the column from its list; without
+                  it the price is just the largest bar in one long stack. */}
+              <span class="a-plans">
+                <span class="a-plan">
+                  <span class="a-l" style="width:52%"></span><span class="a-num"></span><span class="a-rule"></span>
+                  <span class="a-feats"><span class="a-l"></span><span class="a-l"></span><span class="a-l"></span></span>
+                  <span class="a-plan-cta"></span>
+                </span>
+                <span class="a-plan is-pick">
+                  <span class="a-l" style="width:60%"></span><span class="a-num"></span><span class="a-rule"></span>
+                  <span class="a-feats"><span class="a-l"></span><span class="a-l"></span><span class="a-l"></span></span>
+                  <span class="a-plan-cta"></span>
+                </span>
+                <span class="a-plan">
+                  <span class="a-l" style="width:56%"></span><span class="a-num"></span><span class="a-rule"></span>
+                  <span class="a-feats"><span class="a-l"></span><span class="a-l"></span><span class="a-l"></span></span>
+                  <span class="a-plan-cta"></span>
+                </span>
+              </span>
+              <span class="a-faq">
+                <span class="a-h-sm" style="width:46%"></span>
+                <span class="a-qs">
+                  <span class="a-q"><span class="a-l" style="width:64%"></span><span class="a-plus"></span></span>
+                  <span class="a-q"><span class="a-l" style="width:52%"></span><span class="a-plus"></span></span>
+                  <span class="a-q"><span class="a-l" style="width:70%"></span><span class="a-plus"></span></span>
+                </span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 07 · BLOG INDEX — three post rows: a 4:3 cover, a title that wraps,
+              and a tagged date. */}
+          <span class="pg" style="--i:6">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-blog">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-h" style="width:42%"></span>
+              <span class="a-posts">
+                <span class="a-post"><span class="a-img a-thumb"></span><span class="a-post-copy"><span class="a-h-sm" style="width:94%"></span><span class="a-h-sm" style="width:56%"></span><span class="a-post-meta"><span class="a-tag"></span><span class="a-l" style="width:44%"></span></span></span></span>
+                <span class="a-post"><span class="a-img a-thumb"></span><span class="a-post-copy"><span class="a-h-sm" style="width:88%"></span><span class="a-h-sm" style="width:44%"></span><span class="a-post-meta"><span class="a-tag"></span><span class="a-l" style="width:44%"></span></span></span></span>
+                <span class="a-post"><span class="a-img a-thumb"></span><span class="a-post-copy"><span class="a-h-sm" style="width:92%"></span><span class="a-h-sm" style="width:62%"></span><span class="a-post-meta"><span class="a-tag"></span><span class="a-l" style="width:44%"></span></span></span></span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
+
+          {/* 08 · DETAIL — a project or article page: cover, title, tagged byline, body. */}
+          <span class="pg" style="--i:7">
+            <span class="pg-wire">
+              <span class="pg-nav"><span class="pg-logo"></span><span class="pg-links"><span></span><span></span><span></span></span></span>
+              <span class="pg-bar"></span><span class="pg-bar pg-bar-2"></span><span class="pg-line"></span>
+              <span class="pg-media"></span><span class="pg-pill"></span>
+            </span>
+            <span class="pg-art pg-detail">
+              <span class="a-nav"><span class="a-logo"></span><span class="a-links"><span></span><span></span><span></span></span><span class="a-navcta"></span></span>
+              <span class="a-img a-cover"></span>
+              {/* Headline, second line and byline are ONE masthead unit at
+                  tight leading. As five equal siblings at 5px they read as
+                  five unrelated bars. An article headline wraps; two bars, the
+                  second short, is the difference between a title and a label. */}
+              <span class="a-head">
+                <span class="a-h" style="width:82%"></span>
+                <span class="a-h" style="width:47%"></span>
+                <span class="a-meta"><span class="a-tag"></span><span class="a-l" style="width:32%"></span></span>
+              </span>
+              <span class="a-body">
+                <span class="a-p">
+                  <span class="a-l" style="width:98%"></span><span class="a-l" style="width:91%"></span>
+                  <span class="a-l" style="width:66%"></span>
+                </span>
+                {/* The pull quote. Heavier than body, hung off an accent rule —
+                    the only place in the set a rule is set in the accent, which
+                    is exactly what a magazine spends one on, and what breaks
+                    the lower half of this card out of one flat run of texture. */}
+                <span class="a-pull"><span class="a-h-sm" style="width:88%"></span><span class="a-h-sm" style="width:54%"></span></span>
+                <span class="a-p">
+                  <span class="a-l" style="width:94%"></span><span class="a-l" style="width:99%"></span>
+                  <span class="a-l" style="width:58%"></span>
+                </span>
+              </span>
+              <span class="a-foot"><span class="a-foot-mark"></span><span class="a-foot-links"><span></span><span></span><span></span></span></span>
+            </span>
+          </span>
         </div>
         <figcaption class="svc-pages-cap">Up to eight pages, designed as one system</figcaption>
       </figure>
@@ -226,7 +544,7 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
         <div class="walkthrough-step" data-step="4" id="wt-panel-4">
           <span class="when">Day 20 · Live</span>
           <h3>Your domain points to the new site. <em>Final invoice sent</em>.</h3>
-          <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written doc so you can update content yourself. The remaining balance invoice lands the same day. You own all of it: the domain, the hosting account, the code.</p>
+          <p>We connect DNS, install the SSL cert, run a final QA pass, and hand over a written handoff doc — though for most changes you can just email us. The remaining balance invoice lands the same day. You own all of it: the domain, the hosting account, the code.</p>
           <span class="deliv">Live in 20 business days</span>
         </div>
       </div>
@@ -282,30 +600,12 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
             fq-card-* rather than faq-item so the old global list rules do not
             apply. Still <details>, so it works with no JS. */}
         <div class="fq-cards mv-stagger" data-mv-watch>
-          <details class="fq-card" open>
-            <summary class="fq-card-q"><span>What if I only need a single landing page?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $4,000 number is for a full site of up to eight pages.</p></div>
-          </details>
-          <details class="fq-card">
-            <summary class="fq-card-q"><span>What counts as a "small change" after launch?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>Text fixes, photo swaps, link updates, hours changes. Anything you could send us in a single email and we could ship in an afternoon. Larger changes become a new engagement at a flat fee.</p></div>
-          </details>
-          <details class="fq-card">
-            <summary class="fq-card-q"><span>Who hosts the site after launch?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>You do. We set up hosting on a platform you own, usually Cloudflare Pages or Netlify, both free at our scale. We connect your domain, set up DNS, and show you how to make a content change. There is no ongoing fee to us.</p></div>
-          </details>
-          <details class="fq-card">
-            <summary class="fq-card-q"><span>Can you redesign an existing site?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>Yes. Most of our work is redesigns, and the flat-fee structure stays the same. We preserve any SEO that is working, port your existing content, and keep your domain authority intact.</p></div>
-          </details>
-          <details class="fq-card">
-            <summary class="fq-card-q"><span>How do payments work?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>50% on signed proposal, 50% on launch. Card, bank transfer, or wire, whichever is easiest. One of us sends every invoice and handles every receipt. There are no recurring charges.</p></div>
-          </details>
-          <details class="fq-card">
-            <summary class="fq-card-q"><span>Can I keep updating the site myself?</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
-            <div class="fq-card-a"><p>Every project ships with a handoff doc: screenshots and exact file paths, written so non-developers can change text, swap photos, and add new pages without touching code we wrote.</p></div>
-          </details>
+          {FAQS.map(({ q, a }, i) => (
+            <details class="fq-card" open={i === 0}>
+              <summary class="fq-card-q"><span>{q}</span><span class="fq-card-icon" aria-hidden="true"></span></summary>
+              <div class="fq-card-a"><p>{a}</p></div>
+            </details>
+          ))}
         </div>
       </div>
     </div>
@@ -322,6 +622,8 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
     note="Flat-fee proposal within a day"
     ticker={["Up to 8 pages", "About 4 weeks", "Hosting included", "You own everything"]}
   />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 </BaseLayout>
 
 <style>
@@ -364,15 +666,31 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
      ============================================================ */
   .svc-pages-fig { margin: 0; display: flex; flex-direction: column; gap: 1.1rem; }
   .svc-pages { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(0.5rem, 1vw, 0.85rem); }
+  /* One grid cell, two stacked layers. Grid rather than absolute positioning
+     so both layers inherit the card's padding automatically — the padding
+     shrinks at mobile and hard-coded insets would drift out of sync. */
   .pg {
+    /* Held as a variable because the designed layer bleeds back out over it
+       (see .pg-art) and the two have to stay in step when mobile shrinks it. */
+    --pg-pad: 8px;
     aspect-ratio: 3 / 4;
-    display: flex; flex-direction: column; gap: 5px;
-    padding: 8px;
+    display: grid;
+    grid-template: 1fr / 1fr;
+    padding: var(--pg-pad);
     border-radius: 8px;
     border: 1px solid var(--color-line);
     background: var(--color-paper);
     box-shadow: 0 14px 30px -20px rgb(7 23 34 / 0.30);
+    /* Thumbnails this small have no slack: anything a design layer overshoots
+       by gets clipped at the rounded frame instead of spilling into the grid. */
+    overflow: hidden;
   }
+  .pg-wire, .pg-art {
+    grid-area: 1 / 1;
+    min-width: 0; min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .pg-wire { gap: 5px; }
   .pg-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 1px; }
   .pg-logo { width: 14px; height: 4px; border-radius: 2px; background: rgb(13 47 69 / 0.16); }
   .pg-links { display: flex; gap: 3px; margin-left: auto; }
@@ -384,13 +702,651 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
     flex: 1; min-height: 0; margin-top: 1px;
     border-radius: 4px;
     border: 1px dashed rgb(13 47 69 / 0.20);
-    background: repeating-linear-gradient(135deg, rgb(13 47 69 / 0.09) 0 6px, transparent 6px 12px);
+    /* Was a diagonal hatch. Flat fill instead — the dashed border is already
+       the unambiguous "no image here yet" signal, and the hatch was the last
+       gradient function left in this figure. */
+    background: rgb(13 47 69 / 0.06);
   }
   .pg-pill { width: 26px; height: 8px; border-radius: 999px; background: var(--color-periwinkle); opacity: 0.55; margin-top: auto; }
   /* Slight variation so eight thumbnails read as eight pages, not a tiled texture. */
   .pg:nth-child(3n) .pg-bar { width: 66%; }
   .pg:nth-child(3n) .pg-bar-2 { width: 44%; }
   .pg:nth-child(4n) .pg-line { width: 52%; }
+
+  /* ---------- The designed layer ----------------------------------------
+     Same primitive vocabulary as the wireframe — bars, blocks, pills — but
+     painted the way a finished website is painted rather than the way a
+     blueprint is.
+
+     Why this is drawn in solid colour: the previous version of this layer
+     used translucent navy (0.30-0.55 alpha) for every mark, and the blank
+     wireframe underneath uses the SAME hue at 0.12-0.20. Adding shapes in
+     the same wash the placeholder is made of produces a more detailed
+     wireframe, not a design — the thing still looked like it was loading.
+     So every mark below is an opaque colour.
+
+     EIGHT PALETTES, ONE STANDARD. Each page below declares its own complete
+     palette and none of them inherit from each other — eight different client
+     sites, which is the point of the graphic. The previous set of eight was
+     rebuilt because seven of them were badly CONSTRUCTED, not because they
+     were different from one another. Variety was never the defect.
+
+     The one page that worked was 02 · SERVICES, and every other palette here
+     was built to pass the four tests it passes. Read this before adding or
+     editing a page:
+
+       1. THREE VALUE TIERS, NOTHING MUDDY BETWEEN THEM. A light ground around
+          L*90-97, a deep ink around L*8-25, and rules/body copy in between.
+          Nothing that defines the page may sit in the L*40-60 band. That band
+          is what made the old About portrait (a #8c6a55 taupe at L*47 with no
+          dark anywhere on the page) and the old Gallery mosaic (two tiles at
+          L*54 and L*58, touching) read as unfinished. Clustered mid-lightness
+          was the actual defect in all seven, not the hues.
+       2. TWO HUES MAXIMUM, ROUGHLY 60-30-10. Ground 60, ink and image mass 30,
+          accent 10. Several pages here are one hue plus neutrals, which is
+          also fine; what is not fine is a third hue turning up.
+       3. ONE ACCENT, TWO MARKS MAXIMUM. The old home page put its amber on
+          five separate marks, which stops being an accent and becomes a second
+          brand colour with nothing left to draw the eye.
+       4. ONE FOCAL SHAPE THAT SURVIVES A SQUINT, AND CONTENT THAT FILLS THE
+          FRAME. Blur the card: exactly one thing should still be obviously
+          heaviest, and there should be no dead space around a floating
+          cluster.
+
+     Layouts differ as hard as the palettes do, and the two are chosen
+     together — each page has its dominant dark mass in a different PLACE:
+     a hero (01), a pushed row (02), a left column (03), the whole page (04),
+     a lead tile (05), a centre column (06), a repeated stack (07), a cover
+     band (08).
+
+     Where the quality comes from, now that nothing is drawn: proportion and
+     spacing rhythm first (one two-step scale, below, used by all eight pages),
+     then type hierarchy carried in bar HEIGHT and length — 8px hero headline,
+     7px page headline, 4px subhead, 2px body, with real rag — then alignment,
+     then the single accent doing all the chromatic work. Nothing in these
+     eight cells is placed by eye. If a cell looks thin the answer is to fix
+     its proportions, never to draw something in it.
+
+     On contrast: the figure is aria-hidden and decorative, but a sighted
+     low-vision reader still has to make it out. The faintest mark in the set
+     is body copy, which runs ~2.9:1 or better against its own page colour;
+     headlines, buttons and photographs run 5:1 and up. The old floor was
+     1.9:1, so going opaque improved this rather than risking it. */
+  .pg-art {
+    /* Two steps, and only two. Every gap in every one of the eight designs is
+       one of these, so the whole set shares one spacing rhythm — which is most
+       of what separates a comp that reads as designed from one that reads as
+       assembled. --a-gap separates page sections and sets body leading;
+       --a-gap-tight is for marks that belong to the same component. Both step
+       down together at mobile so the rhythm survives the shrink. */
+    --a-gap: 5px;
+    --a-gap-tight: 3px;
+    gap: var(--a-gap);
+    /* Bleed back out over the card's padding. A real page has no white
+       margin around it, and the paper colour is half of what makes each of
+       the eight read as a different site — it has to reach the card edge.
+       The padding is re-added inside so the content insets still match the
+       wireframe layer at both breakpoints. */
+    margin: calc(var(--pg-pad) * -1);
+    padding: var(--pg-pad);
+    background: var(--a-paper);
+    /* opacity:0 is the resting state — the wireframe is what you see until
+       the block scrolls in. The reduced-motion block at the end of this
+       section overrides it. */
+    opacity: 0;
+
+    /* Neutral fallbacks only. Every one of the eight .pg-* blocks below
+       declares its OWN complete palette, so nothing here should ever actually
+       paint a page — these exist so a mark is never unstyled if a page grows
+       an element its palette forgot. Do not put a real colour here and let
+       pages inherit it: that is how eight pages end up looking like one. */
+    --a-paper: #ffffff;
+    --a-header: #ffffff;
+    --a-header-line: #e4e7ec;
+    --a-nav-ink: #16233a;
+    --a-nav-link: #8d97a6;
+    --a-ink: #16233a;
+    --a-ink-mid: #4d596b;
+    --a-ink-soft: #98a2b0;
+    --a-line: #e0e4ea;
+    --a-fill: #f2f4f8;
+    --a-accent: #144667;
+    /* Image blocks: one flat tone. That is the entire control surface. */
+    --a-img-bg: #3f4d75;
+  }
+
+  /* ===== Shared primitives — unchanged from services.astro ===== */
+  .a-nav {
+    display: flex; align-items: center; gap: 4px;
+    flex: none; overflow: hidden;
+    height: 13px;
+    margin: calc(var(--pg-pad) * -1) calc(var(--pg-pad) * -1) 0;
+    padding-inline: var(--pg-pad);
+    background: var(--a-header);
+    border-bottom: 1px solid var(--a-header-line);
+  }
+  .a-logo {
+    position: relative;
+    width: 10px; height: 3px; flex: none; border-radius: 1px;
+    margin-left: 7px;
+    background: var(--a-nav-ink);
+  }
+  .a-logo::before {
+    content: "";
+    position: absolute; right: 100%; top: 50%;
+    margin-right: 2px; transform: translateY(-50%);
+    width: 5px; height: 5px; border-radius: 1px;
+    background: var(--a-accent);
+  }
+  .a-links { display: flex; gap: 3px; margin-left: auto; }
+  .a-links > span { width: 6px; height: 2px; border-radius: 1px; background: var(--a-nav-link); }
+  .a-navcta { width: 13px; height: 7px; border-radius: 999px; background: var(--a-accent); flex: none; }
+
+  .a-h { height: 7px; border-radius: 2px; background: var(--a-ink); flex: none; }
+  .a-h-sm { height: 4px; border-radius: 1px; background: var(--a-ink-mid); flex: none; }
+  .a-l { height: 2px; border-radius: 1px; background: var(--a-ink-soft); flex: none; }
+  .a-cta { width: 30px; height: 9px; border-radius: 999px; background: var(--a-accent); flex: none; }
+  .a-img, .pg-home .a-hero { border-radius: 3px; background: var(--a-img-bg); }
+
+  /* ===== NEW: the footer band =========================================
+     The single biggest lift available to this figure. Every card was
+     nav → content → nothing, and a page with a header and no footer reads as
+     a screenshot that got cropped rather than as a whole page. Built as the
+     mirror of .a-nav: same bleed out over the card's padding, same header
+     colour, so the two pages that carry a RULE instead of a filled masthead
+     (03 and 05) automatically get a ruled footer too, and the six with a
+     filled band get a filled one. Nothing per-page needs to opt in.
+
+     margin-top: auto is a guard, not the layout — every page below fills its
+     own height. It only matters at the narrowest viewports, where it keeps the
+     footer welded to the bottom edge instead of floating up mid-card. */
+  .a-foot {
+    display: flex; align-items: center;
+    flex: none;
+    height: 10px;
+    margin: auto calc(var(--pg-pad) * -1) calc(var(--pg-pad) * -1);
+    padding-inline: var(--pg-pad);
+    background: var(--a-header);
+    border-top: 1px solid var(--a-header-line);
+  }
+  .a-foot-mark { width: 9px; height: 2px; border-radius: 1px; background: var(--a-nav-link); flex: none; }
+  .a-foot-links { display: flex; gap: 3px; margin-left: auto; }
+  .a-foot-links > span { width: 5px; height: 2px; border-radius: 1px; background: var(--a-nav-link); }
+
+  /* ===== NEW: paragraph grouping ======================================
+     A paragraph sets its lines at the TIGHT step and paragraphs separate at
+     the wide one. That single distinction is what stops a column of 2px bars
+     reading as a barcode — 03 and 08 both used one even 5px pitch for every
+     line on the card, so there was no way to see where one thought ended. */
+  .a-p { display: flex; flex-direction: column; gap: var(--a-gap-tight); }
+
+  /* ============================================================
+     01 · HOME — GRAPHITE & COBALT. Palette unchanged.
+     Bands: hero (~44%) → three feature cards → proof strip → footer.
+     ============================================================ */
+  .pg-home {
+    --a-paper: #edeff3;
+    --a-header: #0d1117;
+    --a-header-line: #0d1117;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #8f97a5;
+    --a-ink: #0d1117;
+    --a-ink-mid: #464e5b;
+    --a-ink-soft: #949ba8;
+    --a-line: #d5d9e0;
+    --a-fill: #ffffff;
+    --a-accent: #2f6bff;
+    --a-img-bg: #16294d;
+  }
+  /* Flex proportions rather than fixed heights, so the three bands keep their
+     ratio at every card width instead of the hero eating whatever is left. */
+  .pg-home .a-hero {
+    flex: 5; min-height: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--a-gap-tight);
+    padding: 8px; border-radius: 4px;
+  }
+  .pg-home .a-hero .a-h { height: 8px; background: #ffffff; }
+  .pg-home .a-hero .a-l { background: #93a4c4; margin-bottom: 2px; }
+  .pg-home .a-cards { flex: 2; min-height: 0; display: flex; gap: var(--a-gap-tight); }
+  .pg-home .a-card {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--a-gap-tight);
+    padding: 5px; border-radius: 2px;
+    background: var(--a-fill); border: 1px solid var(--a-line);
+  }
+  /* Ink, not accent. The accent is already spent on the nav CTA and the hero
+     CTA; a third and fourth appearance turns it into a second brand colour. */
+  .pg-home .a-card-mark { width: 6px; height: 6px; border-radius: 2px; background: var(--a-ink-mid); flex: none; }
+  /* The proof strip — four logo marks under a hairline. Borderless on purpose:
+     a second bordered box directly under the feature cards would read as one
+     six-cell grid rather than as two bands. */
+  .pg-home .a-strip {
+    flex: 1.3; min-height: 0;
+    display: flex; align-items: center; gap: var(--a-gap);
+    padding-top: var(--a-gap-tight);
+    border-top: 1px solid var(--a-line);
+  }
+  /* Not --a-line. At 4px on this paper the rule colour was invisible and the
+     strip read as an empty band under the cards, which is the fault it was
+     added to fix. This is the quietest tone that still registers as marks. */
+  .pg-home .a-strip > span { flex: 1; height: 4px; border-radius: 1px; background: #bfc6d2; }
+
+  /* ============================================================
+     02 · SERVICES — FOREST & GOLD. Reference page, unchanged.
+     ============================================================ */
+  .pg-svc {
+    --a-paper: #f7f5ef;
+    --a-header: #174034;
+    --a-header-line: #174034;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #9dbdb0;
+    --a-ink: #174034;
+    --a-ink-mid: #446458;
+    --a-ink-soft: #8a9c92;
+    --a-line: #d8d3c5;
+    --a-fill: #ffffff;
+    --a-accent: #d8a231;
+  }
+  .pg-svc .a-list { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--a-gap-tight); }
+  .pg-svc .a-item {
+    flex: 1; display: flex; align-items: center; gap: var(--a-gap);
+    padding-inline: var(--a-gap); border-radius: 3px;
+    border: 1px solid var(--a-line); background: var(--a-fill);
+  }
+  .pg-svc .a-sq { width: 8px; height: 8px; border-radius: 2px; background: var(--a-accent); flex: none; }
+  .pg-svc .a-item-copy {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: var(--a-gap-tight);
+  }
+  .pg-svc .a-item.is-on { background: #174034; border-color: #174034; }
+  .pg-svc .a-item.is-on .a-h-sm { background: #ffffff; }
+  .pg-svc .a-item.is-on .a-l { background: #b6cdc2; }
+
+  /* ============================================================
+     03 · ABOUT — OXBLOOD & IVORY. Palette unchanged.
+     ============================================================ */
+  .pg-about {
+    --a-paper: #f4efe6;
+    --a-header: #f4efe6;
+    --a-header-line: #2a1c18;
+    --a-nav-ink: #2a1c18;
+    --a-nav-link: #948877;
+    --a-ink: #2a1c18;
+    --a-ink-mid: #5c4c40;
+    --a-ink-soft: #a3968a;
+    --a-line: #ded4c4;
+    --a-fill: #ffffff;
+    --a-accent: #9e2b39;
+    --a-img-bg: #5e1d24;
+  }
+  /* The portrait used to run the whole height of the card, which made it a
+     tall flat slab of one colour — the single biggest thing wrong with this
+     page. It is now one band of three: the split is ~36% of the card, a stats
+     row sits under it, and a closing section takes the rest. The image is
+     roughly square instead of a column, which is what stops it reading as a
+     placeholder waiting to be filled. */
+  .pg-about .a-split { flex: 3; min-height: 0; display: flex; gap: var(--a-gap); }
+  .pg-about .a-portrait { width: 44%; flex: none; }
+  .pg-about .a-copy {
+    flex: 1; min-width: 0; overflow: hidden;
+    display: flex; flex-direction: column; gap: var(--a-gap-tight);
+  }
+  /* Three numbers under a rule — the standard about-page furniture, and the
+     one band on this card that is neither image nor prose, which is what keeps
+     the two apart. The number is set at headline weight; a stat whose figure
+     is the same weight as its label is not a stat. */
+  .pg-about .a-stats {
+    flex: none; display: flex; gap: var(--a-gap);
+    padding-top: var(--a-gap-tight);
+    border-top: 1px solid var(--a-line);
+  }
+  .pg-about .a-stat { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--a-gap-tight); }
+  .pg-about .a-close {
+    flex: 2; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; gap: var(--a-gap-tight);
+  }
+
+  /* ============================================================
+     04 · CONTACT — INK & LIME. Replaces petrol & apricot outright. This is
+     the one page in the set whose palette changed rather than only its
+     layout.
+
+     It stays the one INVERTED page, because that is 04's job in the group:
+     eight cards need one value extreme built downward from white instead of
+     upward from paper, and this is the card that can carry it — a contact
+     form is mostly empty boxes, which is exactly what a dark ground makes
+     look deliberate rather than unfinished.
+
+     Tiers — masthead L*4 / paper L*10 / field fill L*17 / borders L*30 /
+     body L*55 / labels L*84 / headline L*100, with the lime at L*90. Hues:
+     one, and it is only ever the accent — everything structural is a cool
+     neutral, so the submit is the single most saturated thing on the card by
+     a wide margin. On a contact page the button is the thing you should be
+     looking at.
+
+     Two notes for anyone editing this. The paper is lifted off the masthead
+     rather than the masthead pushed under the paper: at L*4 there is nowhere
+     darker to go, so on a dark page the header seam has to come from the
+     lighter side of it. And the field fill has to stay clearly ABOVE the
+     paper — the fault that made the live card read as an empty dark
+     rectangle was paper, fill and borders all sitting inside a 15-point
+     band, and that is a trap this scheme can fall back into very easily. */
+  .pg-contact {
+    --a-paper: #16191d;
+    --a-header: #08090b;
+    --a-header-line: #454c55;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #878e98;
+    --a-ink: #ffffff;
+    --a-ink-mid: #ced3d9;
+    --a-ink-soft: #7d848e;
+    --a-line: #454c55;
+    --a-fill: #262b32;
+    --a-accent: #c9f24e;
+  }
+  .pg-contact .a-form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--a-gap); }
+  /* Label over field. A form without labels is a stack of boxes; at this size
+     one 2px bar above each field is the entire difference. */
+  .pg-contact .a-fieldset { display: flex; flex-direction: column; gap: var(--a-gap-tight); flex: none; }
+  .pg-contact .a-fieldset-tall { flex: 1; min-height: 0; }
+  .pg-contact .a-lab { height: 2px; border-radius: 1px; background: var(--a-ink-soft); flex: none; }
+  .pg-contact .a-row { display: flex; gap: var(--a-gap-tight); flex: none; }
+  .pg-contact .a-row > .a-fieldset { flex: 1; min-width: 0; }
+  .pg-contact .a-field {
+    height: 10px; flex: none; border-radius: 3px;
+    border: 1px solid var(--a-line); background: var(--a-fill);
+  }
+  .pg-contact .a-field-tall { flex: 1; min-height: 0; }
+  /* A real actions row: the fine print on the left, the button on the right,
+     which is where a submit lives. The live version was a 58%-wide pill hard
+     against the left edge with nothing opposite it. */
+  .pg-contact .a-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--a-gap); flex: none;
+  }
+  .pg-contact .a-submit { height: 11px; width: 38%; border-radius: 999px; background: var(--a-accent); flex: none; }
+
+  /* ============================================================
+     05 · GALLERY — CHARCOAL & SIGNAL RED. Palette and mosaic unchanged.
+     ============================================================ */
+  .pg-gallery {
+    --a-paper: #f1efec;
+    --a-header: #f1efec;
+    --a-header-line: #1c1a17;
+    --a-nav-ink: #1c1a17;
+    --a-nav-link: #9a9186;
+    --a-ink: #1c1a17;
+    --a-ink-mid: #57514a;
+    --a-ink-soft: #a29a8f;
+    --a-line: #ddd8d0;
+    --a-fill: #ffffff;
+    --a-accent: #c02f1d;
+    --a-img-bg: #1c1a17;
+  }
+  /* Filter pills. Neutral, not accent — the accent is already on the logo mark
+     and the nav CTA, and this page's whole scheme is "one red mark, nothing
+     else saturated". The selected pill is filled in the page ink. */
+  .pg-gallery .a-filters { display: flex; gap: var(--a-gap-tight); flex: none; }
+  .pg-gallery .a-filters > span {
+    width: 15px; height: 5px; border-radius: 999px;
+    border: 1px solid var(--a-line); background: var(--a-fill);
+  }
+  .pg-gallery .a-filters > .is-on { background: var(--a-ink); border-color: var(--a-ink); }
+  /* Nine landscape thumbnails on a 3-up grid, not five tall tiles on a 2-up.
+     The old lead tile plus 2x2 gave every cell a near-square block of flat
+     colour big enough to read as "image missing" rather than as a photograph
+     in a grid. Nine cells at 4:3 are unmistakably a gallery: the eye reads the
+     REPETITION, and no single block is large enough to look unfilled.
+     Explicit aspect-ratio rather than 1fr rows, so the crop stays landscape
+     however much height the band is given. */
+  .pg-gallery .a-mosaic {
+    flex: none;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--a-gap-tight);
+  }
+  .pg-gallery .a-mosaic .a-img { aspect-ratio: 4 / 3; }
+  /* The same five-step warm-charcoal ladder as before, laid out so no two
+     tiles sharing an edge are within 20 L* of each other — every seam in the
+     grid is a real edge, and no row or column repeats a tone. */
+  .pg-gallery .a-img:nth-child(1) { --a-img-bg: #1c1a17; }
+  .pg-gallery .a-img:nth-child(2) { --a-img-bg: #a09789; }
+  .pg-gallery .a-img:nth-child(3) { --a-img-bg: #332f2a; }
+  .pg-gallery .a-img:nth-child(4) { --a-img-bg: #cfc9c0; }
+  .pg-gallery .a-img:nth-child(5) { --a-img-bg: #332f2a; }
+  .pg-gallery .a-img:nth-child(6) { --a-img-bg: #a09789; }
+  .pg-gallery .a-img:nth-child(7) { --a-img-bg: #6b6259; }
+  .pg-gallery .a-img:nth-child(8) { --a-img-bg: #cfc9c0; }
+  .pg-gallery .a-img:nth-child(9) { --a-img-bg: #1c1a17; }
+  /* Load more. Outline, centred, sitting on its own under the grid — the thing
+     that says the nine tiles are the top of a set rather than all of it. */
+  .pg-gallery .a-more {
+    flex: none; align-self: center;
+    width: 34%; height: 8px; border-radius: 999px;
+    border: 1px solid var(--a-ink-soft);
+    margin-top: auto;
+  }
+
+  /* ============================================================
+     06 · PRICING — SLATE & JADE. Palette unchanged.
+     ============================================================ */
+  .pg-pricing {
+    --a-paper: #eef0f1;
+    --a-header: #1f2a30;
+    --a-header-line: #1f2a30;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #8fa0a9;
+    --a-ink: #1f2a30;
+    --a-ink-mid: #52616a;
+    --a-ink-soft: #97a3aa;
+    --a-line: #d6dbde;
+    --a-fill: #ffffff;
+    --a-accent: #2e8b6f;
+    --a-img-bg: #1f2a30;
+  }
+  /* flex: none, not flex: 1. Stretched to fill the card the columns became
+     three tall boxes with a handful of marks adrift in them — the emptiest
+     thing in the set. Sized by their own contents they come out at ~40% of the
+     card, and the FAQ band below takes the height they were wasting. */
+  .pg-pricing .a-plans { flex: none; display: flex; align-items: stretch; gap: var(--a-gap-tight); }
+  /* Top-aligned, not centred. A pricing column is read downward — name, price,
+     rule, features, button — and centring the whole stack floated it in the
+     middle of an empty box, which is why this was the emptiest card in the set. */
+  .pg-pricing .a-plan {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--a-gap-tight);
+    padding: 4px; border-radius: 3px;
+    border: 1px solid var(--a-line); background: var(--a-fill);
+    /* This inset, not the picked column, is what sets the height of the whole
+       row — the row is as tall as a side column plus both its margins. It came
+       down from 7px because at 7 the row ran to 48% of the card and left the
+       FAQ under it crushed into 15%. The picked column still stands visibly
+       proud; it just does it inside a shorter band. */
+    margin-block: 4px;
+    overflow: hidden;
+  }
+  .pg-pricing .a-num { width: 68%; height: 7px; border-radius: 2px; background: var(--a-ink); flex: none; }
+  /* The rule under the price is what separates the header of the column from
+     its list. Without it the price is just the largest bar in one long stack. */
+  .pg-pricing .a-rule { width: 100%; height: 1px; background: var(--a-line); flex: none; margin-block: 1px; }
+  .pg-pricing .a-feats {
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--a-gap);
+  }
+  .pg-pricing .a-feats > .a-l { width: 82%; }
+  .pg-pricing .a-plan > .a-l { width: 52%; }
+  /* Pinned to the column's own bottom edge, so every column has a foot and the
+     slack sits between the list and the button where a pricing card puts it.
+
+     An outline, not a fill: the two side columns are secondary and the one
+     filled button on the card belongs to the picked column. Filled in --a-line
+     they were invisible against the white column and the columns still looked
+     footless. */
+  .pg-pricing .a-plan-cta {
+    width: 76%; height: 7px; border-radius: 999px; flex: none;
+    margin-top: auto;
+    border: 1px solid var(--a-ink-soft);
+  }
+  .pg-pricing .is-pick { margin-block: 0; background: var(--a-ink); border-color: var(--a-ink); }
+  .pg-pricing .is-pick .a-num { background: var(--a-accent); }
+  .pg-pricing .is-pick .a-l { background: #9fb3bd; }
+  .pg-pricing .is-pick .a-rule { background: #46545c; }
+  /* The one filled CTA on the card, in the page's own paper — on a slate
+     column that is the widest value gap available, and it keeps the jade on
+     the price where it does the most work. */
+  .pg-pricing .is-pick .a-plan-cta { background: var(--a-fill); border-color: var(--a-fill); }
+
+  /* The FAQ accordion. Every pricing page on the web ends in one, and it is
+     the right filler here for two reasons: it is pure type, so it does not
+     compete with the three columns above it for the eye, and its four ruled
+     rows give the lower half of the card a rhythm the columns do not have. */
+  .pg-pricing .a-faq {
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; gap: var(--a-gap-tight);
+  }
+  .pg-pricing .a-qs { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .pg-pricing .a-q {
+    flex: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--a-gap);
+    border-bottom: 1px solid var(--a-line);
+  }
+  .pg-pricing .a-q:last-child { border-bottom: 0; }
+  .pg-pricing .a-plus { width: 4px; height: 4px; border-radius: 1px; background: var(--a-ink-soft); flex: none; }
+
+  /* ============================================================
+     07 · BLOG INDEX — AUBERGINE & ROSE. Palette unchanged.
+     ============================================================ */
+  .pg-blog {
+    --a-paper: #f6f2f5;
+    --a-header: #33223a;
+    --a-header-line: #33223a;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #a693ad;
+    --a-ink: #33223a;
+    --a-ink-mid: #61506a;
+    --a-ink-soft: #a294a8;
+    --a-line: #e3d9e4;
+    --a-fill: #ffffff;
+    --a-accent: #a8577a;
+    --a-img-bg: #33223a;
+  }
+  .pg-blog .a-posts { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--a-gap); }
+  .pg-blog .a-post { flex: 1; display: flex; align-items: center; gap: var(--a-gap); padding-bottom: var(--a-gap); }
+  .pg-blog .a-post:not(:last-child) { border-bottom: 1px solid var(--a-line); }
+  /* 4:3, not 1:1. A square at this size reads as an icon sitting next to a
+     title; a landscape crop reads as the post's cover image, which is what it
+     is. Height-driven so all three stay identical whatever the row height. */
+  .pg-blog .a-thumb { height: 76%; aspect-ratio: 4 / 3; align-self: center; flex: none; }
+  .pg-blog .a-post-copy {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--a-gap-tight);
+  }
+  /* Titles wrap on an index. Two bars where the second is short is the
+     difference between a headline and a label. */
+  .pg-blog .a-post-copy > .a-h-sm + .a-h-sm { background: var(--a-ink-soft); }
+  .pg-blog .a-post-meta { display: flex; align-items: center; gap: var(--a-gap-tight); margin-top: 1px; }
+  .pg-blog .a-tag { width: 11px; height: 4px; border-radius: 999px; background: var(--a-accent); flex: none; }
+
+  /* ============================================================
+     08 · DETAIL — OLIVE & BRASS. Palette unchanged.
+     ============================================================ */
+  .pg-detail {
+    --a-paper: #f3f1e8;
+    --a-header: #2f3524;
+    --a-header-line: #2f3524;
+    --a-nav-ink: #ffffff;
+    --a-nav-link: #9aa088;
+    --a-ink: #2f3524;
+    --a-ink-mid: #5d6449;
+    --a-ink-soft: #9ba18a;
+    --a-line: #dcd8c8;
+    --a-fill: #ffffff;
+    --a-accent: #8f7d2b;
+    --a-img-bg: #5a6440;
+  }
+  .pg-detail .a-cover { aspect-ratio: 21 / 9; flex: none; }
+  /* Headline, second line and byline are one masthead unit at tight leading.
+     As five equal siblings at 5px they read as five unrelated bars. */
+  .pg-detail .a-head { display: flex; flex-direction: column; gap: var(--a-gap-tight); flex: none; }
+  .pg-detail .a-meta { display: flex; align-items: center; gap: var(--a-gap-tight); margin-top: 1px; }
+  .pg-detail .a-tag { width: 14px; height: 6px; border-radius: 999px; background: var(--a-accent); flex: none; }
+  .pg-detail .a-body {
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; gap: var(--a-gap);
+  }
+  /* The pull quote. Heavier type than body, hung off an accent rule — the one
+     place in the set a rule is set in the accent, which is exactly what a
+     magazine spends one on. It is also what breaks the lower half of this card
+     out of being a single flat block of body texture. */
+  .pg-detail .a-pull {
+    display: flex; flex-direction: column; gap: var(--a-gap-tight);
+    padding-left: var(--a-gap); flex: none;
+    border-left: 2px solid var(--a-accent);
+  }
+  .pg-detail .a-pull .a-h-sm { background: var(--a-ink); }
+
+  /* ---------- Wireframe → design transition ------------------------------
+     The blank wireframe is the pre-load state. When the grid scrolls into
+     view, BaseLayout's IntersectionObserver adds .is-inview — the same hook
+     the rest of the site animates on — and each page dissolves out of its
+     wireframe into its design. The whole point of the graphic is watching a
+     site get designed, so the two layers cross-fade rather than cut.
+
+     Timing has its own two tokens rather than reusing --motion-stagger-step.
+     That token is 180ms, tuned for cards rising into place, and at that pace
+     the whole reveal was over in ~2.4s — the blank state flashed past before
+     you could register that it WAS a blank state, which is the one thing
+     this graphic exists to show. The reveal now runs on a slower step and a
+     long hold, ~4.5s end to end for all eight.
+
+     --pg-settle is a deliberate hold on the finished wireframe: the card has
+     already risen and landed (that runs on --motion-stagger-step, 180ms, so
+     it is well clear) and then simply sits there blank before resolving. */
+  .svc-pages {
+    --pg-step: 340ms;
+    --pg-settle: 900ms;
+  }
+  .svc-pages.is-inview .pg-wire {
+    animation: pgWireOut 760ms var(--ease-soft) both;
+    animation-delay: calc(var(--pg-step) * var(--i) + var(--pg-settle));
+  }
+  .svc-pages.is-inview .pg-art {
+    animation: pgArtIn 1200ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--pg-step) * var(--i) + var(--pg-settle));
+  }
+  /* Blurring the wireframe on its way out is what sells it as an unresolved
+     draft rather than a layer someone turned off. */
+  @keyframes pgWireOut {
+    from { opacity: 1; filter: blur(0); }
+    to { opacity: 0; filter: blur(1.4px); }
+  }
+  /* The design resolves from soft to sharp — the visual of a page rendering.
+     This used to scale up from 0.98, which was fine when the layer was
+     transparent; now that it paints its own paper to the card edge, a scale
+     would flash a hairline of the card's white behind the corners on the way
+     in. Blur has no geometry, so it cannot. */
+  @keyframes pgArtIn {
+    from { opacity: 0; filter: blur(1.6px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  /* Reduced motion: skip the transition entirely and ship the designed state.
+     The global reduce block in global.css collapses animation DURATION but
+     not animation-delay, so without this the designs would sit invisible for
+     up to 3.3s before snapping in — worse than no animation at all, and the
+     longer the reveal gets the worse that failure mode is. */
+  @media (prefers-reduced-motion: reduce) {
+    .pg-wire { display: none; }
+    .pg-art { opacity: 1; }
+    .svc-pages.is-inview .pg-wire,
+    .svc-pages.is-inview .pg-art { animation: none; }
+  }
+
   .svc-pages-cap {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.12em; text-transform: uppercase;
@@ -398,8 +1354,40 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
   }
   @media (max-width: 620px) {
     .svc-pages { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
-    .pg { padding: 5px; gap: 3px; border-radius: 6px; }
+    .pg { --pg-pad: 5px; border-radius: 6px; }
+    .pg-wire { gap: 3px; }
     .pg-media { display: none; }
+    /* Roughly 70px of content width per card here. The nav's fixed-width bits
+       are the only thing that does not scale, so they come down; the two rows
+       of trailing detail below turn to mush at this size and come out. */
+    /* Both steps of the scale come down together, so every gap on every page
+       shrinks in proportion and the rhythm established at desktop survives. */
+    .pg-art { --a-gap: 3px; --a-gap-tight: 2px; }
+    .a-nav { height: 11px; }
+    .a-logo { width: 8px; height: 2px; margin-left: 6px; }
+    .a-logo::before { width: 4px; height: 4px; }
+    .a-links { gap: 2px; }
+    .a-links > span { width: 4px; }
+    .a-navcta { width: 10px; height: 6px; }
+    .a-foot { height: 8px; }
+    .a-foot-mark { width: 6px; }
+    .a-foot-links { gap: 2px; }
+    .a-foot-links > span { width: 3px; }
+    /* The bands that turn to mush below ~70px of card width come out. */
+    .pg-home .a-cards, .pg-home .a-strip { display: none; }
+    .pg-detail .a-pull { display: none; }
+    .pg-blog .a-post-meta { display: none; }
+    .pg-pricing .a-plan { margin-block: 4px; padding: 4px 3px; }
+    .pg-pricing .a-feats { gap: var(--a-gap-tight); }
+    /* Four ruled rows in ~25px is a smudge. The columns are the point of this
+       card; the FAQ is what fills the room they do not need at desktop. */
+    .pg-pricing .a-faq { display: none; }
+    .pg-pricing .a-plans { flex: 1; min-height: 0; }
+    /* Same trade on the other two: the band that exists to absorb height goes
+       first, and the image band gets it back. */
+    .pg-about .a-close { display: none; }
+    .pg-gallery .a-more { display: none; }
+    .pg-gallery .a-mosaic .a-img:nth-child(n + 7) { display: none; }
   }
 
   /* ============================================================
