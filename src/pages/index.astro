@@ -20,6 +20,20 @@ const BADGES: Record<string, string> = {
   "in-progress": "In progress",
 };
 
+/* What each shot actually covered. On a phone the card is a disclosure and
+   this is what a tap reveals, so the band says something about the work
+   rather than just showing a picture of it. Keyed by the filename's slug. */
+const WORK_DETAIL: Record<string, { kind: string; tags: string[] }> = {
+  "oasis-dental": {
+    kind: "Client site · Dental practice",
+    tags: ["Full site", "Design system", "Photography direction", "Booking flow", "Local SEO"],
+  },
+  "burnt-crumbs": {
+    kind: "Self-directed redesign · Restaurant",
+    tags: ["Brand-led art direction", "Menu architecture", "Ordering flow", "Mobile-first layout"],
+  },
+};
+
 /* Filename carries everything: "02-burnt-crumbs--mockup.jpg" is the second
    shot, captioned "Burnt Crumbs", badged "Mockup". A numeric prefix orders the
    set and is stripped from the caption; a `--suffix` marks work that is not a
@@ -31,6 +45,8 @@ const shots = Object.entries(modules)
     const [name, flag] = stem.replace(/^\d+[-_]?/, "").split("--");
     return {
       src: mod.default,
+      slug: name,
+      detail: WORK_DETAIL[name],
       caption: name
         .split("-")
         .filter(Boolean)
@@ -256,16 +272,33 @@ const cities = [
                     class="wk-shot-img"
                     src={shot.src}
                     alt={shot.caption}
-                    widths={[320, 640]}
-                    sizes="(min-width: 900px) 340px, 44vw"
+                    widths={[320, 640, 960]}
+                    sizes="(min-width: 900px) 340px, 92vw"
                     loading="lazy"
                     decoding="async"
                   />
                 </span>
-                <span class="wk-shot-cap">
-                  {shot.caption}
-                  {shot.badge && <span class="wk-pill">{shot.badge}</span>}
-                </span>
+                {/* On a phone the caption is the disclosure's button and the
+                    panel below it carries what the work covered. Above the
+                    touch breakpoint the button is styled flat and the panel is
+                    always open, so nothing is hidden behind a tap on desktop. */}
+                <button class="wk-shot-cap" type="button" aria-expanded="false" data-wk-toggle>
+                  <span class="wk-shot-name">
+                    {shot.caption}
+                    {shot.badge && <span class="wk-pill">{shot.badge}</span>}
+                  </span>
+                  <span class="wk-shot-cue" aria-hidden="true">→</span>
+                </button>
+                {shot.detail && (
+                  <div class="wk-shot-detail">
+                    <div class="wk-shot-detail-inner">
+                      <span class="wk-shot-kind">{shot.detail.kind}</span>
+                      <ul class="wk-tags">
+                        {shot.detail.tags.map((tag) => <li class="wk-tag">{tag}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -1058,10 +1091,29 @@ const cities = [
      process bands use, so this reads as one more band on the page.
      ============================================================ */
   .wk-band {
-    background: var(--color-bg-soft);
-    border-block: 1px solid var(--color-hairline);
+    /* Ink, not paper. The page ran white from the hero all the way to the
+       studio band; the work is the one thing here that should sit on a
+       gallery wall rather than on a page. */
+    position: relative;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-block: 0;
     padding-block: clamp(4.5rem, 9vh, 7rem);
+    overflow: hidden;
   }
+  .wk-band::before {
+    content: "";
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 60% 60% at 80% 0%, rgb(142 148 184 / 0.14), transparent 70%);
+  }
+  .wk-band > .full { position: relative; z-index: 1; }
+  /* Section head + footer link, recoloured for ink. */
+  .wk-band .section-title { color: var(--color-paper); }
+  .wk-band .section-title em { color: var(--color-periwinkle); }
+  .wk-band .section-sub { color: rgb(255 255 255 / 0.72); }
+  .wk-band .section-eyebrow { color: rgb(255 255 255 / 0.5); }
+  .wk-band .section-eyebrow-bar { background: var(--color-periwinkle); }
+  .wk-band .wk-foot :global(.link-arrow) { color: var(--color-periwinkle); }
 
   .wk-empty {
     margin: 0;
@@ -1087,7 +1139,7 @@ const cities = [
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
     gap: clamp(1.25rem, 3vw, 2rem);
   }
-  .wk-shot { display: flex; flex-direction: column; gap: 0.75rem; }
+  .wk-shot { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
 
   /* Frame borrows the project-card chassis: 16:10, hairline, and the two
      stacked shadows with heavy negative spread. */
@@ -1096,25 +1148,50 @@ const cities = [
     position: relative;
     aspect-ratio: 16 / 10;
     border-radius: 14px;
-    border: 1px solid var(--color-line);
+    border: 1px solid rgb(255 255 255 / 0.12);
     background: var(--color-surface);
     overflow: hidden;
     box-shadow:
-      0 40px 100px -45px rgb(7 23 34 / 0.28),
-      0 16px 36px -16px rgb(7 23 34 / 0.16);
+      0 40px 100px -45px rgb(0 0 0 / 0.6),
+      0 16px 36px -16px rgb(0 0 0 / 0.45);
   }
   .wk-shot-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 
   .wk-shot-cap {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.6rem;
+    width: 100%;
+    padding: 0;
+    text-align: left;
+    background: none;
+    border: 0;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: var(--text-step-1);
     letter-spacing: -0.01em;
-    color: var(--color-navy);
+    color: var(--color-paper);
     font-variation-settings: "opsz" 60;
+  }
+  .wk-shot-name { display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  /* Desktop has nothing to disclose — the panel below is always open there. */
+  .wk-shot-cue { display: none; }
+  .wk-shot-kind {
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-periwinkle);
+  }
+  .wk-shot-detail-inner { display: flex; flex-direction: column; gap: 0.75rem; }
+  .wk-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .wk-tag {
+    font-size: var(--text-step--1);
+    color: rgb(255 255 255 / 0.78);
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: 999px;
+    padding: 5px 12px;
   }
   /* Same pill vocabulary as the badge on /work's cards. Work that is not a
      launched client site says so, wherever it is shown. */
@@ -1123,12 +1200,57 @@ const cities = [
     font-size: 10px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-blue);
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
+    color: var(--color-periwinkle);
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.18);
     padding: 5px 11px;
     border-radius: 999px;
     white-space: nowrap;
+  }
+
+  /* ============================================================
+     TOUCH / NARROW — each shot becomes a disclosure. Tapping the
+     caption opens what that project actually covered, so the band
+     says something on a phone instead of being three big pictures
+     you scroll past. Clipped by max-height, never display:none, so
+     the full text is always in the accessibility tree.
+     ============================================================ */
+  @media (max-width: 899px) {
+    .wk-shots { grid-template-columns: 1fr; gap: 1.25rem; }
+    .wk-shot {
+      gap: 0;
+      border: 1px solid rgb(255 255 255 / 0.12);
+      border-radius: 16px;
+      background: rgb(255 255 255 / 0.03);
+      padding: 0.75rem 0.75rem 0;
+      overflow: hidden;
+    }
+    /* Full-bleed screenshots are wider than they are tall; cropping the sides
+       chopped the client's own logo off the shot, so the frame keeps the
+       source ratio and the image is contained rather than cropped. */
+    .wk-shot-frame { aspect-ratio: 16 / 10; background: var(--color-navy); }
+    .wk-shot-img { object-fit: contain; object-position: center; }
+    .wk-shot-cap {
+      padding: 0.9rem 0.25rem;
+      font-size: var(--text-step-0);
+      min-height: 44px;
+      cursor: pointer;
+    }
+    .wk-shot-cue {
+      display: inline-block;
+      flex: none;
+      color: var(--color-periwinkle);
+      transform: rotate(90deg);
+      transition: transform 320ms var(--ease-out-expo);
+    }
+    .wk-shot-cap[aria-expanded="true"] .wk-shot-cue { transform: rotate(-90deg); }
+    .wk-shot-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 420ms var(--ease-out-expo);
+    }
+    .wk-shot-cap[aria-expanded="true"] + .wk-shot-detail { max-height: 22rem; }
+    .wk-shot-detail-inner { padding: 0 0.25rem 1.1rem; }
   }
 
   .wk-prompt { display: none; }
@@ -1149,9 +1271,11 @@ const cities = [
       /* Tall enough that a dropped shot sits inside the frame rather than
          being sliced by its top edge, short enough not to swallow the fold. */
       height: clamp(460px, 56vh, 620px);
-      border: 1px solid var(--color-hairline);
+      border: 1px solid rgb(255 255 255 / 0.10);
       border-radius: 18px;
-      background: var(--color-paper);
+      /* Follows the band. On ink, a paper-white stage read as an empty modal
+         sitting on the section rather than as part of it. */
+      background: rgb(255 255 255 / 0.02);
       overflow: hidden;
       cursor: crosshair;
     }
@@ -1161,8 +1285,8 @@ const cities = [
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(var(--color-hairline) 1px, transparent 1px),
-        linear-gradient(90deg, var(--color-hairline) 1px, transparent 1px);
+        linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px);
       background-size: 46px 46px;
       -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
       mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
@@ -1183,13 +1307,13 @@ const cities = [
     }
     /* The invitation retires the moment it is accepted. */
     .wk-stage.is-armed.is-live .wk-prompt { opacity: 0; }
-    .wk-prompt-line { width: 1px; height: 34px; background: var(--color-line-strong); }
+    .wk-prompt-line { width: 1px; height: 34px; background: rgb(255 255 255 / 0.35); }
     .wk-prompt-text {
       font-family: var(--font-mono);
       font-size: var(--text-step--2);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--color-fg-muted);
+      color: rgb(255 255 255 / 0.55);
     }
 
     /* Once the stage is armed the real list stops being the visual layer. It
@@ -2090,7 +2214,13 @@ const cities = [
   .pc-stage {
     /* Declared on the stage, not on .pc-visual: an element cannot query
        itself, and .pc-visual is the container. */
-    --pc-scale: clamp(0.3, calc(100cqi / var(--stage-w)), 1.6);
+    /* Dividing a length by a length is not something calc() will do, so the
+       old `100cqi / var(--stage-w)` was dropped outright and every mockup
+       rendered at the @property fallback of 0.8 — 376px of artwork inside a
+       292px column on a phone, which is the overflow you could see. The ratio
+       is measured in JS at the bottom of this file and written here as an
+       inline custom property; this value is only the pre-script fallback. */
+    --pc-scale: 0.8;
     position: absolute;
     top: 0;
     left: 50%;
@@ -2694,6 +2824,68 @@ const cities = [
         cards.forEach((other) => other.classList.remove('is-open'));
         card.classList.add('is-open');
         sync();
+      });
+    });
+
+    mq.addEventListener('change', sync);
+    sync();
+  })();
+
+  // Selected work — on phones/tablets each shot's caption is a disclosure for
+  // Process mockups — fit each fixed-size stage to the column it lands in.
+  // This is a ratio of two lengths, which CSS calc() cannot compute, so it is
+  // measured here and written back as --pc-scale. Without it the stages render
+  // at the stylesheet's fallback and overflow their cards on a phone.
+  (() => {
+    const stages = Array.from(document.querySelectorAll('.pc-stage'));
+    if (!stages.length) return;
+    const fit = () => {
+      stages.forEach((stage) => {
+        const box = stage.parentElement;
+        if (!box) return;
+        const w = box.clientWidth;
+        if (!w) return;
+        const base = parseFloat(getComputedStyle(stage).width) || 470;
+        const s = Math.min(Math.max(w / base, 0.3), 1.6);
+        stage.style.setProperty('--pc-scale', String(s));
+      });
+    };
+    fit();
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(fit);
+      stages.forEach((s) => s.parentElement && ro.observe(s.parentElement));
+    } else {
+      window.addEventListener('resize', fit, { passive: true });
+    }
+  })();
+
+  // Selected work — on phones/tablets each shot's caption is a disclosure for
+  // what that project covered. Above 900px the CSS keeps every panel open and
+  // the cursor gallery takes over, so this listener simply does nothing there.
+  (() => {
+    const toggles = Array.from(document.querySelectorAll('[data-wk-toggle]'));
+    if (!toggles.length) return;
+    const mq = window.matchMedia('(max-width: 899px)');
+
+    const sync = () => {
+      toggles.forEach((t) => {
+        if (mq.matches) {
+          if (!t.hasAttribute('aria-expanded')) t.setAttribute('aria-expanded', 'false');
+        } else {
+          // Above the breakpoint the panel is always visible, so announcing a
+          // collapsed disclosure would be a lie.
+          t.removeAttribute('aria-expanded');
+        }
+      });
+    };
+
+    toggles.forEach((t) => {
+      t.addEventListener('click', () => {
+        if (!mq.matches) return;
+        const open = t.getAttribute('aria-expanded') === 'true';
+        // One open at a time keeps the band a predictable length.
+        toggles.forEach((o) => o.setAttribute('aria-expanded', 'false'));
+        t.setAttribute('aria-expanded', String(!open));
       });
     });
 
