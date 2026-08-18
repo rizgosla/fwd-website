@@ -682,7 +682,12 @@ const cities = [
                       is the only clear space at this scale. */}
                   <path class="oc-leader" d="M201 346 L152 356 L146 356" />
                   <text class="oc-label" x="140" y="362" text-anchor="end">Orange County</text>
-                  <text class="oc-sea" x="36" y="260">Pacific Ocean</text>
+                  {/* Down and to the left of where it used to sit. At 36,260
+                      the word "Ocean" ran over the Big Sur coastline before the
+                      zoom — measured at ~30% of the label box inside the land
+                      path. This is the nearest placement that is entirely in
+                      open water while keeping clear of the frame's left edge. */}
+                  <text class="oc-sea" x="16" y="270">Pacific Ocean</text>
                 </g>
 
                 {/* Frame coordinates, not map ones: after the zoom the county
@@ -786,9 +791,10 @@ const cities = [
       const canHover = window.matchMedia("(hover: hover) and (min-width: 900px)");
       const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      const STEP = 140;   // px of travel between drops
-      const LIFE = 900;   // ms a dropped shot stays before it is removed
-      const MAX = 12;     // hard cap on live nodes
+      const STEP = 130;   // px of travel between drops
+      const LIFE = 380;   // ms a dropped shot holds before it starts leaving
+      const OUT = 420;    // ms the exit animation runs before the node is cut
+      const MAX = 9;      // hard cap on live nodes
       const TILTS = [-4, 3, -2, 5, -3.5, 2.5];
 
       // Cloned once: each drop is a cheap clone of a prepared node rather than
@@ -812,15 +818,29 @@ const cities = [
       let travelled = 0;
       let live = [];
 
-      const drop = (x, y) => {
+      const drop = (x, y, dx, dy) => {
         const node = sources[idx % sources.length].cloneNode(true);
         idx += 1;
         node.style.left = x + "px";
         node.style.top = y + "px";
         // A touch of variation so a straight sweep does not read as a ruler.
         node.style.setProperty("--jx", (Math.random() * 26 - 13).toFixed(1) + "px");
+
+        // The vector the shot flies IN from: back along the direction of
+        // travel, so it appears to be thrown off the cursor and caught. The
+        // move delta is normalised to a fixed nudge — otherwise a fast sweep
+        // would fling shots in from off-stage and a slow one would barely
+        // move them. Straight down when there is no direction yet (the first
+        // drop on entry).
+        const len = Math.hypot(dx, dy);
+        const NUDGE = 34;
+        const ix = len > 0.5 ? (-dx / len) * NUDGE : 0;
+        const iy = len > 0.5 ? (-dy / len) * NUDGE : NUDGE * 0.6;
+        node.style.setProperty("--ix", ix.toFixed(1) + "px");
+        node.style.setProperty("--iy", iy.toFixed(1) + "px");
+
         trail.appendChild(node);
-        // Next frame, so the entrance transition actually runs.
+        // Next frame, so the entrance animation actually runs.
         requestAnimationFrame(() => node.classList.add("is-in"));
         live.push(node);
 
@@ -830,7 +850,7 @@ const cities = [
           setTimeout(() => {
             node.remove();
             live = live.filter((n) => n !== node);
-          }, 620);
+          }, OUT);
         };
         setTimeout(kill, LIFE);
 
@@ -838,8 +858,11 @@ const cities = [
         // deepen — the trail should read as a few frames, not a collage.
         while (live.length > MAX) {
           const oldest = live.shift();
-          if (oldest && oldest.isConnected) oldest.classList.add("is-out");
-          setTimeout(() => oldest && oldest.remove(), 620);
+          if (oldest && oldest.isConnected) {
+            oldest.classList.remove("is-in");
+            oldest.classList.add("is-out");
+          }
+          setTimeout(() => oldest && oldest.remove(), OUT);
         }
       };
 
@@ -850,12 +873,14 @@ const cities = [
         stage.classList.add("is-live");
 
         if (lastX === null) {
-          drop(x, y);
+          drop(x, y, 0, 0);
         } else {
-          travelled += Math.hypot(x - lastX, y - lastY);
+          const dx = x - lastX;
+          const dy = y - lastY;
+          travelled += Math.hypot(dx, dy);
           if (travelled > STEP) {
             travelled = 0;
-            drop(x, y);
+            drop(x, y, dx, dy);
           }
         }
         lastX = x;
@@ -1156,6 +1181,16 @@ const cities = [
       z-index: 2;
       pointer-events: none;
     }
+    /* Base = the pre-drop pose. The nudge each shot enters from is a fixed
+       per-node vector (--ix/--iy, written by the script from the pointer's
+       direction of travel), so a shot arrives as if it were flung off the
+       cursor rather than simply appearing.
+
+       Entrance and exit are KEYFRAMES, not transitions between two class
+       states. A transition cannot overshoot on the way in, and it cannot be
+       interrupted mid-flight without snapping — with animations the exit
+       simply takes over from wherever the entrance got to. Both are
+       `forwards`, so the node holds its end pose until it is removed. */
     .wk-trail :global(.wk-trail-item) {
       position: absolute;
       width: clamp(230px, 22vw, 300px);
@@ -1164,27 +1199,50 @@ const cities = [
       opacity: 0;
       transform:
         translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
-        rotate(var(--r, 0deg)) scale(0.86);
-      transition:
-        opacity 220ms var(--ease-soft),
-        transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+        rotate(var(--r, 0deg)) scale(0.72);
     }
-    /* Landed. */
+    /* Arriving — scales up past 1 and settles back, rotating in from a
+       flatter angle so the tilt lands rather than being there all along. */
     .wk-trail :global(.wk-trail-item.is-in) {
-      opacity: 1;
-      transform:
-        translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
-        rotate(var(--r, 0deg)) scale(1);
+      animation: wkTrailIn 620ms cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
     }
-    /* Retiring — sinks and shrinks slightly rather than blinking out. */
+    /* Retiring — carries on along the entry vector, shrinking and fading,
+       so a shot exits with the sweep instead of dropping straight down. */
     .wk-trail :global(.wk-trail-item.is-out) {
-      opacity: 0;
-      transform:
-        translate3d(calc(-50% + var(--jx, 0px)), calc(-50% + 18px), 0)
-        rotate(var(--r, 0deg)) scale(0.94);
-      transition:
-        opacity 600ms var(--ease-soft),
-        transform 600ms var(--ease-soft);
+      animation: wkTrailOut 420ms cubic-bezier(0.4, 0, 0.7, 0.2) forwards;
+    }
+
+    @keyframes wkTrailIn {
+      0% {
+        opacity: 0;
+        transform:
+          translate3d(calc(-50% + var(--jx, 0px) + var(--ix, 0px)), calc(-50% + var(--iy, 0px)), 0)
+          rotate(calc(var(--r, 0deg) * 0.2)) scale(0.72);
+      }
+      45% { opacity: 1; }
+      /* The overshoot: a hair past full size and past its own tilt. */
+      62% {
+        transform:
+          translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
+          rotate(calc(var(--r, 0deg) * 1.12)) scale(1.045);
+      }
+      100% {
+        opacity: 1;
+        transform:
+          translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
+          rotate(var(--r, 0deg)) scale(1);
+      }
+    }
+    @keyframes wkTrailOut {
+      0% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform:
+          translate3d(
+            calc(-50% + var(--jx, 0px) - var(--ix, 0px) * 0.45),
+            calc(-50% - var(--iy, 0px) * 0.45 + 10px), 0)
+          rotate(calc(var(--r, 0deg) * 0.75)) scale(0.9);
+      }
     }
     .wk-trail :global(.wk-shot-frame) {
       box-shadow:
