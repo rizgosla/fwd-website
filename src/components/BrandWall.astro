@@ -16,10 +16,20 @@
      2. The whole slab is rotated, so rows run on a diagonal.
      3. Adjacent rows travel in opposite directions at unrelated speeds.
 
-   The slab is deliberately much wider and taller than its container: rotating
-   a rectangle leaves triangular gaps at the corners, and the only way for a
-   rotated field to fill an upright box is to overhang it on every side. The
-   parent clips it.
+   COVERING A ROTATED RECTANGLE
+   Rotating a box leaves triangular gaps at the corners, so the slab has to
+   overhang its container on every side. For a WxH box at angle t the rotated
+   slab must measure at least:
+
+       width  >= W*cos(t) + H*sin(t)
+       height >= W*sin(t) + H*cos(t)
+
+   The height term is the one that bites: a wide, short footer needs a
+   surprisingly tall slab, because the footer's own WIDTH contributes to it.
+   Measured at 2560px the stack needed 1274px against 929px of rows — three
+   rows short, which is exactly the bare corner this is drawn to avoid. Both
+   axes are now derived rather than guessed, and the row count is generous
+   enough to cover the worst case at every breakpoint.
 
    Decorative in full: aria-hidden, no links, no text a reader needs. The
    footer's real name and contact details sit above it in markup.
@@ -27,13 +37,17 @@
 import { LOGO_PATHS, LOGO_VIEWBOX } from "../data/logoPaths";
 
 interface Props {
-  /** Rows in the slab. */
+  /** Rows in the slab. Extra rows are clipped; too few leaves bare corners. */
   rows?: number;
   /** Degrees the whole slab is rotated by. Negative tilts up to the right. */
   angle?: number;
 }
 
-const { rows = 7, angle = -14 } = Astro.props;
+/* 16 rows covers the tallest case measured (a narrow, tall mobile footer needs
+   ~15 at its mark size). Overshooting is close to free: every mark is a <use>
+   of one defined path, so an unused row costs a handful of elements rather
+   than another copy of ~3000 characters of path data. */
+const { rows = 16, angle = -14 } = Astro.props;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
    another, so rows drift out of phase instead of locking into a pattern that
@@ -63,19 +77,29 @@ const ROWS = [
    four copies: 3398px of cover against a 3648px slab, 250px short (and 1466px
    short at 2560px).
 
-   So REPS is derived rather than guessed. The slab is 190% of the viewport to
-   survive the rotation; a mark is capped at 13rem wide plus a 1.2rem gap, so a
-   copy is at most PER_COPY x ~14.2rem. Sizing against the widest viewport worth
-   covering keeps one number honest for every breakpoint, and over-covering
-   costs nothing: extra copies are clipped, and the cycle still travels exactly
-   one copy however many there are. */
+   So REPS is derived rather than guessed, against the widest slab worth
+   covering. Over-covering costs nothing: extra copies are clipped, and the
+   cycle still travels exactly one copy however many there are. */
 const PER_COPY = 5;
-const COVER_PX = 2560 * 1.9;      // widest slab worth covering
+const COVER_PX = 2560 * 2.1;      // widest slab worth covering
 const COPY_PX = PER_COPY * 227;   // 13rem mark + 1.2rem gap, at 16px root
 const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
+
+/* One id per instance, so two walls on a page cannot collide over it. */
+const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <div class="bw" aria-hidden="true">
+  {/* The mark, defined ONCE. Every tile below is a <use> of this, so the path
+      data appears a single time in the document instead of once per tile —
+      the difference between a few hundred bytes and a megabyte of duplicated
+      curves at this row count. */}
+  <svg class="bw-defs" aria-hidden="true" focusable="false">
+    <symbol id={markId} viewBox={LOGO_VIEWBOX}>
+      {LOGO_PATHS.map((d) => <path d={d} />)}
+    </symbol>
+  </svg>
+
   <div class="bw-slab" style={`--angle:${angle}deg`}>
     {Array.from({ length: rows }, (_, i) => {
       const r = ROWS[i % ROWS.length];
@@ -90,7 +114,7 @@ const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
               <div class="bw-copy">
                 {Array.from({ length: PER_COPY }, () => (
                   <svg class="bw-mark" viewBox={LOGO_VIEWBOX} fill="none" focusable="false">
-                    {LOGO_PATHS.map((d) => <path d={d} />)}
+                    <use href={`#${markId}`} />
                   </svg>
                 ))}
               </div>
@@ -118,14 +142,18 @@ const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
     mask-image: linear-gradient(90deg, transparent 55%, #000 82%, #000 100%);
   }
 
-  /* Oversized on purpose — see the note at the top of this file. Rotating an
-     element that merely matches its container leaves the corners bare. */
+  /* Carries the <symbol> only; nothing in it paints directly. */
+  .bw-defs { position: absolute; width: 0; height: 0; }
+
+  /* Oversized on both axes — see the covering note at the top of this file.
+     210% carries the height term (W*sin + H*cos) for a wide, short footer,
+     which is the case that was leaving a bare corner at 210%'s predecessor. */
   .bw-slab {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 190%;
-    height: 190%;
+    width: 210%;
+    height: 210%;
     transform: translate(-50%, -50%) rotate(var(--angle));
     display: flex;
     flex-direction: column;
@@ -160,12 +188,12 @@ const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
      is the true contour of the mark, not an approximation in a text face.
      vector-effect keeps the hairline at 1px however the mark is scaled. */
   .bw-mark {
-    --bw-gap: clamp(0.6rem, 1.2vw, 1.2rem);
     flex: none;
     width: clamp(7rem, 13vw, 13rem);
     height: auto;
     stroke: rgb(255 255 255 / var(--dim));
     stroke-width: 1;
+    fill: none;
     vector-effect: non-scaling-stroke;
     overflow: visible;
   }
