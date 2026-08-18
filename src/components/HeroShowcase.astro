@@ -330,8 +330,10 @@ const pad = (n: number) => n.toString().padStart(2, "0");
       { at: 0.4,  label: "Wireframe" },
       { at: 0.66, label: "Content" },
     ];
-    const BUILD = reduce ? 0 : 3600; // ms to build
-    const HOLD = 3000;               // ms live before advancing
+    // Short on purpose: a long build sequence reads as "the site is loading
+    // slowly" rather than as a deliberate animation.
+    const BUILD = reduce ? 0 : 1500; // ms to build
+    const HOLD = 3800;               // ms live before advancing
 
     const els = (slide) => ({
       grid: slide.querySelector(".sc-grid"),

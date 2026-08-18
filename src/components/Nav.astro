@@ -61,7 +61,7 @@ const isActive = (href: string) =>
       aria-expanded="false"
       aria-controls="navLinks"
     >
-      <span class="block h-[1.5px] w-[18px] bg-fg relative
+      <span class="nav-burger block h-[1.5px] w-[18px] bg-fg relative
                    before:content-[''] before:absolute before:left-0 before:-top-[6px] before:w-[18px] before:h-[1.5px] before:bg-fg
                    after:content-[''] after:absolute after:left-0 after:top-[6px] after:w-[18px] after:h-[1.5px] after:bg-fg"></span>
     </button>
@@ -69,6 +69,18 @@ const isActive = (href: string) =>
 </header>
 
 <style>
+  /* global.css carries `main, header, footer { position: relative; z-index: 1 }`
+     unlayered, and Tailwind's utilities live in @layer utilities — an unlayered
+     rule beats any layered one regardless of specificity, so `sticky top-0 z-50`
+     on this element was being thrown away entirely. The header was static-ish
+     and shared z-index 1 with <main>, which paints later, so the hero drew over
+     the open mobile menu. Stated here, in the component's own unlayered sheet. */
+  #nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
   .nav-bar {
     width: 100%;
     padding-inline: var(--pad-x, clamp(1.5rem, 3.5vw, 3.5rem));
@@ -116,6 +128,17 @@ const isActive = (href: string) =>
     box-shadow: none;
   }
 
+  /* Open state is an X. Without it the button looks identical whether the
+     menu is up or not, which is half of why the menu read as broken. */
+  .nav-burger,
+  .nav-burger::before,
+  .nav-burger::after {
+    transition: transform 280ms var(--ease-out-expo), opacity 160ms linear;
+  }
+  .nav-toggle.is-open .nav-burger { background: transparent; }
+  .nav-toggle.is-open .nav-burger::before { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle.is-open .nav-burger::after { transform: translateY(-6px) rotate(-45deg); }
+
   :global(#nav.is-scrolled) {
     border-bottom-color: var(--color-hairline);
     background: color-mix(in oklab, var(--color-paper) 92%, transparent);
@@ -130,23 +153,41 @@ const isActive = (href: string) =>
       top: 100%;
       left: 0;
       right: 0;
+      /* The panel is a child of the sticky header, but the sections below
+         open their own stacking contexts (transforms, filters, isolate), so
+         without an explicit z-index the hero painted straight over an
+         already-white menu — which is what "broken on mobile" looked like. */
+      z-index: 60;
+      max-height: calc(100dvh - 100%);
+      overflow-y: auto;
+      overscroll-behavior: contain;
       flex-direction: column;
       align-items: stretch;
       gap: 0;
       background: var(--color-paper);
       padding: 1rem clamp(1.25rem, 4vw, 3rem);
       border-bottom: 1px solid var(--color-hairline);
+      box-shadow: 0 24px 48px -28px rgb(7 23 34 / 0.45);
     }
     :global(#navLinks.is-open .nav-link) {
       width: 100%;
       padding-block: 0.9rem;
       border-bottom: 1px solid var(--color-hairline);
+      /* A tap target, not a line of text. */
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      font-size: var(--text-step-0);
     }
+    /* The underline sweep is a desktop hover affordance; in a stacked list it
+       drew a stray blue rule under the current page's row. */
+    :global(#navLinks.is-open .nav-link::after) { display: none; }
     :global(#navLinks.is-open) > a:last-child {
       margin-top: 1rem;
       align-self: stretch;
       text-align: center;
       justify-content: center;
+      padding-block: 0.85rem;
     }
   }
 </style>

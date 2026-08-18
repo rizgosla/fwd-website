@@ -260,11 +260,39 @@ const structuredData = {
       // === Mobile nav toggle =================================================
       const toggle = document.getElementById("navToggle");
       const links = document.getElementById("navLinks");
-      toggle?.addEventListener("click", () => {
-        const open = links.classList.toggle("is-open");
-        toggle.setAttribute("aria-expanded", String(open));
-        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-      });
+      if (toggle && links) {
+        const setMenu = (open) => {
+          links.classList.toggle("is-open", open);
+          toggle.classList.toggle("is-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+          // The icon animates into an X, so its accessible name has to follow.
+          toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        };
+        const close = () => setMenu(false);
+
+        toggle.addEventListener("click", () => setMenu(!links.classList.contains("is-open")));
+
+        // Same-page anchors and client-side navigation both leave the panel
+        // open otherwise, which reads as a menu that will not close.
+        links.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && links.classList.contains("is-open")) {
+            close();
+            toggle.focus();
+          }
+        });
+        document.addEventListener("click", (e) => {
+          if (!links.classList.contains("is-open")) return;
+          if (links.contains(e.target) || toggle.contains(e.target)) return;
+          close();
+        });
+        // Crossing back above the breakpoint restores the inline row; a
+        // leftover .is-open would keep announcing an expanded disclosure.
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 820) close();
+        }, { passive: true });
+      }
 
       // === Sticky-nav scrolled state =========================================
       const navEl = document.getElementById("nav");
