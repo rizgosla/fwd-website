@@ -287,7 +287,11 @@ const cities = [
                     {shot.caption}
                     {shot.badge && <span class="wk-pill">{shot.badge}</span>}
                   </span>
-                  <span class="wk-shot-cue" aria-hidden="true">→</span>
+                  <span class="wk-shot-cue" aria-hidden="true">
+                    <span class="wk-shot-cue-open">Tap to see the work</span>
+                    <span class="wk-shot-cue-close">Tap to close</span>
+                    <span class="wk-shot-chev">→</span>
+                  </span>
                 </button>
                 {shot.detail && (
                   <div class="wk-shot-detail">
@@ -347,12 +351,17 @@ const cities = [
             <span class="pc-glyph" aria-hidden="true">i.</span>
             <span class="pc-step">Step 01<span class="pc-cue" aria-hidden="true">→</span></span>
             <h3 class="pc-title">A short call.</h3>
+            <span class="pc-hint" aria-hidden="true">
+              <span class="pc-hint-open">Tap to learn more</span>
+              <span class="pc-hint-close">Tap to close</span>
+            </span>
           </a>
           <div class="pc-window">
             <div class="pc-reveal">
               <p class="pc-body">15 minutes. We learn about your work, who you serve, and what you'd like the site to do for you.</p>
               <p class="pc-more">No deck, no discovery phase, no contract to have a conversation. If we're not the right fit, we'll say so on the call.</p>
               <span class="pc-meta">— No prep required</span>
+              <a class="pc-link-out" href="/services">See the full scope <span class="arrow" aria-hidden="true">→</span></a>
             </div>
           <div class="pc-visual" aria-hidden="true">
             <div class="pc-stage">
@@ -395,12 +404,17 @@ const cities = [
             <span class="pc-glyph" aria-hidden="true">ii.</span>
             <span class="pc-step">Step 02<span class="pc-cue" aria-hidden="true">→</span></span>
             <h3 class="pc-title">Design draft <em>in your browser</em>.</h3>
+            <span class="pc-hint" aria-hidden="true">
+              <span class="pc-hint-open">Tap to learn more</span>
+              <span class="pc-hint-close">Tap to close</span>
+            </span>
           </a>
           <div class="pc-window">
             <div class="pc-reveal">
               <p class="pc-body">A first version, built around your brand and content. You see real layouts in a real browser — not Figma squiggles, not mockup screenshots.</p>
               <p class="pc-more">It arrives as a live draft URL. Open it on your phone, send it to a business partner, click every link. What you're looking at is the site that ships.</p>
               <span class="pc-meta">— Delivered in week one</span>
+              <a class="pc-link-out" href="/services">See the full scope <span class="arrow" aria-hidden="true">→</span></a>
             </div>
           <div class="pc-visual" aria-hidden="true">
             <div class="pc-stage">
@@ -443,12 +457,17 @@ const cities = [
             <span class="pc-glyph" aria-hidden="true">iii.</span>
             <span class="pc-step">Step 03<span class="pc-cue" aria-hidden="true">→</span></span>
             <h3 class="pc-title">Three rounds of <em>revisions</em>.</h3>
+            <span class="pc-hint" aria-hidden="true">
+              <span class="pc-hint-open">Tap to learn more</span>
+              <span class="pc-hint-close">Tap to close</span>
+            </span>
           </a>
           <div class="pc-window">
             <div class="pc-reveal">
               <p class="pc-body">Comments in the margin, edits the same week. Three rounds are included — we adjust until it feels right, then lock it.</p>
               <p class="pc-more">Leave notes whenever it suits you. We work through them in batches instead of chasing you for approvals, and nothing here is billed by the hour.</p>
               <span class="pc-meta">— Async, on your time</span>
+              <a class="pc-link-out" href="/services">See the full scope <span class="arrow" aria-hidden="true">→</span></a>
             </div>
           <div class="pc-visual" aria-hidden="true">
             <div class="pc-stage">
@@ -511,12 +530,17 @@ const cities = [
             <span class="pc-glyph" aria-hidden="true">iv.</span>
             <span class="pc-step">Step 04<span class="pc-cue" aria-hidden="true">→</span></span>
             <h3 class="pc-title">Launch.</h3>
+            <span class="pc-hint" aria-hidden="true">
+              <span class="pc-hint-open">Tap to learn more</span>
+              <span class="pc-hint-close">Tap to close</span>
+            </span>
           </a>
           <div class="pc-window">
             <div class="pc-reveal">
               <p class="pc-body">We connect your domain, set up hosting, and hand over a clean doc you can actually read. Live the same day.</p>
               <p class="pc-more">Domain, hosting, SSL and analytics are set up for you. You get a handoff doc, every file is yours to keep, and we're an email away when something needs changing.</p>
               <span class="pc-meta">— Up in minutes, not weeks</span>
+              <a class="pc-link-out" href="/services">See the full scope <span class="arrow" aria-hidden="true">→</span></a>
             </div>
           <div class="pc-visual" aria-hidden="true">
             <div class="pc-stage">
@@ -1235,15 +1259,35 @@ const cities = [
       font-size: var(--text-step-0);
       min-height: 44px;
       cursor: pointer;
+      /* At 390px "Burnt Crumbs + MOCKUP + TAP TO SEE THE WORK" cannot share
+         one line, and flex-wrap left the pill orphaned under the title. Two
+         rows, stated. */
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
     .wk-shot-cue {
-      display: inline-block;
       flex: none;
       color: var(--color-periwinkle);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: var(--text-step--2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    /* The chevron alone did not read as "there is more here", so the cue says
+       what a tap does and swaps its label once the panel is open. */
+    .wk-shot-chev {
+      display: inline-block;
       transform: rotate(90deg);
       transition: transform 320ms var(--ease-out-expo);
     }
-    .wk-shot-cap[aria-expanded="true"] .wk-shot-cue { transform: rotate(-90deg); }
+    .wk-shot-cue-close { display: none; }
+    .wk-shot-cap[aria-expanded="true"] .wk-shot-cue-open { display: none; }
+    .wk-shot-cap[aria-expanded="true"] .wk-shot-cue-close { display: inline; }
+    .wk-shot-cap[aria-expanded="true"] .wk-shot-chev { transform: rotate(-90deg); }
     .wk-shot-detail {
       max-height: 0;
       overflow: hidden;
@@ -2148,6 +2192,11 @@ const cities = [
     letter-spacing: 0.05em;
     color: var(--color-fg-muted);
   }
+  /* Both of these belong to the mobile disclosure only. Above the breakpoint
+     the card opens on hover and its head is already the link, so a "tap"
+     instruction would be wrong and a second link redundant. */
+  .pc-hint,
+  .pc-link-out { display: none; }
 
   /* ============================================================
      PROCESS STEP GRAPHICS — the resting state of every card.
@@ -2506,6 +2555,42 @@ const cities = [
        four bodies, and a transition needs a length to land on. */
     .process-card.is-open .pc-reveal { max-height: 32rem; padding-bottom: 1.5rem; }
 
+    /* Say what the card does, in words. The arrow alone was not reading as
+       "there is more here", so each head carries the instruction and swaps it
+       for "Tap to close" once open. */
+    .pc-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.55rem;
+      font-family: var(--font-mono);
+      font-size: var(--text-step--2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-blue);
+    }
+    .pc-hint-close { display: none; }
+    .process-card.is-open .pc-hint-open { display: none; }
+    .process-card.is-open .pc-hint-close { display: inline; }
+    /* The whole head is the tap target, so give it a real one. */
+    .pc-head { min-height: 44px; cursor: pointer; }
+
+    /* The head stops navigating below the breakpoint, so the route to
+       /services lives inside the panel it opens. */
+    .pc-link-out {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      align-self: flex-start;
+      min-height: 44px;
+      font-family: var(--font-mono);
+      font-size: var(--text-step--2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-blue);
+      text-decoration: none;
+    }
+
     /* The arrow is the only affordance saying the card does something,
        so it points down while the card is closed.
 
@@ -2818,11 +2903,14 @@ const cities = [
     cards.forEach((card) => {
       card.querySelector('.pc-head').addEventListener('click', (event) => {
         if (!mq.matches) return;
-        if (card.classList.contains('is-open')) return;
+        // Below the breakpoint the head is the disclosure's button, not a
+        // link: tapping an open card closes it again. The route to /services
+        // moves inside the panel (.pc-link-out), so nothing is lost.
         event.preventDefault();
+        const open = card.classList.contains('is-open');
         // One open at a time, so the grid never grows past two rows.
         cards.forEach((other) => other.classList.remove('is-open'));
-        card.classList.add('is-open');
+        if (!open) card.classList.add('is-open');
         sync();
       });
     });
