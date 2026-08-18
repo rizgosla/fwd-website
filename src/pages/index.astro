@@ -604,7 +604,11 @@ const cities = [
         <span class="fold-cap fold-cap-before">The usual route — four handoffs</span>
 
         <div class="fold-stage">
-          <span class="fold-card" style="--i:0"><span>Account<br />manager</span></span>
+          {/* The break is what keeps "Account manager" inside a fixed-width
+              card in the desktop fan. The space beside it is load-bearing: as
+              a chip on mobile the break is display:none, and without it the
+              two words would render as "Accountmanager". */}
+          <span class="fold-card" style="--i:0"><span>Account<br /> manager</span></span>
           <span class="fold-card" style="--i:1"><span>Strategist</span></span>
           <span class="fold-card" style="--i:2"><span>Designer</span></span>
           <span class="fold-card" style="--i:3"><span>Developer</span></span>
@@ -2850,12 +2854,45 @@ const cities = [
   }
 
   @media (max-width: 700px) {
-    .fold-card {
-      --spread: calc((var(--i) - 2) * clamp(52px, 14vw, 72px));
-      --rot: calc((var(--i) - 2) * 5deg);
-      width: 100px; font-size: 10px;
-      margin-left: -50px;
+    /* The fan does not survive a phone. Five 100px cards need ~500px of
+       spread to sit side by side and there is 390px, so the step was 52px:
+       every card covered half of its neighbour and the five labels printed
+       on top of each other. Below 700px they stop being a spread and become
+       a wrapped row of chips — the same five roles, all legible, and the
+       collapse still plays as a fade-and-shrink toward the card underneath. */
+    .fold-stage {
+      height: auto;
+      /* Has to clear the collapsed card, which is pinned to the stage's
+         centre and runs ~250px tall once the four stages wrap to 2x2.
+         Under that it printed over the caption below it. */
+      min-height: 290px;
+      flex-wrap: wrap;
+      align-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
     }
+    .fold-card {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 0.6rem 0.85rem;
+      font-size: 11px;
+      border-radius: 999px;
+      transform: none;
+      transition:
+        transform 700ms var(--ease-out-expo),
+        opacity 500ms var(--ease-soft);
+      transition-delay: calc(900ms + var(--i) * 70ms);
+    }
+    /* The line break only exists to keep "Account manager" inside a
+       fixed-width card; a chip sizes to its own text. */
+    .fold-card :global(br) { display: none; }
+    .fold.is-inview .fold-card { transform: scale(0.9); opacity: 0; }
+
+    /* Cards are in the flow now, so the solo card cannot hang off the
+       stage's centre without being pinned over them. */
+    .fold-solo { top: 50%; }
     .fold-solo { width: 100%; }
     .fold-solo-stages { grid-template-columns: repeat(2, 1fr); gap: 0.6rem 0.75rem; }
   }
