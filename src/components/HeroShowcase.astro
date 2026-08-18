@@ -34,21 +34,21 @@ const pad = (n: number) => n.toString().padStart(2, "0");
       </div>
     </div>
 
-    {/* stacked slides — each builds, then reveals its real site */}
+    {/* stacked slides — each builds, then reveals its real site.
+
+        Deliberately NOT links. Burnt Crumbs is a self-directed mockup, so
+        sending a visitor to burntcrumbs.com would hand them the client's real
+        live site as if it were our work. The frame is a rendering, not a
+        door — /work is where the linked-out projects live. */}
     <div class="browser-body" id="scBody">
       {showcase.map((site, i) => (
-        <a
+        <div
           class="sc-slide"
-          href={site.url}
-          target="_blank"
-          rel="noopener noreferrer"
           data-idx={i}
           data-domain={site.domain}
           data-name={site.name}
           data-industry={site.industry}
-          aria-label={`Visit ${site.name} (${site.domain})`}
           aria-hidden={i === 0 ? "false" : "true"}
-          tabindex={i === 0 ? 0 : -1}
         >
           <div class="sc-stage">
             {/* build scaffolding — fades out as the real site comes in */}
@@ -74,7 +74,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
             {/* the real site */}
             <SitePreview site={site} />
           </div>
-        </a>
+        </div>
       ))}
     </div>
 
@@ -193,13 +193,11 @@ const pad = (n: number) => n.toString().padStart(2, "0");
   .sc-slide {
     position: absolute; inset: 0;
     display: block;
-    text-decoration: none;
     opacity: 0;
     transition: opacity 600ms var(--ease-soft);
     pointer-events: none;
   }
-  .sc-slide.is-active { opacity: 1; pointer-events: auto; }
-  .sc-slide:focus-visible { outline: 3px solid var(--color-blue); outline-offset: -3px; }
+  .sc-slide.is-active { opacity: 1; }
 
   /* Fixed design canvas — JS sets transform: scale() to fit the body. */
   .sc-stage {
@@ -396,7 +394,6 @@ const pad = (n: number) => n.toString().padStart(2, "0");
         const active = i === n;
         s.classList.toggle("is-active", active);
         s.setAttribute("aria-hidden", active ? "false" : "true");
-        s.setAttribute("tabindex", active ? "0" : "-1");
       });
       dots.forEach((d, i) => d.setAttribute("aria-selected", i === n ? "true" : "false"));
       if (indexEl) indexEl.textContent = `${pad(n + 1)} / ${pad(total)}`;

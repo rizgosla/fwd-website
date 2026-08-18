@@ -256,10 +256,6 @@
 /* ========================================================================
    ANIMATIONS — keyframes only. Use via the .mv-* vocabulary below.
    ======================================================================== */
-@keyframes marquee {
-  to { transform: translateX(-50%); }
-}
-
 /* The six shared moves — every page picks from this list. No improvising. */
 @keyframes mvRise {
   from { opacity: 0; transform: translateY(14px); }

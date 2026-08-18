@@ -38,14 +38,15 @@ const isActive = (href: string) =>
         </a>
       ))}
 
+      {/* No inline colour here. It used to carry style="color:#ffffff", which
+          outranks every class — so the label could never change on hover no
+          matter what the hover state said. */}
       <a
         href="/contact"
-        style="color: #ffffff;"
         class:list={[
           "nav-cta-btn inline-flex items-center gap-1.5 rounded-full border px-[1.15rem] py-[0.6rem] text-[length:var(--text-step--1)] font-medium",
-          "bg-ink border-ink hover:bg-blue hover:border-blue transition-all duration-200",
           "[&_.arrow]:transition-transform [&_.arrow]:duration-200 hover:[&_.arrow]:translate-x-[3px]",
-          isActive("/contact") && "bg-blue border-blue",
+          isActive("/contact") && "is-current",
         ]}
       >
         Start a project <span class="arrow">→</span>
@@ -84,6 +85,36 @@ const isActive = (href: string) =>
   }
   .nav-link:hover::after,
   .nav-link.is-active::after { transform: scaleX(1); }
+
+  /* Written as real declarations rather than a stack of hover: utilities so
+     the two states are readable side by side, and so the hover can carry a
+     shadow — on a paper-coloured nav a white pill with only a hairline reads
+     as the button having vanished, which is what the utility version did. */
+  .nav-cta-btn {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+    transition:
+      background 200ms var(--ease-soft),
+      border-color 200ms var(--ease-soft),
+      color 200ms var(--ease-soft),
+      box-shadow 200ms var(--ease-soft);
+  }
+  .nav-cta-btn:hover {
+    background: var(--color-paper);
+    border-color: var(--color-blue);
+    color: var(--color-blue);
+    box-shadow: 0 8px 20px -10px rgb(7 23 34 / 0.45);
+  }
+  /* On /contact the button is already where it points, so it sits in the
+     accent and does not react to hover. */
+  .nav-cta-btn.is-current,
+  .nav-cta-btn.is-current:hover {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-paper);
+    box-shadow: none;
+  }
 
   :global(#nav.is-scrolled) {
     border-bottom-color: var(--color-hairline);

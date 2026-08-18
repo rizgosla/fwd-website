@@ -6,6 +6,55 @@ import Marquee from "../components/Marquee.astro";
 import HeroShowcase from "../components/HeroShowcase.astro";
 import CtaClose from "../components/CtaClose.astro";
 import BrandMark from "../components/BrandMark.astro";
+import { Image } from "astro:assets";
+
+/* eager so the parsed list is available at build time rather than as promises.
+   Astro processes each one — the 1.4MB source PNGs ship as ~90KB WebP. */
+const modules = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/work-shots/*.{png,jpg,jpeg,webp,avif}",
+  { eager: true },
+);
+
+const BADGES: Record<string, string> = {
+  mockup: "Mockup",
+  "in-progress": "In progress",
+};
+
+/* Filename carries everything: "02-burnt-crumbs--mockup.jpg" is the second
+   shot, captioned "Burnt Crumbs", badged "Mockup". A numeric prefix orders the
+   set and is stripped from the caption; a `--suffix` marks work that is not a
+   launched client site. */
+const shots = Object.entries(modules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([path, mod]) => {
+    const stem = path.split("/").pop()!.replace(/\.[^.]+$/, "");
+    const [name, flag] = stem.replace(/^\d+[-_]?/, "").split("--");
+    return {
+      src: mod.default,
+      caption: name
+        .split("-")
+        .filter(Boolean)
+        .map((w) => w[0].toUpperCase() + w.slice(1))
+        .join(" "),
+      badge: flag ? BADGES[flag] : undefined,
+    };
+  });
+
+/* Fixed, so the tilt of a given shot never changes between builds. */
+const TILTS = [-3.5, 2.5, -1.5, 3, -2.5, 1.5, -4, 2];
+/* Chip order is the reading order from the current markup. `slug` used to be
+   the join key between a chip and its map pin; the pins are gone now that the
+   map is drawn at state scale, so it survives only as a stable hook. */
+const cities = [
+  { name: "Newport Beach", slug: "newport-beach" },
+  { name: "Costa Mesa", slug: "costa-mesa" },
+  { name: "Irvine", slug: "irvine" },
+  { name: "Tustin", slug: "tustin" },
+  { name: "Santa Ana", slug: "santa-ana" },
+  { name: "Orange", slug: "orange" },
+  { name: "Anaheim", slug: "anaheim" },
+  { name: "Huntington Beach", slug: "huntington-beach" },
+];
 ---
 
 <BaseLayout
@@ -144,6 +193,74 @@ import BrandMark from "../components/BrandMark.astro";
           <p class="bf-body">So anyone on your team can update content later.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ SELECTED WORK — cursor gallery ============ -->
+  <section class="section wk-band">
+    <div class="full">
+      <div class="section-head mv-rise" data-mv-watch>
+        <div class="section-head-lead">
+          <span class="section-eyebrow"><span class="section-eyebrow-bar"></span>Selected work</span>
+          <h2 class="display section-title">The work <em>so far</em>.</h2>
+        </div>
+        <p class="section-sub">
+          Client sites, a build still in progress, and a redesign we made on our own
+          time. Each one labeled, so you can tell which is which.
+        </p>
+      </div>
+
+      {shots.length === 0 ? (
+        /* The folder is empty. Says so plainly rather than rendering a dead
+           band — and names the fix, since the fix is dropping in a file. */
+        <p class="wk-empty">
+          No shots yet. Drop an image into <code>src/assets/work-shots</code> and it
+          appears here.
+        </p>
+      ) : (
+        /* The entrance animates the STAGE, never the shots. .mv-stagger puts
+            `animation: mvRise ... forwards` on each child, and a filled
+            animation outranks normal declarations — so it would pin every
+            shot's opacity and transform at the animation's end state and the
+            cursor effect below could never move them. */
+        <div class="wk-stage mv-rise" data-mv-watch data-wk-stage>
+          <div class="wk-prompt" aria-hidden="true">
+            <span class="wk-prompt-line"></span>
+            <span class="wk-prompt-text">Move your cursor</span>
+          </div>
+
+          {/* A real list, always. On a pointer device at desktop widths the CSS
+              lifts it out of flow and the script swaps shots under the cursor;
+              everywhere else it stays a plain grid of captioned images. The
+              markup does not change between the two — only the layout does, so
+              a screen reader and a no-JS visitor get the same complete set. */}
+          <ul class="wk-shots">
+            {shots.map((shot, i) => (
+              <li class="wk-shot" style={`--r: ${TILTS[i % TILTS.length]}deg`}>
+                <span class="wk-shot-frame">
+                  <Image
+                    class="wk-shot-img"
+                    src={shot.src}
+                    alt={shot.caption}
+                    widths={[320, 640]}
+                    sizes="(min-width: 900px) 340px, 44vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+                <span class="wk-shot-cap">
+                  {shot.caption}
+                  {shot.badge && <span class="wk-pill">{shot.badge}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <p class="wk-foot">
+        <a class="link-arrow" href="/work">See all work<span class="arrow" aria-hidden="true">→</span></a>
+      </p>
     </div>
   </section>
 
@@ -476,82 +593,153 @@ import BrandMark from "../components/BrandMark.astro";
         </p>
       </div>
 
-      {/* Map and copy are one composition rather than a graphic stacked under
-          a text block. The SVG is aria-hidden on purpose: every place it
-          names is also in the city list beside it as real text, so a
-          role="img" here would only make a screen reader hear the same eight
-          names twice. The outline is a simplified Orange County boundary —
-          Seal Beach round to San Clemente on the coast, the Los Angeles line
-          across the top, the Santa Ana Mountains down the east side. */}
-      <div class="area-grid mv-rise" data-mv-watch>
-        <div class="area-map">
-          <svg viewBox="-12 -14 352 416" aria-hidden="true" focusable="false">
-            <path
-              class="oc-land"
-              d="M7.7 161.2 L31.0 175.5 L65.5 213.9 L87.7 230.6 L129.0 252.3 L154.8 272.8
-                 L179.1 284.0 L215.7 315.0 L258.0 353.4 L275.5 380.7 L319.9 306.9 L319.9 248.0
-                 L309.6 186.0 L273.5 124.0 L255.4 81.8 L242.5 58.9 L233.7 32.9 L177.5 32.9
-                 L134.2 46.5 L98.0 49.6 L67.1 58.9 L48.0 80.6 L35.1 105.4 L23.2 127.1
-                 L15.5 148.8 Z" />
-            <path
-              class="oc-coast"
-              d="M7.7 161.2 L31.0 175.5 L65.5 213.9 L87.7 230.6 L129.0 252.3 L154.8 272.8
-                 L179.1 284.0 L215.7 315.0 L258.0 353.4 L275.5 380.7" />
+      {/* .mv-stagger rather than .mv-rise so the map panel arrives first and
+          the card follows it, which is the order you read them in.
+          The SVG is aria-hidden on purpose: every place it names is also a
+          chip beside it as real text, so a role="img" here would only make a
+          screen reader hear the same eight names twice. The map opens on the
+          region — California with its neighbours around it, so the state sits
+          in a place rather than floating in a rectangle — and then, once you
+          have had time to read the section, it pushes in on Orange County. */}
+      <div class="area-grid mv-stagger" data-mv-watch>
+        <div class="area-shell">
+          <div class="area-core">
+            <div class="area-strip">
+              <span class="area-pill"><span class="area-pill-dot" aria-hidden="true"></span>Orange County, CA</span>
+            </div>
 
-            <g class="oc-marks">
-              <circle cx="111.5" cy="101.7" r="3.4" />
-              <circle cx="142.9" cy="131.4" r="3.4" />
-              <circle cx="135.2" cy="157.5" r="3.4" />
-              <circle cx="156.9" cy="157.5" r="3.4" />
-              <circle cx="156.9" cy="195.3" r="3.4" />
-              <circle cx="108.9" cy="222.6" r="3.4" />
-              <circle cx="103.7" cy="236.2" r="3.4" />
-              <circle cx="69.7" cy="192.2" r="3.4" />
-            </g>
+            <div class="area-map">
+              {/* Boundaries are real, not drawn by hand. US outlines: US Census
+                  Bureau 2010 cartographic boundary files (states 1:500k, counties
+                  1:500k), a work of the US federal government and therefore public
+                  domain. Mexico: Natural Earth 1:10m admin-0 countries, also public
+                  domain. Everything is projected with the same California Albers
+                  (EPSG:3310 — equal-area conic, standard parallels 34°N / 40.5°N,
+                  central meridian 120°W) and fitted to the same box, which is why
+                  the pieces line up and why the silhouette is not horizontally
+                  stretched the way a raw lat/lng plot would be. Simplified with
+                  Douglas–Peucker — ~0.14 user units for California, 0.25 for the
+                  neighbours — and rounded to 1dp. Offshore islands dropped. */}
+              <svg viewBox="120 65 507 380" aria-hidden="true" focusable="false">
+                {/* .oc-zoom is a direct child of the <svg> so its local
+                    coordinate system is the viewBox itself — that keeps
+                    transform-origin below unambiguous. The translate inside it
+                    is a presentation attribute rather than CSS, so the two
+                    never fight over the transform property: every path keeps
+                    the coordinates California was originally fitted to. */}
+                <g class="oc-zoom">
+                  <g transform="translate(139 40)">
+                    {/* Neighbours, quieter than California and drawn under it:
+                        the state is the subject, these only give it a place to
+                        sit. Anything sharing a border with California is
+                        overdrawn by it, so the sub-unit disagreements between
+                        the two datasets never show as a seam. Every piece is
+                        clipped 14 units *beyond* the frame, so the straight cut
+                        edges are always outside the viewBox: the only thing that
+                        ends a shape on screen is the edge of the SVG itself. */}
+                    <g class="oc-neighbours">
+                      <path d="M228 -54L229.7 1.4L229 1.4L178.5 2.9L118.5 3L49.5 1.3L41.8 0.8L26.1 0.8L9.1 0L7.3 -2L6.5 -2.3L4.8 -5L4.8 -7.7L4.2 -9.6L3.4 -10.6L3.6 -13L2.9 -13.7L3.3 -15.9L3.1 -18.5L4.7 -23.6L4.4 -26.1L4 -27.5L3 -28.2L2.4 -30.5L1.9 -30.9L1.2 -30.7L0.7 -34L-0.2 -34.9L2 -38.2L3.5 -41.5L4.4 -46.2L5.5 -49L6.2 -52.5L5.7 -54L228 -54Z" vector-effect="non-scaling-stroke" />
+                      <path d="M334 203L336.2 236.3L335.5 236.9L334.6 239.4L333.9 239.8L334.2 240.5L333.3 243.3L331.1 244L329.8 243.9L328.8 242.9L327.6 242.4L327.8 241.4L325.5 239L324.4 238.9L323.1 239.9L322.5 239.4L321.2 239.9L320.9 239L318.9 239.1L317.4 240.1L316.9 239.6L315.8 240.7L313.5 241.3L312.9 242.1L313.9 244.5L313.5 246.3L314.1 248L314.9 248.6L314.9 249.2L316 250.7L315.4 251.6L315.5 252.6L315 253.6L315.5 254.2L315.7 255.6L315.5 257.6L316.3 258.5L316.1 259.9L317.4 261.5L317.1 262.9L317.5 264.7L316.9 265.6L316.9 266.6L317.5 268.4L318.8 269.8L319.7 272.1L321.3 279L321.1 281.3L319.4 281.8L318.8 282.5L320.4 283.8L319.3 285.5L319.5 286.6L138.4 126.6L138.4 3L178.5 2.9L247 0.9L321.3 -2.7L334 203Z" vector-effect="non-scaling-stroke" />
+                      <path d="M498 188.4L502 223.3L502 423.1L453.6 428.1L379.4 407.9L319.1 390.2L319.3 388.1L319.7 387.6L319.1 387.4L319.4 386.1L319 385.2L319.9 384.8L320.5 384L322.4 379.7L325.3 380.2L326.6 379.9L327.2 379.2L328 379.2L328.5 378.8L328.3 377.2L330.3 375.1L330.3 372.5L329.6 371.4L330 370.1L329.7 369.8L329.1 369.9L328.4 367.9L326.2 367.4L325.6 367.9L324.6 367.9L323.6 367.1L323.1 367.8L322.1 365.7L321.5 365.6L322.3 361.5L322.3 360L321.7 359L322.3 358.5L321.9 357.9L320.5 357.4L320.1 356.8L320.9 355.9L321.1 354.7L320.1 352.6L321.3 352L322.9 351.9L324.5 348.4L326.6 346.1L326 345L326.5 343.7L326.1 341.1L327.3 340.1L327.3 339.7L326.6 338.6L326.8 337.5L325.9 335.3L326.1 334.9L325.8 333.7L326.6 333.1L326 332.1L326.4 331.6L325.4 330.4L328.5 326.6L328.5 323.9L329 323L330.7 322.5L331.1 321.9L332.2 321.6L333.3 320.2L335.2 319.4L335.3 318.7L337.3 316.4L338.2 315.9L338 314.4L336.6 312.6L334.8 312L330.9 308.8L329.6 309L329.2 308.5L329.2 305.6L327.4 303.1L327.5 302.3L327 301.9L325.7 298.3L322.8 296.1L321.5 293.4L319.8 291.8L319.7 287.3L319.3 285.5L320.4 283.8L318.8 282.5L319.4 281.8L321.1 281.3L321.3 279L319.7 272.1L318.8 269.8L317.5 268.4L316.9 266.6L316.9 265.6L317.5 264.7L317.1 262.9L317.4 261.5L316.1 259.9L316.3 258.5L315.5 257.6L315.7 255.6L315.5 254.2L315 253.6L315.5 252.6L315.4 251.6L316 250.7L314.9 249.2L314.9 248.6L314.1 248L313.5 246.3L313.9 244.5L312.9 242.1L313.5 241.3L315.8 240.7L316.9 239.6L317.4 240.1L318.9 239.1L320.9 239L321.2 239.9L322.5 239.4L323.1 239.9L324.4 238.9L325.5 239L327.8 241.4L327.6 242.4L328.8 242.9L329.8 243.9L331.1 244L333.3 243.3L334.2 240.5L333.9 239.8L334.6 239.4L335.5 236.9L336.2 236.3L334 203L369.6 200.6L424.9 196L466.7 192L498 188.4Z" vector-effect="non-scaling-stroke" />
+                      <path d="M413 -10.2L378.6 -7L325.9 -2.7L297.1 -1.6L265.2 0.2L229.7 1.4L228 -54L409 -54L413 -10.2Z" vector-effect="non-scaling-stroke" />
+                      <path d="M334 203L321.3 -2.7L328.1 -2.9L378.6 -7L413 -10.2L416.9 30.9L437.7 29L478.8 24.3L491.4 136.1L492.5 140.6L498 188.4L466.7 192L424.9 196L369.6 200.6L334 203Z" vector-effect="non-scaling-stroke" />
+                      <path d="M478.8 24.3L437.7 29L416.9 30.9L409 -54L502 -54L502 21.5L478.8 24.3Z" vector-effect="non-scaling-stroke" />
+                      <path d="M502 188L498 188.4L492.5 140.6L491.4 136.1L478.8 24.3L502 21.5L502 188Z" vector-effect="non-scaling-stroke" />
+                      <path d="M502 444L384.6 444L384.5 441.2L381.9 438.8L380.9 438.9L381 439.2L382 439.7L381.9 440L379.1 438.7L377.6 436.3L376.1 436.8L377.9 438L377.5 438.2L366.5 436.7L366.1 435.9L363.8 435.7L363 435.1L364.2 434.5L363 431.2L363 430L362 428.7L357.8 426.3L356.7 426.3L354.1 425.1L353.7 424.4L351.9 425.1L351.2 424.5L350.9 422.9L350.4 422.6L350.4 425.8L351.5 426.5L350.5 428L349.7 428.3L349 429.8L344.4 430L339.7 427.9L338.2 426.2L332.2 423.2L328.8 419.9L325.2 419.9L323 418.2L321 417.9L319.5 416.3L313.4 413.5L312.7 412.1L312.6 412.8L313.5 414.4L315.6 415.1L317 416.4L317.9 416.6L319.4 418.6L319.9 418.7L320.8 422.1L322.1 424.6L320.7 427L319.9 430.1L320.2 435.7L319.5 438.2L319.6 444L266.9 444L263.8 440.4L261.7 437.1L258.5 434.8L258 433.9L255.6 431.9L255.4 430.9L256.7 430.7L256 429.9L256.4 427.4L255.7 425.9L254 425.4L252.7 423.7L255.9 424.8L256.5 424.4L257.3 422.8L257.4 419.8L257.1 419.3L255.1 418.9L254.5 418L252.3 417.3L252.1 415L251.7 414.5L249.2 414.2L248.3 413.2L247.4 408.3L246 404.7L245.1 403.6L242.4 402.5L238.9 395.3L238.6 392.1L279.6 386.9L321.7 381.1L321.3 382.9L319.3 386.1L319.6 387.8L318.8 390L378.7 407.6L453.8 428.1L458 427.9L502 423.4L502 444Z" vector-effect="non-scaling-stroke" />
+                    </g>
 
-            <g class="oc-labels">
-              <text x="105" y="99" text-anchor="end">Anaheim</text>
-              <text x="149" y="128" text-anchor="start">Orange</text>
-              <text x="129" y="161" text-anchor="end">Santa Ana</text>
-              <text x="164" y="154" text-anchor="start">Tustin</text>
-              <text x="164" y="199" text-anchor="start">Irvine</text>
-              <text x="116" y="219" text-anchor="start">Costa Mesa</text>
-              <text x="110" y="241" text-anchor="start">Newport Beach</text>
-              <text x="77" y="188" text-anchor="start">Huntington Beach</text>
-            </g>
+                    {/* One path carries both the fill and the drawn-in outline.
+                        pathLength normalises the dash pair to 0–1, so the draw-in
+                        works without measuring the path in JS. non-scaling-stroke
+                        keeps the hairline a hairline once the group is scaled. */}
+                    <path class="oc-land" pathLength="1" vector-effect="non-scaling-stroke" d="M238.6 392L238 388.5L236.9 386.4L235.9 385.7L234.9 386L234.3 386.8L234.2 386.6L233.7 384.2L233.7 381.7L233.5 381.1L232.8 380.3L232.7 379.6L233 379.1L233.3 379.2L233.6 378.7L233.6 377.1L232.6 372.5L231.3 369.2L230.8 368L229.6 366.1L225.7 360.9L224.4 359.4L222.9 358.2L221.3 357.3L220.8 356.5L219.5 355.2L218.1 354.3L217.9 354.6L217.1 354.4L216.7 353.5L214.6 351.1L213.6 350.7L212.7 349.8L211.4 349.1L209.7 348.6L209.2 348L206.1 345.7L204 343.6L202.5 342.6L200.8 342.3L200.6 342.8L200.8 344.2L199.9 344.2L198.2 344.8L196.2 344.4L194.7 343.5L193.8 343.3L193.4 343.5L192.9 343.3L192.3 341.9L193.1 340.9L193.5 340.7L193.5 339.2L191.1 333.9L189 331.6L188.2 331.1L187.3 331L185.9 331.2L183.9 331.2L182.6 331.6L181.3 331.5L180 331.9L179.3 332.8L177.6 331.4L175 331L174.7 331.1L169.5 328.9L168.8 329L168.1 328.8L166.1 327.2L165.2 327L163.7 324.2L163 322L162.6 321.7L161.8 321.6L159.9 319.8L159.2 319.9L157.9 318.5L156.8 317.6L154.2 316.7L153.4 316L151.4 315.7L149.6 315.9L149 316.1L149.1 316.2L148.3 316.8L147.6 316.7L145.4 315.9L142.7 316.2L140.9 315.2L139.9 315.1L138.1 314.1L135.4 314.1L133.6 313.6L129.6 313.8L128.4 313.7L126.8 314.1L122.4 314.6L122.2 313.4L121 311.5L118.7 310L117.3 310.2L116.7 309.7L116.5 309L116.7 308.1L118.1 303.9L116.8 301.8L117.5 299.3L117.8 297.6L116.8 296.7L116.5 295.8L115.7 295.7L116.8 291.6L117.2 289.2L117.1 287.5L116.7 286L116.5 285.6L115.7 285.4L114.3 284.5L113.2 284.4L112.8 285.1L111.9 284.4L109.6 283.2L108.2 281.4L109.4 277.4L109.3 275.5L108.7 273.9L107.9 273.1L106.6 273.2L105.9 272.6L104.7 272.6L101.5 268.9L100.7 267.1L99.3 265.3L96.5 264.4L95.8 264L95.4 264.2L95.2 263.1L94.4 262.1L94.4 260.4L94.1 260.2L93.9 259.2L92 257.5L91.2 256.1L90.3 255.6L89.6 254.9L88.8 251.4L88.3 250.1L87.4 249.5L85.9 249L85.4 247.4L84.9 247.1L84.5 246.4L84.2 245.3L81.3 241.9L79.3 240.6L78.1 240.3L77.4 239.6L76.9 238.4L75.7 237.4L75.2 237.2L75.5 236.8L75.6 235.8L75.2 235.1L75.3 233.6L74.9 233.2L74.9 232.3L74.1 229.8L74.2 228.9L73.7 228.2L74.7 228.2L74.5 226.7L74.1 226.5L73.6 226.5L73 225.8L73.4 225.4L73.6 224.7L74.2 224.3L74.4 223.6L74.8 223.7L75.9 224.7L75.9 225L76.9 224.7L77.9 223.3L78.5 221.7L78.8 219L79.4 216.7L78.8 214.9L77.1 211.4L76 210.2L74.9 209.5L74.2 209.7L73.5 210.4L72.2 210L71.8 210.1L71.7 210.5L70.9 210.6L69.1 210.2L65.8 207.8L64.4 205.9L63.3 204.1L62.7 203.5L61.7 203.4L61.6 202.6L60.9 201.8L60.7 201.1L59.5 200.1L59.5 199.1L59.1 198.2L59.8 193.4L58.5 190.2L58.3 188.3L57.6 187.5L56.9 187.8L56.7 187.7L56.2 186.6L56.3 183.7L56.8 183.3L57.1 181.5L56.6 175.8L56.9 175.5L57.5 175.5L57.8 174.6L58.2 174.9L60.1 174.7L60.4 174.9L60.8 175.5L60.9 177.1L61.3 177.6L61 177.9L61.6 178.1L61.5 178.7L61.2 178.6L60.9 178.9L60.4 179L60.6 180.2L61 180.9L60.9 181.3L60.6 181.4L60.6 181.9L61.6 182.8L61.5 183L61 182.9L60.8 183.2L61.4 183.8L62.8 183.9L63.1 184.5L64.5 184.6L66.1 186.1L66.7 186.2L66.7 186.8L67.6 187.6L68 187.7L68.5 187.4L68.9 187.8L69.4 187.5L69.4 186.6L68.3 184.1L68.2 181.9L67.9 180.8L65.2 178.5L64.9 177.8L65.3 177.3L64.4 176.8L64.3 176.6L62.5 175.9L62.5 174.8L62.8 174.3L63.4 174.1L63.5 173.7L63.1 173.7L63.1 173.5L63.5 173.6L63.5 173.2L63.3 172.6L63.1 172.8L62.8 172.1L63.3 172.3L63.3 171.9L62.8 171.5L62.8 171.4L63.3 171.5L63.1 171.2L62.8 171.2L62.9 170.8L62.5 170.7L61.5 170.9L60.9 170.7L60.7 170.1L60 169.5L59.5 168.4L60.5 168.7L61.5 167.8L61.7 167.3L61.6 166.4L62.5 166.8L63.1 166.4L63.7 166.5L64.3 166L65 165.2L64.7 163.9L63.4 162.2L61.7 161.1L60.8 160.7L60.5 160.7L60.3 161.3L59.3 162L58.9 161.9L57.7 162.2L57.9 163.9L57.3 165.5L57.4 166L57.9 166.5L58.5 166.7L58.9 167.5L58.6 167.7L58.2 167.6L57.6 168.2L57.6 168.9L57.9 169.2L57.2 169.3L57.1 169.7L57.9 170.2L58.1 170.9L58.8 171.3L59.1 171.8L58.4 172.3L57.7 172L57.8 174L56.3 174L56.1 174.4L55.9 173.8L55.1 172.9L54.4 172.5L52.6 170.9L52.1 170.6L51.2 170.5L50.6 171L49.8 170.5L49.5 169.7L48.6 169.1L48 168.6L47.6 167.5L45.7 165.8L44.9 165.4L43 165.1L42 165.5L41.6 166.2L41.9 166.7L40.3 166.5L40.7 166.2L41.3 164.6L42.9 160L42.8 159.1L41.5 156.5L42.4 156.3L42.1 155.3L40.7 153.5L40.2 153.3L39.8 153.5L39.7 153.9L39.4 153.8L39 152.9L39.3 151.4L37.5 147.6L35.2 145.7L33.7 145L31.1 142.6L30.8 141.6L29.9 140.9L27.8 137L27.2 136.2L25.5 135.1L24.7 133.7L23.3 132.5L22.7 131.7L21.4 130.7L21 129.6L19.5 127.8L19 127.6L19 126.8L18.6 126.1L18.9 126L19.5 125.2L20.3 123L19.7 119.8L17.9 115.4L17.6 113.2L17.1 112.6L17 110.7L16.6 109.9L16.5 108.9L17 105.7L18.7 101.4L18.1 99.2L18.3 98.5L18.1 95.9L17.7 94.8L17 94.3L16.8 91.2L16.5 89.7L14.8 88.4L14.1 86.4L13.4 85.9L12.7 84.2L11 82L10.3 81.5L9.9 81.6L9.6 81.3L9.7 79.8L8.8 78.2L6.4 77L5.6 75.7L3.1 73.6L1.1 71.3L1.1 70.7L1.7 69.2L1 65.9L0.5 65.3L0 64L0.9 61.9L1 60.7L2.9 56.7L8.7 46.3L9.4 44.3L10.4 40.1L10 39.2L9.6 39L9.1 39L9.1 36.2L8.9 35.8L9.1 35.3L9.6 35.2L10.9 31.8L12.2 25.9L12.6 23.2L12.6 21.9L12.2 20.2L12.2 18.7L11.7 17.8L11.8 16.4L10.8 14.1L10.5 11.6L10 10.7L9.7 10.4L9.1 10.8L7.8 9.3L7.5 9.3L7.3 8.8L8.2 7.4L9 4.5L9.2 2.4L9.1 0L26.1 0.8L27.1 0.7L35.6 1L41.8 0.8L44.9 1.2L49.5 1.3L65.4 1.5L106.6 2.9L138.4 3L138.5 74.4L138.2 117.3L138.4 126.6L319.5 286.6L319.7 287.3L319.5 288.1L319.8 289L319.8 291.9L320.2 292.5L321.5 293.4L322.1 295L322.8 296.1L324.1 297.3L325.7 298.3L326.5 300.6L326.9 301L327 301.9L327.5 302.3L327.4 303.1L328.3 304L329.2 305.6L329.3 306.5L329.2 308.5L329.6 309L330.9 308.8L331.3 309.3L332.4 309.9L332.6 310.5L333.5 310.6L334.8 312L335.8 312.1L336.6 312.6L337.3 313.8L338 314.4L338.2 316.1L337.3 316.4L335.3 318.7L335.2 319.4L334.4 320L333.3 320.2L332.2 321.6L331.1 321.9L330.7 322.5L329.9 322.9L329.2 322.9L328.9 323.2L328.5 323.9L328.4 326.7L327.7 327.1L327.8 327.8L326.5 329.2L325.8 329.5L325.6 329.8L325.4 330.7L326.3 331.5L326 332.1L326.6 333.1L325.8 333.7L326.1 334.9L325.9 335.3L326.8 337.5L326.6 338.6L327.2 339.2L327.3 339.7L327.3 340.1L326.3 340.6L326.1 341.1L326.4 341.6L326.2 342.1L326.5 343.7L326 344.5L326 345L326.6 346.1L325.5 347L325.5 347.7L325.2 348L324.5 348.4L323.5 350.3L323.1 351.7L322.6 352.1L321.3 352L320.9 352.4L320.1 352.6L320.8 353.5L321.1 354.7L320.9 355.9L320.1 356.8L320.5 357.4L321.9 357.9L322.3 358.5L321.7 359L322.3 360L322.2 360.8L322.3 361.5L322.2 362.6L321.5 364.5L321.5 365.6L322.1 365.7L322.2 366.3L322.6 366.8L322.7 367.4L323 367.7L323.3 367.7L323.6 367.1L324.6 367.9L325.6 367.9L326.1 367.4L328 367.6L328.7 368.3L329.1 369.9L329.9 369.9L330 370.5L329.6 371.4L330.3 372.5L330.3 375.1L328.9 376.4L328.3 377.2L328.2 378L328.5 378.8L328 378.9L328 379.2L327.2 379.2L327.2 379.5L326.6 379.6L326.6 379.9L325.5 379.9L325.3 380.2L322.9 380L322.4 379.7L321.9 380.8L238.6 392Z" />
 
-            <text class="oc-sea" x="24" y="322">Pacific Ocean</text>
-          </svg>
+                    {/* Orange County at true scale — about 24 units across in a
+                        627 unit frame, so it reads as a shape at the regional
+                        level and as a coastline once the zoom lands. */}
+                    <path class="oc-county" d="M203.8 341.2L204.1 340.5L207.7 336.2L207.7 335.3L214.3 334.4L217.9 337.2L223.1 343.9L225.1 344.2L227.3 345.9L224.1 352.4L221.3 357.3L220.8 356.5L219.5 355.2L218.1 354.3L217.9 354.6L217.1 354.4L216.7 353.5L214.6 351.1L213.6 350.7L212.7 349.8L211.4 349.1L209.7 348.6L209.2 348L207.1 346.6L206.1 345.7L204 343.6L203 343L203.9 342.4L203.6 341.7L203.8 341.2Z" />
+                  </g>
+                </g>
+
+                {/* Pulse, leader and label sit outside .oc-zoom so the type and
+                    the ring never scale with the map. Two sets, cross-faded:
+                    each is placed where Orange County actually lands on screen
+                    — the first in map coordinates, the second in frame ones,
+                    because after the zoom the county is near the middle. */}
+                <g class="oc-mark-wide" transform="translate(139 40)">
+                  {/* The pulse has to be its own circle: mvPulseRing is a
+                      box-shadow animation and box-shadow does not render on SVG
+                      elements. Centred on the county's area-weighted centroid. */}
+                  <circle class="oc-ping" cx="215.4" cy="344.6" r="15" vector-effect="non-scaling-stroke" />
+
+                  {/* Leader runs southwest off the county into open water, which
+                      is the only clear space at this scale. */}
+                  <path class="oc-leader" d="M201 346 L152 356 L146 356" />
+                  <text class="oc-label" x="140" y="362" text-anchor="end">Orange County</text>
+                  <text class="oc-sea" x="36" y="260">Pacific Ocean</text>
+                </g>
+
+                {/* Frame coordinates, not map ones: after the zoom the county
+                    sits at 292 217 with open water down and to its left, so the
+                    leader runs into that water and the ocean label drops to the
+                    bottom-left corner where the Pacific still is. */}
+                <g class="oc-mark-close">
+                  <path class="oc-leader" d="M355 275 L300 320 L288 320" />
+                  <text class="oc-label" x="282" y="324" text-anchor="end">Orange County</text>
+                  <text class="oc-sea" x="196" y="380">Pacific Ocean</text>
+                </g>
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <div class="area-detail">
+        <div class="bento-card area-card" data-tilt>
+          <span class="tier-sheen" aria-hidden="true"></span>
+
+          <span class="area-eyebrow"><span class="area-dot" aria-hidden="true"></span>The studio</span>
+          <p class="area-place display">Irvine, California</p>
+
+          <div class="area-rule" aria-hidden="true"></div>
+
+          <div class="area-stats">
+            <div class="area-stat">
+              <span class="area-key">Coverage</span>
+              <span class="meta-val">8 cities</span>
+            </div>
+            <div class="area-stat">
+              <span class="area-key">From the studio</span>
+              <span class="meta-val">~30 min drive</span>
+            </div>
+          </div>
+
           <div class="area-block">
             <span class="area-key">Cities we work in</span>
             <ul class="area-cities">
-              <li>Newport Beach</li>
-              <li>Costa Mesa</li>
-              <li>Irvine</li>
-              <li>Tustin</li>
-              <li>Santa Ana</li>
-              <li>Orange</li>
-              <li>Anaheim</li>
-              <li>Huntington Beach</li>
+              {cities.map((city) => (
+                <li class="area-city" data-city={city.slug}>
+                  <span class="area-city-dot" aria-hidden="true"></span>{city.name}
+                </li>
+              ))}
             </ul>
           </div>
-          <div class="area-block">
-            <span class="area-key">Who we build for</span>
-            <p class="area-text">
-              Dental and medical practices, restaurants, contractors, and small firms that
-              need one good website rather than an ongoing marketing relationship.
-            </p>
-          </div>
-          <div class="area-block">
-            <span class="area-key">Outside the county</span>
-            <p class="area-text">
-              We work with clients outside California too. Being local just means we can
-              meet you in person if that helps.
-            </p>
-          </div>
+        </div>
+      </div>
+
+      <div class="area-prose mv-rise" data-mv-watch>
+        <div class="area-block">
+          <span class="area-key">Who we build for</span>
+          <p class="area-text">
+            Small businesses of every kind — from restaurants to dental practices to law
+            firms — that need one good website rather than an ongoing marketing
+            relationship.
+          </p>
+        </div>
+        <div class="area-block">
+          <span class="area-key">Outside the county</span>
+          <p class="area-text">
+            We work with clients outside California too. Being local just means we can
+            meet you in person if that helps.
+          </p>
         </div>
       </div>
     </div>
@@ -569,6 +757,95 @@ import BrandMark from "../components/BrandMark.astro";
     note="Replies within a day, every day"
     ticker={["Flat fee", "No retainers", "3 revision rounds", "You own it all"]}
   />
+  <script is:inline>
+    // The shot under the cursor swaps as you move. Distance-driven, not
+    // time-driven: the set advances every WK_STEP pixels of travel, so moving
+    // slowly gives you a good look at one and sweeping across riffles the whole
+    // folder. A timer would keep cycling while the pointer sat still.
+    //
+    // Values are written as CSS custom properties and consumed by a transform,
+    // the same idiom [data-tilt] uses in BaseLayout. Only transform and opacity
+    // animate, so this stays off the layout path.
+    (() => {
+      const stage = document.querySelector("[data-wk-stage]");
+      if (!stage) return;
+      const shots = Array.from(stage.querySelectorAll(".wk-shot"));
+      if (!shots.length) return;
+
+      // Matches the CSS breakpoint. A coarse pointer never gets the effect —
+      // there the grid IS the section.
+      const canHover = window.matchMedia("(hover: hover) and (min-width: 900px)");
+      const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      const WK_STEP = 110; // px of travel between swaps
+      let idx = 0;
+      let lastX = null;
+      let lastY = null;
+      let travelled = 0;
+
+      const show = (n) => {
+        shots.forEach((s, i) => s.classList.toggle("is-on", i === n));
+      };
+
+      const onMove = (e) => {
+        const box = stage.getBoundingClientRect();
+        const x = e.clientX - box.left;
+        const y = e.clientY - box.top;
+        // lastX is nulled on leave, so this is the first move after entering.
+        const entering = lastX === null;
+        stage.style.setProperty("--px", x + "px");
+        stage.style.setProperty("--py", y + "px");
+
+        if (entering) {
+          // Land the shot on the pointer BEFORE it is visible. While the stage
+          // is not .is-live the CSS transitions opacity only, so forcing a
+          // reflow here snaps the transform to the new position instead of
+          // letting it slide back from wherever the pointer left the stage.
+          void stage.offsetWidth;
+          show(idx);
+        } else {
+          travelled += Math.hypot(x - lastX, y - lastY);
+          if (travelled > WK_STEP) {
+            travelled = 0;
+            idx = (idx + 1) % shots.length;
+            show(idx);
+          }
+        }
+        lastX = x;
+        lastY = y;
+        stage.classList.add("is-live");
+      };
+
+      // Dropping .is-live is what hides the shot and brings the prompt back —
+      // the CSS below gates both on it. The current shot keeps .is-on so it is
+      // the one that returns when the pointer does.
+      const onLeave = () => {
+        stage.classList.remove("is-live");
+        lastX = lastY = null;
+        travelled = 0;
+      };
+
+      const bind = () => {
+        const on = canHover.matches && !still.matches;
+        stage.classList.toggle("is-armed", on);
+        if (on) {
+          show(idx);
+          stage.addEventListener("mousemove", onMove);
+          stage.addEventListener("mouseleave", onLeave);
+        } else {
+          onLeave();
+          stage.removeEventListener("mousemove", onMove);
+          stage.removeEventListener("mouseleave", onLeave);
+        }
+      };
+
+      bind();
+      // Re-evaluate if the window crosses the breakpoint or the OS motion
+      // preference changes, so the section is never left half-armed.
+      canHover.addEventListener("change", bind);
+      still.addEventListener("change", bind);
+    })();
+  </script>
 </BaseLayout>
 
 <style>
@@ -594,7 +871,10 @@ import BrandMark from "../components/BrandMark.astro";
   .marquee-row { display: flex; gap: 44px; padding-inline: 22px; white-space: nowrap; }
   .marquee-item { font-family: var(--font-display); font-style: italic; font-weight: 350; font-size: var(--text-step-3); letter-spacing: -0.02em; color: var(--color-fg); font-variation-settings: "opsz" 144; display: inline-flex; align-items: center; gap: 22px; }
   .marquee-dot { color: var(--color-periwinkle); font-style: normal; font-size: 0.5em; }
-  @keyframes marquee { to { transform: translateX(-50%); } }
+  /* The @keyframes that sat here is gone. Astro scopes class selectors but NOT
+     keyframe names, so this copy was not dead like the rules around it — being
+     last in document order, it silently overrode the real one in Marquee.astro.
+     The animation is defined once now, in the component that uses it. */
 
   /* ============================================================
      META STRIP — a spec table, not four independent tiles.
@@ -663,62 +943,484 @@ import BrandMark from "../components/BrandMark.astro";
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
   /* ============================================================
-     SERVICE AREA — quiet by design. It follows the dark process
-     band and precedes the light close, so it takes the soft tone
-     to keep three light surfaces from running together.
+     BAND — the soft surface and rhythm the service-area and
+     process bands use, so this reads as one more band on the page.
      ============================================================ */
-  .section-area { background: var(--color-bg-soft); border-block: 1px solid var(--color-hairline); }
-  /* Same two columns and same gap as .section-head above it, so the copy
-     column starts on exactly the x of the section sub. */
-  .area-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
-  @media (min-width: 760px) { .area-grid { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
-
-  .area-map { display: flex; justify-content: center; }
-  .area-map svg { display: block; width: 100%; max-width: 380px; height: auto; }
-  /* Hairlines and one accent, nothing else — this band is the quiet one on
-     the page and a map is loud enough on its own. */
-  .oc-land { fill: var(--color-paper); stroke: var(--color-line-strong); stroke-width: 1; stroke-linejoin: round; }
-  .oc-coast { fill: none; stroke: var(--color-navy); stroke-width: 1.75; stroke-opacity: 0.5; stroke-linecap: round; stroke-linejoin: round; }
-  .oc-marks circle { fill: var(--color-blue); stroke: var(--color-paper); stroke-width: 1.4; }
-  .oc-labels text {
-    font-family: var(--font-sans); font-size: 10.5px; font-weight: 500;
-    letter-spacing: 0.01em; fill: var(--color-fg-soft);
-  }
-  .oc-sea {
-    font-family: var(--font-display); font-style: italic; font-size: 12px;
-    letter-spacing: 0.02em; fill: var(--color-fg-muted);
-  }
-  /* Under ~430px the eight labels start to touch each other. Drop them
-     rather than ship overlap — the same eight names sit beside the map in
-     real text, so nothing is lost. */
-  @media (max-width: 430px) {
-    .oc-labels, .oc-sea { display: none; }
+  .wk-band {
+    background: var(--color-bg-soft);
+    border-block: 1px solid var(--color-hairline);
+    padding-block: clamp(4.5rem, 9vh, 7rem);
   }
 
-  .area-detail { display: flex; flex-direction: column; gap: 2rem; }
-  .area-block { display: flex; flex-direction: column; gap: 0.6rem; }
+  .wk-empty {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-step-0);
+  }
+  .wk-empty code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    color: var(--color-blue);
+  }
+
+  /* ============================================================
+     THE GRID — what the section is on touch, at narrow widths, and
+     under reduced motion. Not a fallback bolted on afterwards: it
+     is the base state, and the cursor gallery is layered over it.
+     ============================================================ */
+  .wk-shots {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+  .wk-shot { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  /* Frame borrows the project-card chassis: 16:10, hairline, and the two
+     stacked shadows with heavy negative spread. */
+  .wk-shot-frame {
+    display: block;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    overflow: hidden;
+    box-shadow:
+      0 40px 100px -45px rgb(7 23 34 / 0.28),
+      0 16px 36px -16px rgb(7 23 34 / 0.16);
+  }
+  .wk-shot-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+  .wk-shot-cap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-step-1);
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    font-variation-settings: "opsz" 60;
+  }
+  /* Same pill vocabulary as the badge on /work's cards. Work that is not a
+     launched client site says so, wherever it is shown. */
+  .wk-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    padding: 5px 11px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .wk-prompt { display: none; }
+  .wk-foot { margin: clamp(2.25rem, 4.5vh, 3.25rem) 0 0; }
+
+  /* ============================================================
+     THE CURSOR GALLERY — pointer devices, desktop widths.
+     .is-armed is set by the script, so the stage only collapses
+     into a single-shot surface once JS is actually driving it. No
+     JS, no armed class, and the grid above simply stands.
+     ============================================================ */
+  @media (hover: hover) and (min-width: 900px) {
+    .wk-stage.is-armed {
+      position: relative;
+      /* Tall enough to be worth sweeping across, short enough that the section
+         does not swallow the fold. */
+      height: clamp(400px, 46vh, 560px);
+      border: 1px solid var(--color-hairline);
+      border-radius: 18px;
+      background: var(--color-paper);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    /* The blueprint texture the hero panel and the closing CTA both use. */
+    .wk-stage.is-armed::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--color-hairline) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-hairline) 1px, transparent 1px);
+      background-size: 46px 46px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .wk-stage.is-armed .wk-prompt {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.9rem;
+      pointer-events: none;
+      transition: opacity 420ms var(--ease-soft);
+    }
+    /* The invitation retires the moment it is accepted. */
+    .wk-stage.is-armed.is-live .wk-prompt { opacity: 0; }
+    .wk-prompt-line { width: 1px; height: 34px; background: var(--color-line-strong); }
+    .wk-prompt-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-step--2);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-fg-muted);
+    }
+
+    .wk-stage.is-armed .wk-shots {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: block;
+      gap: 0;
+      pointer-events: none;
+    }
+    .wk-stage.is-armed .wk-shot {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: clamp(260px, 26vw, 340px);
+      opacity: 0;
+      /* Centred on the pointer, then tilted by its own fixed angle. */
+      transform:
+        translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0)
+        rotate(var(--r)) scale(0.94);
+      transition: opacity 240ms var(--ease-soft), transform 380ms var(--ease-soft);
+    }
+    /* The current shot holds full scale whether or not it is showing, so
+       leaving the stage reads as a fade rather than a shrink. */
+    .wk-stage.is-armed .wk-shot.is-on {
+      transform:
+        translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0)
+        rotate(var(--r)) scale(1);
+    }
+    /* Nothing shows unless the pointer is on the stage. The cursor leaves, the
+       shot goes with it and the invitation comes back. */
+    .wk-stage.is-armed.is-live .wk-shot.is-on { opacity: 1; }
+    /* At rest the transform is not transitioned, which lets the script move the
+       hidden shot to wherever the pointer re-enters without it gliding across
+       the stage to catch up. */
+    .wk-stage.is-armed:not(.is-live) .wk-shot {
+      transition: opacity 240ms var(--ease-soft);
+    }
+    /* Just the image under the cursor — no label riding along with it. The
+       caption is only hidden HERE, inside the armed gallery: the grid state
+       below 900px, on touch, and under reduced motion keeps it, because that
+       is where the name and the Mockup / In progress badge do their work. */
+    .wk-stage.is-armed .wk-shot-cap { display: none; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION — the script never arms the stage, so the grid
+     stands on its own and there is nothing to undo here beyond the
+     stage's own entrance, which global.css already suppresses.
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .wk-shot { opacity: 1; transform: none; }
+  }
+
   /* Same key/value grammar as the meta strip at the top of the page. */
   .area-key {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg-muted);
   }
+  .meta-val {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-step-1); font-variation-settings: "opsz" 60;
+    color: var(--color-fg); letter-spacing: -0.01em;
+    line-height: 1.28;
+  }
   .area-text { margin: 0; max-width: 50ch; color: var(--color-fg-soft); text-wrap: pretty; }
+  .area-block { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  /* ============================================================
+     NEW — the band itself.
+     Two columns on the same track as .section-head above it, so
+     the card starts on exactly the x of the section sub.
+     ============================================================ */
+  .area-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+  @media (min-width: 760px) { .area-grid { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+
+  /* ---- left: map in a double bezel ----
+     Outer shell is paper with the two stacked shadows the project cards use;
+     the inner core is the gridded panel from the hero showcase. Inner radius
+     is outer minus the 10px padding so the two curves stay concentric. */
+  .area-shell {
+    border-radius: 20px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    padding: 10px;
+    box-shadow:
+      0 40px 100px -45px rgb(7 23 34 / 0.28),
+      0 16px 36px -16px rgb(7 23 34 / 0.16);
+  }
+  .area-core {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: linear-gradient(160deg, var(--color-bg-soft) 0%, color-mix(in srgb, var(--color-navy) 4%, var(--color-bg-soft)) 100%);
+    padding: 0.85rem 0.85rem 1.4rem;
+  }
+  .area-core::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-navy) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-navy) 6%, transparent) 1px, transparent 1px);
+    background-size: 38px 38px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
+    pointer-events: none;
+  }
+  /* Floated over the map, not stacked above it. As a row in the flow it took
+     a band out of the top of the frame and the map's first ~40px went with it.
+     The pill carries its own paper background, so it stays legible over land. */
+  .area-strip {
+    position: absolute; top: 0.85rem; left: 0.85rem; right: 0.85rem; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+  }
+  /* Same pill vocabulary as the hero showcase stage tag. */
+  .area-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-blue);
+    background: var(--color-paper); border: 1px solid var(--color-line);
+    padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .area-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-periwinkle); }
+  /* The old note said "Not to scale", which was honest about a hand-drawn
+     blob. The outline is now real Census data on an equal-area projection, so
+     the note names the projection instead. */
+
+  /* Bleeds out over the core's padding on three sides so the map reaches the
+     panel's own rounded edge. Inset on all four it read as a small picture
+     floating in a large frame rather than as the frame's contents. */
+  .area-map { position: relative; z-index: 1; margin: -0.85rem -0.85rem -1.4rem; }
+  /* No max-width. The map now runs to the edge of the frame on all four sides,
+     so the SVG has to be the full width of the panel: capped at 420px inside a
+     740px panel, the land stopped dead in mid-air with bare panel beyond it,
+     which read as a torn image. The only thing that ends a shape now is the
+     edge of the SVG, and that edge sits on the panel's own inner margin. */
+  .area-map svg { display: block; width: 100%; height: auto; }
+
+  /* Hairlines and one accent, nothing else — this band is the quiet one on
+     the page and a map is loud enough on its own. */
+  .oc-land { fill: var(--color-paper); stroke: var(--color-line-strong); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; }
+  /* Neighbours: a shade off paper so land still reads as land against the
+     panel, and a line light enough that California's own edge stays the
+     strongest one on the map. Opaque rather than an alpha token, because
+     adjoining states stroke their shared border twice. */
+  .oc-neighbours path {
+    fill: color-mix(in srgb, var(--color-navy) 3%, var(--color-paper));
+    stroke: color-mix(in srgb, var(--color-navy) 20%, var(--color-bg-soft));
+    stroke-width: 1; stroke-linejoin: round; stroke-linecap: round;
+  }
+  /* No stroke: the county's western edge *is* the state's coastline, so a
+     contrasting outline would open a seam along it. */
+  .oc-county { fill: var(--color-blue); stroke: none; }
+  .oc-leader { fill: none; stroke: var(--color-line-strong); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+  /* Type is sized in user units, so it now scales with the panel rather than
+     sitting at a fixed pixel size: roughly 10px on a narrow column and 15px on
+     a wide one, which is the right direction for an annotation on a map that
+     is itself getting bigger. */
+  .oc-sea {
+    font-family: var(--font-display); font-style: italic; font-size: 12px;
+    letter-spacing: 0.02em; fill: var(--color-fg-muted);
+  }
+  /* Same face and size as the water label, upright and in the accent, so it
+     reads as a place rather than a sea. */
+  .oc-label {
+    font-family: var(--font-display); font-size: 13px;
+    letter-spacing: 0.01em; fill: var(--color-blue);
+  }
+
+  /* ---- map motion ----
+     `backwards` fill, not `forwards`: the outline holds its start state
+     through the delay and then hands control back to the declared end state. */
+  .oc-neighbours { opacity: 0; }
+  .area-grid.is-inview .oc-neighbours {
+    opacity: 1;
+    animation: ocMark var(--motion-dur-base) var(--ease-soft) 120ms backwards;
+  }
+  .oc-land { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .area-grid.is-inview .oc-land {
+    stroke-dashoffset: 0;
+    animation: ocDraw var(--motion-dur-slow) var(--ease-out-expo) 240ms backwards;
+  }
+  @keyframes ocDraw { from { stroke-dashoffset: 1; } }
+
+  /* County, leader and label land after the coastline has finished drawing. */
+  .oc-county, .oc-leader, .oc-label { opacity: 0; }
+  .area-grid.is-inview .oc-county,
+  .area-grid.is-inview .oc-leader,
+  .area-grid.is-inview .oc-label {
+    opacity: 1;
+    animation: ocMark 620ms var(--ease-soft) 1s backwards;
+  }
+  .area-grid.is-inview .oc-leader { animation-delay: 1.2s; }
+  .area-grid.is-inview .oc-label { animation-delay: 1.35s; }
+  @keyframes ocMark { from { opacity: 0; } }
+
+  .oc-ping { fill: none; stroke: var(--color-blue); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .area-grid.is-inview .oc-ping { animation: ocPing 2.8s var(--ease-soft) 1.9s infinite; }
+  @keyframes ocPing {
+    0%   { transform: scale(1); opacity: 0.5; }
+    70%  { transform: scale(2.4); opacity: 0; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+
+  /* ---- the push-in to Southern California ----
+     Six seconds after the panel arrives — long enough to have read the
+     section — the map eases from the regional view down onto Orange County
+     and holds there. It holds rather than loops: this band sits next to copy
+     you are meant to read, and a map that pumps in and out would pull the eye
+     back every few seconds.
+
+     A CSS transform, not the viewBox: transform is composited, viewBox is not
+     animatable in CSS at all. .oc-zoom is a direct child of the <svg> and the
+     viewBox starts at 0 0, so transform-origin below is plain frame
+     coordinates — 361 390 is the water just off Orange County. The translate
+     that follows carries that point to the middle of the frame, and 3.3 is the
+     scale that leaves Santa Barbara, Palm Springs, Tijuana and Ensenada just
+     inside the edges. Because the zoom only ever shrinks the window, a frame
+     that is full of land at rest cannot open a bare edge part-way through.
+
+     --ease-soft rather than --ease-out-expo: expo covers three quarters of
+     the distance in the first three tenths of a second, which lands as a snap.
+     This is the one place on the page where the slower curve is the right one. */
+  /* Orange County's own user-space point. transform-box: view-box does NOT
+     offset transform-origin by the viewBox's min-x/min-y — Chrome reads these
+     as plain user coordinates — so this is the county's absolute position, not
+     a position relative to the crop. Verified in the browser: subtracting the
+     crop put the pivot ~150 units off and the leader missed the county. */
+  .oc-zoom { transform-box: view-box; transform-origin: 354px 385px; }
+  .area-grid.is-inview .oc-zoom { animation: ocZoom 2.1s var(--ease-soft) 6s both; }
+  @keyframes ocZoom {
+    from { transform: translate(0px, 0px) scale(1); }
+    to   { transform: translate(19px, -120px) scale(2.1); }
+  }
+
+  /* The two label sets cross-fade around the move. The regional pair leaves
+     just *before* the map starts travelling — it is pinned to the frame, not to
+     the map, so any overlap would show it pointing at water — and the close
+     pair arrives as the map settles. */
+  .area-grid.is-inview .oc-mark-wide { animation: ocConceal 520ms var(--ease-soft) 5.7s forwards; }
+  .oc-mark-close { opacity: 0; }
+  .area-grid.is-inview .oc-mark-close { animation: ocReveal 700ms var(--ease-soft) 7.7s forwards; }
+  @keyframes ocConceal { to { opacity: 0; } }
+  @keyframes ocReveal { to { opacity: 1; } }
+
+  /* ---- right: the studio card ---- */
+  .area-card {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    gap: 1.15rem;
+    padding: clamp(1.6rem, 3vw, 2.25rem);
+  }
+  .area-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: var(--text-step--2);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .area-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--color-periwinkle);
+    animation: mvPulseRing 2.4s var(--ease-soft) infinite;
+  }
+  .area-place {
+    margin: 0;
+    font-size: var(--text-step-2);
+    font-weight: 400; font-variation-settings: "opsz" 60;
+    letter-spacing: -0.015em; line-height: 1.1;
+  }
+  .area-rule { width: 100%; height: 1px; background: var(--color-line); }
+  .area-stats {
+    width: 100%;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .area-stat { display: flex; flex-direction: column; gap: 0.35rem; }
+  .area-card .area-block { width: 100%; margin-top: 0.35rem; }
+
   .area-cities {
     list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem 1.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
   }
-  @media (min-width: 520px) { .area-cities { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  .area-cities li {
-    display: flex; align-items: baseline; gap: 0.5rem;
-    font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-step-0); color: var(--color-fg);
-    font-variation-settings: "opsz" 40;
+  .area-city {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 6px 12px 6px 10px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: var(--text-step--1);
+    color: var(--color-fg-soft);
+    transition: background 260ms var(--ease-soft), border-color 260ms var(--ease-soft), color 260ms var(--ease-soft);
   }
-  .area-cities li::before {
-    content: ""; flex: 0 0 auto;
+  .area-city-dot {
     width: 5px; height: 5px; border-radius: 50%;
     background: var(--color-blue);
+    transition: transform 260ms var(--ease-out-expo);
+  }
+  .area-city:hover {
+    background: var(--color-bg-soft);
+    border-color: var(--color-line-strong);
+    color: var(--color-fg);
+  }
+  .area-city:hover .area-city-dot { transform: scale(1.6); }
+
+  /* The chip→pin :has() join is gone with the pins. At state scale the eight
+     cities fall inside a 24-unit county, so there was nothing left to light. */
+
+  /* ---- the prose, out of the card and under the grid ---- */
+  .area-prose {
+    display: grid; grid-template-columns: 1fr; gap: 2rem;
+    margin-top: clamp(2.5rem, 5vh, 3.5rem);
+    padding-top: clamp(2rem, 4vh, 2.75rem);
+    border-top: 1px solid var(--color-hairline);
+  }
+  @media (min-width: 760px) {
+    .area-prose { grid-template-columns: 1fr 1.1fr; gap: 3rem; }
+    /* The hairline sits in the middle of the gap rather than on the second
+       column's edge, so both blocks stay on the same two tracks as the map
+       and the card above them. A border-left plus padding would have pushed
+       this copy 3rem off the card's left edge. */
+    .area-prose > * + * { position: relative; }
+    .area-prose > * + *::before {
+      content: "";
+      position: absolute; left: -1.5rem; top: 0; bottom: 0;
+      width: 1px; background: var(--color-hairline);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oc-land,
+    .area-grid.is-inview .oc-land { stroke-dashoffset: 0; animation: none; }
+    .oc-county, .oc-leader, .oc-label, .oc-neighbours,
+    .area-grid.is-inview .oc-county,
+    .area-grid.is-inview .oc-leader,
+    .area-grid.is-inview .oc-label,
+    .area-grid.is-inview .oc-neighbours { opacity: 1; animation: none; }
+    .area-grid.is-inview .oc-ping { animation: none; }
+    .area-dot { animation: none; }
+    /* No push-in: the regional view is the one static framing, so the close
+       labels have to go with it or they would sit over open water. */
+    .oc-zoom,
+    .area-grid.is-inview .oc-zoom { transform: none; animation: none; }
+    .oc-mark-wide,
+    .area-grid.is-inview .oc-mark-wide { opacity: 1; animation: none; }
+    .oc-mark-close { display: none; }
   }
 
   /* ============================================================
