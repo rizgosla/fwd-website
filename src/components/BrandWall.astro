@@ -166,12 +166,17 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
 
   /* flex: none is load-bearing. The slab is a column flex container and the
      rows deliberately overflow it, so with the default `flex: 0 1 auto` every
-     row SHRANK to fit — 113px of mark squeezed into a 58px row — and the
-     row's own overflow:hidden then sliced the letterforms in half. The rows
-     must keep their natural height and simply overhang; .bw clips them. */
+     row SHRANK to fit — 113px of mark squeezed into a 58px row.
+
+     overflow is visible, NOT hidden, and that matters just as much. The mark
+     is an italic script: its ascenders and the tall `d` paint above the box
+     the <svg> reserves, so a row that clips to its own height beheads every
+     letterform. Nothing needs clipping at this level anyway — the row is as
+     wide as its content and .bw already clips the whole field to the footer,
+     which is the only edge that should ever cut a mark. */
   .bw-row {
     flex: none;
-    overflow: hidden;
+    overflow: visible;
   }
 
   /* max-content, not the flex default: the keyframe moves by a percentage of
