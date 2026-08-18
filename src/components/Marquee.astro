@@ -16,20 +16,15 @@ const phrases = [
     reachable by keyboard but absent from the accessibility tree. */}
 <div class="marquee">
   <div class="marquee-track" aria-hidden="true">
-    <div class="marquee-row">
-      {phrases.map((p) => (
-        <span class="marquee-item">
-          {p}<span class="marquee-dot">●</span>
-        </span>
-      ))}
-    </div>
-    <div class="marquee-row" aria-hidden="true">
-      {phrases.map((p) => (
-        <span class="marquee-item">
-          {p}<span class="marquee-dot">●</span>
-        </span>
-      ))}
-    </div>
+    {[0, 1, 2, 3].map(() => (
+      <div class="marquee-row">
+        {phrases.map((p) => (
+          <span class="marquee-item">
+            {p}<span class="marquee-dot">●</span>
+          </span>
+        ))}
+      </div>
+    ))}
   </div>
 
   <button type="button" class="marquee-pause" data-marquee-pause>Pause</button>
@@ -44,7 +39,16 @@ const phrases = [
     overflow: hidden;
     padding: 22px 0;
   }
+  /* --reps is how many copies of the row the track holds, and the keyframe
+     divides by it — so one cycle always travels exactly ONE copy and the
+     duration means the same thing whatever --reps is.
+
+     Why four and not two: with N copies the loop is only seamless while
+     (N - 1) x row >= viewport. One row runs ~2850 CSS px at the capped
+     --text-step-3, so two copies broke at ~89% zoom on a 2560-wide display.
+     Four carries ~8550 px of cover instead. Same idiom as CtaClose's ticker. */
   .marquee-track {
+    --reps: 4;
     display: flex;
     width: max-content;
     animation: marquee 40s linear infinite;
@@ -76,7 +80,7 @@ const phrases = [
     font-size: 0.5em;
   }
   @keyframes marquee {
-    to { transform: translateX(-50%); }
+    to { transform: translateX(calc(-100% / var(--reps))); }
   }
 
   /* WCAG 2.2.2 — the band scrolls forever, so it needs a stop that is not

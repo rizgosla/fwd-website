@@ -1391,11 +1391,26 @@ const faqSchema = {
   }
 
   /* ============================================================
+     SECTION HEADS — the same two-column grid the homepage uses.
+
+     This page never had it. .section-head's grid lives in index.astro's and
+     work.astro's scoped styles, and scoped CSS does not reach another route;
+     global.css only sets margin-bottom and a gap, and gap does nothing on a
+     block element. So both heads here stacked the sub under the title at full
+     measure, leaving the whitespace beside the title empty. Copied verbatim
+     from index.astro so the three pages stay one rule.
+     ============================================================ */
+  .section-head { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: end; margin-bottom: clamp(2.5rem, 5vh, 3.75rem); }
+  @media (min-width: 760px) { .section-head { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+
+  /* ============================================================
      THE OFFER — bento spec sheet. Mirrors the homepage services
      section: a dark centerpiece (price + CTA) and six annotation
      tiles, each with its own mouse-spotlight sheen.
      ============================================================ */
-  .section-offer { padding-block: clamp(4rem, 9vh, 7rem); }
+  /* Top padding matches the head's own margin-bottom below, so the title sits
+     the same distance from the section's top edge as it does from the cards. */
+  .section-offer { padding-block: clamp(2.5rem, 5vh, 4rem) clamp(4rem, 9vh, 7rem); }
   .section-offer .section-head { margin-bottom: clamp(2.5rem, 5vh, 4rem); }
 
   .offer-bento {
