@@ -161,10 +161,18 @@ const serviceLinks = [
      column two left deliberately empty for the graphic. The wall is painted by
      an absolutely positioned sibling rather than placed in this track — but
      the track is what reserves the room, so the two can never overlap however
-     long a link label gets. */
+     long a link label gets.
+
+     The empty track is sized as a PERCENTAGE, because the thing it has to stay
+     clear of is itself proportional: the wall's mask starts lifting at 62% of
+     the footer's width, so a fixed rem track fell further and further behind
+     the fade as the viewport grew (content ran 152px into the field at 1440px
+     and 608px at 2560px). 36% pairs with that 62% stop — the content always
+     ends before the wall begins to paint, at every width, while still leaving
+     the contact column wide enough to keep the email address on one line. */
   @media (min-width: 900px) {
     .ft-inner {
-      grid-template-columns: minmax(0, 1fr) clamp(11rem, 26vw, 26rem);
+      grid-template-columns: minmax(0, 1fr) 36%;
       column-gap: clamp(2rem, 4vw, 4rem);
     }
     .ft-line,
