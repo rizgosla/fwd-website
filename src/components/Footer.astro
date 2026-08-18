@@ -157,16 +157,27 @@ const serviceLinks = [
     grid-template-columns: minmax(0, 1fr);
     gap: clamp(2.75rem, 6vh, 4.5rem);
   }
-  /* One column now. The mark used to take a second track on the right, which
-     forced the closing line to a narrow measure to leave room for it; with the
-     wall running full-bleed underneath, the readable content gets the width. */
+  /* Two tracks, as before the wall existed: everything readable in column one,
+     column two left deliberately empty for the graphic. The wall is painted by
+     an absolutely positioned sibling rather than placed in this track — but
+     the track is what reserves the room, so the two can never overlap however
+     long a link label gets. */
+  @media (min-width: 900px) {
+    .ft-inner {
+      grid-template-columns: minmax(0, 1fr) clamp(11rem, 26vw, 26rem);
+      column-gap: clamp(2rem, 4vw, 4rem);
+    }
+    .ft-line,
+    .ft-grid,
+    .ft-legal { grid-column: 1; }
+  }
 
   .ft-line {
     margin: 0;
     font-size: var(--text-step-3);
     line-height: 1.06;
     color: var(--color-paper);
-    max-width: 24ch;
+    max-width: 20ch;
   }
   .ft-line em {
     font-style: italic;

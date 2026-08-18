@@ -38,23 +38,41 @@ const { rows = 7, angle = -14 } = Astro.props;
 /* Per-row character. `dur` values are deliberately not multiples of one
    another, so rows drift out of phase instead of locking into a pattern that
    repeats every couple of cycles. `dim` varies the stroke alpha so the
-   alternation does not read as mechanical banding. */
+   alternation does not read as mechanical banding.
+
+   Slow on purpose: this is a texture behind a footer, not a ticker anyone is
+   meant to read. At these durations a mark takes the better part of two
+   minutes to cross, which registers as drift rather than as travel. */
 const ROWS = [
-  { dur: 41, dim: 0.20 },
-  { dur: 53, dim: 0.11 },
-  { dur: 34, dim: 0.24 },
-  { dur: 61, dim: 0.10 },
-  { dur: 45, dim: 0.17 },
-  { dur: 38, dim: 0.22 },
-  { dur: 56, dim: 0.13 },
+  { dur: 96, dim: 0.20 },
+  { dur: 127, dim: 0.11 },
+  { dur: 81, dim: 0.24 },
+  { dur: 143, dim: 0.10 },
+  { dur: 108, dim: 0.17 },
+  { dur: 89, dim: 0.22 },
+  { dur: 134, dim: 0.13 },
 ];
 
-/* Copies per row. A row scrolls by exactly one copy per cycle, so the loop is
-   seamless only while the copies still to the right cover the slab:
-   (REPS - 1) x copyWidth >= slab width. The slab is ~1.6x its container to
-   survive the rotation, so four copies of five marks carries it. */
-const REPS = 4;
+/* Copies per row. A row scrolls by exactly ONE copy per cycle, so the loop is
+   seamless only while the copies still to the right of the window cover it:
+
+       (REPS - 1) x copyWidth >= slabWidth
+
+   Get this wrong and the row simply runs out of marks before it resets, which
+   shows up as blank space sweeping through the field — measured at 1920px with
+   four copies: 3398px of cover against a 3648px slab, 250px short (and 1466px
+   short at 2560px).
+
+   So REPS is derived rather than guessed. The slab is 190% of the viewport to
+   survive the rotation; a mark is capped at 13rem wide plus a 1.2rem gap, so a
+   copy is at most PER_COPY x ~14.2rem. Sizing against the widest viewport worth
+   covering keeps one number honest for every breakpoint, and over-covering
+   costs nothing: extra copies are clipped, and the cycle still travels exactly
+   one copy however many there are. */
 const PER_COPY = 5;
+const COVER_PX = 2560 * 1.9;      // widest slab worth covering
+const COPY_PX = PER_COPY * 227;   // 13rem mark + 1.2rem gap, at 16px root
+const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
 ---
 
 <div class="bw" aria-hidden="true">
@@ -92,12 +110,12 @@ const PER_COPY = 5;
     user-select: none;
     pointer-events: none;
     /* Fades out towards the left, where the footer's real content sits, so the
-       field never competes with the links for legibility. It only reaches full
-       strength past the right-hand edge of the contact column — the links are
-       the reason anyone is down here, and a texture behind an email address is
-       a texture in the wrong place. */
-    -webkit-mask-image: linear-gradient(90deg, transparent 52%, #000 88%, #000 100%);
-    mask-image: linear-gradient(90deg, transparent 52%, #000 88%, #000 100%);
+       field never competes with the links for legibility. The layout reserves
+       an empty right-hand track for this, and the ramp is aligned to it: gone
+       by the time it reaches the text column, at full strength across the
+       space kept clear for it. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 55%, #000 82%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 55%, #000 82%, #000 100%);
   }
 
   /* Oversized on purpose — see the note at the top of this file. Rotating an
@@ -112,7 +130,7 @@ const PER_COPY = 5;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: clamp(0.5rem, 1.4vw, 1.4rem);
+    gap: clamp(0.15rem, 0.5vw, 0.5rem);
   }
 
   .bw-row { overflow: hidden; }
@@ -142,7 +160,7 @@ const PER_COPY = 5;
      is the true contour of the mark, not an approximation in a text face.
      vector-effect keeps the hairline at 1px however the mark is scaled. */
   .bw-mark {
-    --bw-gap: clamp(1.5rem, 3vw, 3rem);
+    --bw-gap: clamp(0.6rem, 1.2vw, 1.2rem);
     flex: none;
     width: clamp(7rem, 13vw, 13rem);
     height: auto;
@@ -151,7 +169,7 @@ const PER_COPY = 5;
     vector-effect: non-scaling-stroke;
     overflow: visible;
   }
-  .bw-row { --bw-gap: clamp(1.5rem, 3vw, 3rem); }
+  .bw-row { --bw-gap: clamp(0.6rem, 1.2vw, 1.2rem); }
 
   @keyframes bwDrift {
     to { transform: translateX(calc(-100% / var(--reps))); }
