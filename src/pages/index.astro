@@ -66,8 +66,16 @@ const cities = [
   <section class="hero-outer">
     <div class="hero">
       <div class="hero-left">
-        <h1 class="display hero-title">Your website is your new <em>storefront</em>.</h1>
-        <p class="lede hero-lede">Give it the <em>respect</em> it deserves.</p>
+        <h1 class="display hero-title">
+          Your website is the new<br />
+          <span class="hero-swap">
+            <span class="hero-swap-item"><em>storefront</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>business card</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>firm handshake</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>fancy suit</em>.</span>
+          </span>
+        </h1>
+        <p class="lede hero-lede">Make the best <em>first impression</em>.</p>
         <div class="hero-actions">
           <a href="/services" class="btn btn-primary">See services <span class="arrow">→</span></a>
           <a href="/contact" class="btn btn-ghost">Start a project</a>
@@ -932,7 +940,34 @@ const cities = [
   .hero-left { display: flex; flex-direction: column; gap: 1.75rem; padding-left: var(--pad-x); padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 7vh, 5rem); justify-content: center; }
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: var(--text-step--2); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
   .hero-eyebrow .bar { width: 24px; height: 1px; background: var(--color-periwinkle); }
-  .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 14ch; }
+  .hero-title { font-size: var(--text-step-6); margin: 0; max-width: 16ch; }
+
+  /* Rotating word in the headline. Items are stacked in one grid cell so the
+     line never reflows as they swap; the row is sized by the longest phrase. */
+  .hero-swap { display: inline-grid; align-items: start; max-width: 100%; vertical-align: top; }
+  .hero-swap-item {
+    grid-area: 1 / 1;
+    justify-self: start;
+    white-space: nowrap;
+    opacity: 0;
+    animation: heroSwap 12s var(--ease-soft) infinite;
+  }
+  .hero-swap-item:nth-child(1) { animation-delay: 0s; }
+  .hero-swap-item:nth-child(2) { animation-delay: 3s; }
+  .hero-swap-item:nth-child(3) { animation-delay: 6s; }
+  .hero-swap-item:nth-child(4) { animation-delay: 9s; }
+  .hero-title em { font-style: italic; color: var(--color-blue); }
+  @keyframes heroSwap {
+    0%   { opacity: 0; transform: translateY(0.3em); }
+    3%   { opacity: 1; transform: translateY(0); }
+    22%  { opacity: 1; transform: translateY(0); }
+    25%  { opacity: 0; transform: translateY(-0.3em); }
+    100% { opacity: 0; transform: translateY(0.3em); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-swap-item { animation: none; opacity: 0; }
+    .hero-swap-item:first-child { opacity: 1; }
+  }
   .hero-lede { margin: 0; font-size: var(--text-step-3); font-family: var(--font-display); font-weight: 300; font-style: italic; color: var(--color-fg-soft); font-variation-settings: "opsz" 96; letter-spacing: -0.015em; line-height: 1.15; }
   .hero-lede em { font-style: italic; color: var(--color-blue); font-variation-settings: "opsz" 96; }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
@@ -2615,6 +2650,8 @@ const cities = [
     .hero { grid-template-columns: 1fr; gap: 2.5rem; }
     .hero-left { padding-right: var(--pad-x); }
     .hero-title { font-size: clamp(2.6rem, 9vw, 4.5rem); }
+    /* Narrow screens: let a long phrase wrap rather than overflow the column. */
+    .hero-swap-item { white-space: normal; }
   }
 </style>
 
