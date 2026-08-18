@@ -229,6 +229,12 @@ const cities = [
             <span class="wk-prompt-text">Move your cursor</span>
           </div>
 
+          {/* The trail layer. Empty in the markup on purpose: it is pure
+              decoration, built by the script only once the stage arms, and
+              never carries content a reader or a no-JS visitor needs — that
+              lives in the real list below. */}
+          <div class="wk-trail" aria-hidden="true" data-wk-trail></div>
+
           {/* A real list, always. On a pointer device at desktop widths the CSS
               lifts it out of flow and the script swaps shots under the cursor;
               everywhere else it stays a plain grid of captioned images. The
@@ -758,17 +764,20 @@ const cities = [
     ticker={["Flat fee", "No retainers", "3 revision rounds", "You own it all"]}
   />
   <script is:inline>
-    // The shot under the cursor swaps as you move. Distance-driven, not
-    // time-driven: the set advances every WK_STEP pixels of travel, so moving
-    // slowly gives you a good look at one and sweeping across riffles the whole
-    // folder. A timer would keep cycling while the pointer sat still.
+    // SELECTED WORK — cursor image trail (the 222.place idiom).
     //
-    // Values are written as CSS custom properties and consumed by a transform,
-    // the same idiom [data-tilt] uses in BaseLayout. Only transform and opacity
-    // animate, so this stays off the layout path.
+    // Moving the pointer across the stage drops a shot at the cursor and leaves
+    // it behind; the ones before it recede and fade, so a sweep paints a trail
+    // of the folder instead of swapping one image in place. Distance-driven,
+    // never time-driven: a still pointer emits nothing.
+    //
+    // The trail nodes are cloned from the real <li> images, so the source of
+    // truth stays the accessible list in the markup. Every node is removed on
+    // its own timer, so the layer never grows without bound.
     (() => {
       const stage = document.querySelector("[data-wk-stage]");
-      if (!stage) return;
+      const trail = document.querySelector("[data-wk-trail]");
+      if (!stage || !trail) return;
       const shots = Array.from(stage.querySelectorAll(".wk-shot"));
       if (!shots.length) return;
 
@@ -777,63 +786,105 @@ const cities = [
       const canHover = window.matchMedia("(hover: hover) and (min-width: 900px)");
       const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      const WK_STEP = 110; // px of travel between swaps
+      const STEP = 140;   // px of travel between drops
+      const LIFE = 900;   // ms a dropped shot stays before it is removed
+      const MAX = 12;     // hard cap on live nodes
+      const TILTS = [-4, 3, -2, 5, -3.5, 2.5];
+
+      // Cloned once: each drop is a cheap clone of a prepared node rather than
+      // a fresh parse of the markup.
+      const sources = shots.map((li, i) => {
+        const node = document.createElement("div");
+        node.className = "wk-trail-item";
+        const frame = li.querySelector(".wk-shot-frame").cloneNode(true);
+        frame.querySelectorAll("img").forEach((img) => {
+          img.removeAttribute("loading");
+          img.setAttribute("aria-hidden", "true");
+        });
+        node.appendChild(frame);
+        node.style.setProperty("--r", TILTS[i % TILTS.length] + "deg");
+        return node;
+      });
+
       let idx = 0;
       let lastX = null;
       let lastY = null;
       let travelled = 0;
+      let live = [];
 
-      const show = (n) => {
-        shots.forEach((s, i) => s.classList.toggle("is-on", i === n));
+      const drop = (x, y) => {
+        const node = sources[idx % sources.length].cloneNode(true);
+        idx += 1;
+        node.style.left = x + "px";
+        node.style.top = y + "px";
+        // A touch of variation so a straight sweep does not read as a ruler.
+        node.style.setProperty("--jx", (Math.random() * 26 - 13).toFixed(1) + "px");
+        trail.appendChild(node);
+        // Next frame, so the entrance transition actually runs.
+        requestAnimationFrame(() => node.classList.add("is-in"));
+        live.push(node);
+
+        const kill = () => {
+          node.classList.remove("is-in");
+          node.classList.add("is-out");
+          setTimeout(() => {
+            node.remove();
+            live = live.filter((n) => n !== node);
+          }, 620);
+        };
+        setTimeout(kill, LIFE);
+
+        // Over the cap, retire the oldest early rather than letting the stack
+        // deepen — the trail should read as a few frames, not a collage.
+        while (live.length > MAX) {
+          const oldest = live.shift();
+          if (oldest && oldest.isConnected) oldest.classList.add("is-out");
+          setTimeout(() => oldest && oldest.remove(), 620);
+        }
       };
 
       const onMove = (e) => {
         const box = stage.getBoundingClientRect();
         const x = e.clientX - box.left;
         const y = e.clientY - box.top;
-        // lastX is nulled on leave, so this is the first move after entering.
-        const entering = lastX === null;
-        stage.style.setProperty("--px", x + "px");
-        stage.style.setProperty("--py", y + "px");
+        stage.classList.add("is-live");
 
-        if (entering) {
-          // Land the shot on the pointer BEFORE it is visible. While the stage
-          // is not .is-live the CSS transitions opacity only, so forcing a
-          // reflow here snaps the transform to the new position instead of
-          // letting it slide back from wherever the pointer left the stage.
-          void stage.offsetWidth;
-          show(idx);
+        if (lastX === null) {
+          drop(x, y);
         } else {
           travelled += Math.hypot(x - lastX, y - lastY);
-          if (travelled > WK_STEP) {
+          if (travelled > STEP) {
             travelled = 0;
-            idx = (idx + 1) % shots.length;
-            show(idx);
+            drop(x, y);
           }
         }
         lastX = x;
         lastY = y;
-        stage.classList.add("is-live");
       };
 
-      // Dropping .is-live is what hides the shot and brings the prompt back —
-      // the CSS below gates both on it. The current shot keeps .is-on so it is
-      // the one that returns when the pointer does.
+      // Leaving does not wipe the trail — each node is already on its own
+      // timer, so it drains naturally and the prompt returns behind it.
       const onLeave = () => {
         stage.classList.remove("is-live");
         lastX = lastY = null;
         travelled = 0;
       };
 
+      const clear = () => {
+        live.forEach((n) => n.remove());
+        live = [];
+        trail.replaceChildren();
+      };
+
       const bind = () => {
         const on = canHover.matches && !still.matches;
         stage.classList.toggle("is-armed", on);
         if (on) {
-          show(idx);
           stage.addEventListener("mousemove", onMove);
           stage.addEventListener("mouseleave", onLeave);
         } else {
           onLeave();
+          clear();
           stage.removeEventListener("mousemove", onMove);
           stage.removeEventListener("mouseleave", onLeave);
         }
@@ -1021,6 +1072,9 @@ const cities = [
   }
 
   .wk-prompt { display: none; }
+  /* Decoration only, and only when the script is driving. Off by default so a
+     no-JS or touch visitor never gets a stray positioned layer. */
+  .wk-trail { display: none; }
   .wk-foot { margin: clamp(2.25rem, 4.5vh, 3.25rem) 0 0; }
 
   /* ============================================================
@@ -1032,9 +1086,9 @@ const cities = [
   @media (hover: hover) and (min-width: 900px) {
     .wk-stage.is-armed {
       position: relative;
-      /* Tall enough to be worth sweeping across, short enough that the section
-         does not swallow the fold. */
-      height: clamp(400px, 46vh, 560px);
+      /* Tall enough that a dropped shot sits inside the frame rather than
+         being sliced by its top edge, short enough not to swallow the fold. */
+      height: clamp(460px, 56vh, 620px);
       border: 1px solid var(--color-hairline);
       border-radius: 18px;
       background: var(--color-paper);
@@ -1078,47 +1132,65 @@ const cities = [
       color: var(--color-fg-muted);
     }
 
+    /* Once the stage is armed the real list stops being the visual layer. It
+       is not display:none — a screen reader still walks the full captioned
+       set, and it is what the trail nodes are cloned from — it is simply
+       clipped out of sight behind the stage. */
     .wk-stage.is-armed .wk-shots {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ---- the trail itself ----
+       Each drop is absolutely placed at the cursor, centred on it, and stacked
+       above the ones before it (source order = age, so a later sibling paints
+       on top for free). Only transform and opacity animate. */
+    .wk-trail {
+      display: block;
       position: absolute;
       inset: 0;
       z-index: 2;
-      display: block;
-      gap: 0;
       pointer-events: none;
     }
-    .wk-stage.is-armed .wk-shot {
+    .wk-trail :global(.wk-trail-item) {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: clamp(260px, 26vw, 340px);
+      width: clamp(230px, 22vw, 300px);
+      margin: 0;
+      will-change: transform, opacity;
       opacity: 0;
-      /* Centred on the pointer, then tilted by its own fixed angle. */
       transform:
-        translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0)
-        rotate(var(--r)) scale(0.94);
-      transition: opacity 240ms var(--ease-soft), transform 380ms var(--ease-soft);
+        translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
+        rotate(var(--r, 0deg)) scale(0.86);
+      transition:
+        opacity 220ms var(--ease-soft),
+        transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
     }
-    /* The current shot holds full scale whether or not it is showing, so
-       leaving the stage reads as a fade rather than a shrink. */
-    .wk-stage.is-armed .wk-shot.is-on {
+    /* Landed. */
+    .wk-trail :global(.wk-trail-item.is-in) {
+      opacity: 1;
       transform:
-        translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0)
-        rotate(var(--r)) scale(1);
+        translate3d(calc(-50% + var(--jx, 0px)), -50%, 0)
+        rotate(var(--r, 0deg)) scale(1);
     }
-    /* Nothing shows unless the pointer is on the stage. The cursor leaves, the
-       shot goes with it and the invitation comes back. */
-    .wk-stage.is-armed.is-live .wk-shot.is-on { opacity: 1; }
-    /* At rest the transform is not transitioned, which lets the script move the
-       hidden shot to wherever the pointer re-enters without it gliding across
-       the stage to catch up. */
-    .wk-stage.is-armed:not(.is-live) .wk-shot {
-      transition: opacity 240ms var(--ease-soft);
+    /* Retiring — sinks and shrinks slightly rather than blinking out. */
+    .wk-trail :global(.wk-trail-item.is-out) {
+      opacity: 0;
+      transform:
+        translate3d(calc(-50% + var(--jx, 0px)), calc(-50% + 18px), 0)
+        rotate(var(--r, 0deg)) scale(0.94);
+      transition:
+        opacity 600ms var(--ease-soft),
+        transform 600ms var(--ease-soft);
     }
-    /* Just the image under the cursor — no label riding along with it. The
-       caption is only hidden HERE, inside the armed gallery: the grid state
-       below 900px, on touch, and under reduced motion keeps it, because that
-       is where the name and the Mockup / In progress badge do their work. */
-    .wk-stage.is-armed .wk-shot-cap { display: none; }
+    .wk-trail :global(.wk-shot-frame) {
+      box-shadow:
+        0 30px 70px -34px rgb(7 23 34 / 0.42),
+        0 10px 24px -12px rgb(7 23 34 / 0.20);
+    }
   }
 
   /* ============================================================
