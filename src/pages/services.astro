@@ -516,7 +516,11 @@ const faqSchema = {
         </div>
       </div>
 
-      <div class="walkthrough-panel" id="wtPanel" aria-live="polite">
+      {/* Watched on the PANEL, not on the steps inside it. The steps are
+          swapped by .is-active as the walkthrough advances, and an entry
+          animation on each one would re-fire on every step change — the
+          copy is meant to enter once, when the section is reached. */}
+      <div class="walkthrough-panel mv-rise" data-mv-watch id="wtPanel" aria-live="polite">
         <div class="walkthrough-step is-active" data-step="0" id="wt-panel-0">
           <span class="when">Day 1 · The inquiry lands</span>
           <h3>An inquiry comes in. <em>We answer it</em>.</h3>

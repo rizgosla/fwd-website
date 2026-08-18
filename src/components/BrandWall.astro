@@ -1,0 +1,228 @@
+---
+/* ----------------------------------------------------------------------------
+   BrandWall — an angled field of the real logo, in outline, drifting.
+
+   Replaces the single large BrandMark that used to close the footer. That mark
+   arrived directly under CtaClose's ASCII rendering of the *same* logo, so the
+   page ended by showing one piece of artwork twice; this says the name as a
+   moving texture instead of as a second static logo.
+
+   Three things make it read as a field rather than as a list of logos:
+
+     1. It is the ACTUAL logo, not the word set in Fraunces. The paths are
+        lifted from public/assets/fwd-logo.svg and painted as stroke-only, so
+        the outline is the true letterform of the mark — including the dot,
+        which the display face has no equivalent for.
+     2. The whole slab is rotated, so rows run on a diagonal.
+     3. Adjacent rows travel in opposite directions at unrelated speeds.
+
+   COVERING A ROTATED RECTANGLE
+   Rotating a box leaves triangular gaps at the corners, so the slab has to
+   overhang its container on every side. For a WxH box at angle t the rotated
+   slab must measure at least:
+
+       width  >= W*cos(t) + H*sin(t)
+       height >= W*sin(t) + H*cos(t)
+
+   The height term is the one that bites: a wide, short footer needs a
+   surprisingly tall slab, because the footer's own WIDTH contributes to it.
+   Measured at 2560px the stack needed 1274px against 929px of rows — three
+   rows short, which is exactly the bare corner this is drawn to avoid. Both
+   axes are now derived rather than guessed, and the row count is generous
+   enough to cover the worst case at every breakpoint.
+
+   Decorative in full: aria-hidden, no links, no text a reader needs. The
+   footer's real name and contact details sit above it in markup.
+   -------------------------------------------------------------------------- */
+import { LOGO_PATHS, LOGO_VIEWBOX } from "../data/logoPaths";
+
+interface Props {
+  /** Rows in the slab. Extra rows are clipped; too few leaves bare corners. */
+  rows?: number;
+  /** Degrees the whole slab is rotated by. Negative tilts up to the right. */
+  angle?: number;
+}
+
+/* Rows are laid out at their NATURAL height (see `flex: none` below) and the
+   stack simply overhangs the slab, so this number only has to be large enough
+   to cover the rotated diagonal at every breakpoint — the tallest case needing
+   ~15 rows at mobile mark size, and more once the rows are full height rather
+   than squeezed. Overshooting is close to free: every mark is a <use> of one
+   defined symbol, so an extra row costs a handful of elements rather than
+   another copy of ~3000 characters of path data. */
+const { rows = 24, angle = -14 } = Astro.props;
+
+/* Per-row character. `dur` values are deliberately not multiples of one
+   another, so rows drift out of phase instead of locking into a pattern that
+   repeats every couple of cycles. `dim` varies the stroke alpha so the
+   alternation does not read as mechanical banding.
+
+   Slow on purpose: this is a texture behind a footer, not a ticker anyone is
+   meant to read. At these durations a mark takes the better part of two
+   minutes to cross, which registers as drift rather than as travel. */
+const ROWS = [
+  { dur: 96, dim: 0.20 },
+  { dur: 127, dim: 0.11 },
+  { dur: 81, dim: 0.24 },
+  { dur: 143, dim: 0.10 },
+  { dur: 108, dim: 0.17 },
+  { dur: 89, dim: 0.22 },
+  { dur: 134, dim: 0.13 },
+];
+
+/* Copies per row. A row scrolls by exactly ONE copy per cycle, so the loop is
+   seamless only while the copies still to the right of the window cover it:
+
+       (REPS - 1) x copyWidth >= slabWidth
+
+   Get this wrong and the row simply runs out of marks before it resets, which
+   shows up as blank space sweeping through the field — measured at 1920px with
+   four copies: 3398px of cover against a 3648px slab, 250px short (and 1466px
+   short at 2560px).
+
+   So REPS is derived rather than guessed, against the widest slab worth
+   covering. Over-covering costs nothing: extra copies are clipped, and the
+   cycle still travels exactly one copy however many there are. */
+const PER_COPY = 5;
+const COVER_PX = 2560 * 2.1;      // widest slab worth covering
+const COPY_PX = PER_COPY * 227;   // 13rem mark + 1.2rem gap, at 16px root
+const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
+
+/* One id per instance, so two walls on a page cannot collide over it. */
+const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="bw" aria-hidden="true">
+  {/* The mark, defined ONCE. Every tile below is a <use> of this, so the path
+      data appears a single time in the document instead of once per tile —
+      the difference between a few hundred bytes and a megabyte of duplicated
+      curves at this row count. */}
+  <svg class="bw-defs" aria-hidden="true" focusable="false">
+    <symbol id={markId} viewBox={LOGO_VIEWBOX}>
+      {LOGO_PATHS.map((d) => <path d={d} />)}
+    </symbol>
+  </svg>
+
+  <div class="bw-slab" style={`--angle:${angle}deg`}>
+    {Array.from({ length: rows }, (_, i) => {
+      const r = ROWS[i % ROWS.length];
+      /* Direction alternates by index rather than being carried in the data,
+         so adding a row can never accidentally give two neighbours the same
+         direction. */
+      const reverse = i % 2 === 1;
+      return (
+        <div class="bw-row" style={`--dur:${r.dur}s; --dim:${r.dim}; --reps:${REPS}`}>
+          <div class:list={["bw-track", reverse && "is-reverse"]}>
+            {Array.from({ length: REPS }, () => (
+              <div class="bw-copy">
+                {Array.from({ length: PER_COPY }, () => (
+                  <svg class="bw-mark" viewBox={LOGO_VIEWBOX} fill="none" focusable="false">
+                    <use href={`#${markId}`} />
+                  </svg>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .bw {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    /* Fades out towards the left, where the footer's real content sits, so the
+       field never competes with the links for legibility. The layout reserves
+       an empty right-hand track for this, and the ramp is aligned to it: gone
+       by the time it reaches the text column, at full strength across the
+       space kept clear for it. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 62%, #000 86%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 62%, #000 86%, #000 100%);
+  }
+
+  /* Carries the <symbol> only; nothing in it paints directly. */
+  .bw-defs { position: absolute; width: 0; height: 0; }
+
+  /* Oversized on both axes — see the covering note at the top of this file.
+     210% carries the height term (W*sin + H*cos) for a wide, short footer,
+     which is the case that was leaving a bare corner at 210%'s predecessor. */
+  .bw-slab {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 210%;
+    height: 210%;
+    transform: translate(-50%, -50%) rotate(var(--angle));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(0.15rem, 0.5vw, 0.5rem);
+  }
+
+  /* flex: none is load-bearing. The slab is a column flex container and the
+     rows deliberately overflow it, so with the default `flex: 0 1 auto` every
+     row SHRANK to fit — 113px of mark squeezed into a 58px row.
+
+     overflow is visible, NOT hidden, and that matters just as much. The mark
+     is an italic script: its ascenders and the tall `d` paint above the box
+     the <svg> reserves, so a row that clips to its own height beheads every
+     letterform. Nothing needs clipping at this level anyway — the row is as
+     wide as its content and .bw already clips the whole field to the footer,
+     which is the only edge that should ever cut a mark. */
+  .bw-row {
+    flex: none;
+    overflow: visible;
+  }
+
+  /* max-content, not the flex default: the keyframe moves by a percentage of
+     this box, so the box has to measure its content rather than the row it
+     overflows. */
+  .bw-track {
+    display: flex;
+    width: max-content;
+    animation: bwDrift var(--dur) linear infinite;
+  }
+  /* Reversing the direction rather than writing a second keyframe keeps both
+     directions travelling exactly one copy per cycle, so a left row and a
+     right row stay in step at the same duration. */
+  .bw-track.is-reverse { animation-direction: reverse; }
+
+  .bw-copy {
+    display: flex;
+    align-items: center;
+    flex: none;
+    gap: var(--bw-gap);
+    padding-right: var(--bw-gap);
+  }
+
+  /* Outline only. The logo's own paths, stroked rather than filled — so this
+     is the true contour of the mark, not an approximation in a text face.
+     vector-effect keeps the hairline at 1px however the mark is scaled. */
+  .bw-mark {
+    flex: none;
+    width: clamp(7rem, 13vw, 13rem);
+    height: auto;
+    stroke: rgb(255 255 255 / var(--dim));
+    stroke-width: 1;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    overflow: visible;
+  }
+  .bw-row { --bw-gap: clamp(0.6rem, 1.2vw, 1.2rem); }
+
+  @keyframes bwDrift {
+    to { transform: translateX(calc(-100% / var(--reps))); }
+  }
+
+  /* Paused by the footer's own control, so one button stops the whole field. */
+  :global(.ft.is-paused) .bw-track { animation-play-state: paused; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bw-track { animation: none; }
+  }
+</style>

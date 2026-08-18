@@ -345,6 +345,24 @@
 [data-mv-watch] {
   opacity: 0;
 }
+/* ...and held means HELD. `.mv-rise` and friends carry `animation: ... both`,
+   which starts running the moment the element is parsed — so an element far
+   down the page had already played its entry, and finished it, long before it
+   was scrolled to. The `both` fill then pinned it at the animation's end
+   state, which outranks the `opacity: 0` above (a running animation beats a
+   normal declaration). The net effect: everything using the scroll-triggered
+   idiom was simply *there* on arrival, and adding .is-inview later restarted
+   an animation nobody was in a position to see.
+
+   Cancelling the animation until .is-inview lands is what makes the opacity
+   above take effect, and what makes the entry actually happen on entry.
+   .mv-stagger is not listed: its children are held with
+   `animation-play-state: paused` below, which does not have this problem. */
+[data-mv-watch]:not(.is-inview).mv-rise,
+[data-mv-watch]:not(.is-inview).mv-wipe,
+[data-mv-watch]:not(.is-inview).mv-soften {
+  animation: none;
+}
 [data-mv-watch].is-inview.mv-rise   { opacity: 0; animation: mvRise   var(--motion-dur-base) var(--ease-out-expo) both; }
 [data-mv-watch].is-inview.mv-soften { opacity: 0; animation: mvSoften var(--motion-dur-slow) var(--ease-out-expo) both; }
 [data-mv-watch].is-inview.mv-wipe   { opacity: 1; animation: mvWipe   var(--motion-dur-fast) var(--ease-soft) both; }

@@ -1,5 +1,5 @@
 ---
-import BrandMark from "./BrandMark.astro";
+import BrandWall from "./BrandWall.astro";
 
 // Studio links land on real /studio sections. `/studio#people` was removed —
 // the team section it pointed at is being cut, so this goes to the page itself.
@@ -20,8 +20,13 @@ const serviceLinks = [
 
   The ink field stays — it's the only dark surface on /work and /contact. What
   it gains: a periwinkle seam so it stops merging into the ink CtaClose band
-  that precedes it, a display closing line, and the BrandMark committed to as
-  a graphic in its own track rather than a logo parked in a column.
+  that precedes it, and a display closing line.
+
+  The single large BrandMark that used to sit in the right-hand track is gone.
+  CtaClose directly above already renders that exact logo as ASCII, so the page
+  ended by showing the same artwork twice in a row. BrandWall says the name as
+  a full-width drifting texture instead — rows in outline, alternating
+  direction — which closes the page without repeating the mark.
 
   Motion is on the closing line only. [data-mv-watch] holds elements at
   opacity:0 until JS runs, and this is the last-resort contact surface on every
@@ -99,12 +104,19 @@ const serviceLinks = [
     <div class="ft-legal">
       <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms of Service</a>
-    </div>
-
-    <div class="ft-mark" aria-hidden="true">
-      <BrandMark class="ft-mark-svg" decorative={true} />
+      {/* WCAG 2.2.2 — the wall drifts forever, so it needs a stop that does
+          not depend on an OS setting. Sits with the legal line because that is
+          the last row of real controls on the page. */}
+      <button type="button" class="ft-pause" data-ft-pause>Pause</button>
     </div>
   </div>
+
+  {/* Absolutely positioned inside .ft, behind .ft-inner (which carries
+      z-index: 1). It fills the whole footer and masks itself down to the
+      right-hand side, so it reads as a graphic occupying the space the old
+      logo held — while the links keep the full width of the grid rather than
+      being squeezed into a column beside it. */}
+  <BrandWall />
 </footer>
 
 <style>
@@ -114,7 +126,7 @@ const serviceLinks = [
     overflow: hidden;
     background: var(--color-ink);
     color: rgba(255,255,255,0.78);
-    padding-block: clamp(3.5rem, 8vh, 5.5rem) clamp(3rem, 6vh, 4rem);
+    padding-block: clamp(2.5rem, 5vh, 3.5rem) clamp(1.75rem, 3.5vh, 2.5rem);
   }
   /* Lights the opposite corner to .cta-band::before (which lights top-centre),
      so two ink bands stacked on each other read as two planes. */
@@ -137,65 +149,35 @@ const serviceLinks = [
     transform-origin: left;
   }
 
-  /* The mark gets its own grid track rather than sitting behind the content,
-     so overlap is structurally impossible and it scales to whatever width is
-     left over instead of being cropped. */
-  .ft-mark {
-    color: #ffffff;
-    pointer-events: none;
-    user-select: none;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .ft-mark :global(.ft-mark-svg) {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    display: block;
-  }
-
-  /* Below 900px the mark drops onto its own line, so it goes full-bleed:
-     out through .ft-inner's padding to both viewport edges.
-     BrandMark's viewBox is a 160x160 square but the wordmark only occupies
-     y 33.61 -> 126.4 (measured via getBBox) — 58% of the height, with a 21%
-     empty band above and below. Cropping those bands is what stops a
-     full-width mark from becoming a tall square of dead air. */
-  @media (max-width: 899px) {
-    .ft-mark {
-      margin-inline: calc(var(--pad-x) * -1);
-      width: calc(100% + (var(--pad-x) * 2));
-      aspect-ratio: 160 / 92.79;
-      overflow: hidden;
-      align-items: flex-start;
-      justify-content: stretch;
-    }
-    .ft-mark :global(.ft-mark-svg) {
-      max-width: none;
-      /* Percentage margins resolve against width, and the svg is as tall as
-         it is wide, so -21% lifts exactly the empty top band out of view. */
-      margin-top: -21%;
-    }
-  }
-
   .ft-inner {
     position: relative; z-index: 1;
     width: 100%;
     padding-inline: var(--pad-x);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(2.75rem, 6vh, 4.5rem);
+    gap: clamp(1.75rem, 3.5vh, 2.5rem);
   }
-  /* Two tracks: everything readable on the left, the mark filling the space
-     left over on the right, spanning both rows so it uses the full height. */
+  /* Two tracks, as before the wall existed: everything readable in column one,
+     column two left deliberately empty for the graphic. The wall is painted by
+     an absolutely positioned sibling rather than placed in this track — but
+     the track is what reserves the room, so the two can never overlap however
+     long a link label gets.
+
+     The empty track is sized as a PERCENTAGE, because the thing it has to stay
+     clear of is itself proportional: the wall's mask starts lifting at 62% of
+     the footer's width, so a fixed rem track fell further and further behind
+     the fade as the viewport grew (content ran 152px into the field at 1440px
+     and 608px at 2560px). 36% pairs with that 62% stop — the content always
+     ends before the wall begins to paint, at every width, while still leaving
+     the contact column wide enough to keep the email address on one line. */
   @media (min-width: 900px) {
     .ft-inner {
-      grid-template-columns: minmax(0, 1fr) clamp(9rem, 20vw, 24rem);
-      column-gap: clamp(2rem, 5vw, 5rem);
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr) 36%;
+      column-gap: clamp(2rem, 4vw, 4rem);
     }
-    .ft-line { grid-column: 1; grid-row: 1; }
-    .ft-grid { grid-column: 1; grid-row: 2; }
-    .ft-mark { grid-column: 2; grid-row: 1 / span 2; }
+    .ft-line,
+    .ft-grid,
+    .ft-legal { grid-column: 1; }
   }
 
   .ft-line {
@@ -228,13 +210,13 @@ const serviceLinks = [
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
     font-weight: 500;
-    margin: 0 0 1.15rem;
-    padding-bottom: 0.85rem;
+    margin: 0 0 0.85rem;
+    padding-bottom: 0.65rem;
     border-bottom: 1px solid rgba(255,255,255,0.10);
   }
   .ft-col ul {
     list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column; gap: 0.7rem;
+    display: flex; flex-direction: column; gap: 0.55rem;
   }
   .ft-col a, .ft-static {
     font-family: var(--font-sans);
@@ -282,13 +264,10 @@ const serviceLinks = [
   .ft-legal {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 1.5rem;
-    margin-top: 2.5rem;
-    padding-top: 1.75rem;
+    padding-top: 1.25rem;
     border-top: 1px solid rgba(255,255,255,0.10);
-  }
-  @media (min-width: 900px) {
-    .ft-legal { grid-column: 1; grid-row: 3; }
   }
   .ft-legal a {
     position: relative;
@@ -313,7 +292,51 @@ const serviceLinks = [
     border-radius: 2px;
   }
 
+  /* Same pill vocabulary as the marquee and CtaClose controls, in the
+     footer's own ink tones. Pushed to the end of the line so the two legal
+     links stay together as a pair. */
+  .ft-pause {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-step--2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    /* PAUSE and PLAY differ in width; a fixed slot stops the pill resizing
+       under the cursor when it is clicked. */
+    min-width: 7ch;
+    text-align: center;
+    cursor: pointer;
+    transition: color 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
+  }
+  .ft-pause:hover { color: var(--color-paper); border-color: var(--color-periwinkle); }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Nothing left to pause, so the control would be dead weight. */
+    .ft-pause { display: none; }
+  }
+
   @media (max-width: 699px) {
     .ft-line { max-width: 16ch; }
   }
 </style>
+
+<script is:inline>
+  // The label carries the state instead of aria-pressed: for a pause control
+  // the accessible name IS the state, and doing both announces contradictions
+  // like "Play, pressed". Matches the marquee and CtaClose controls.
+  (() => {
+    if (window.__ftPause) return; // one initialiser per page
+    window.__ftPause = true;
+    document.querySelectorAll("[data-ft-pause]").forEach((btn) => {
+      const ft = btn.closest(".ft");
+      btn.addEventListener("click", () => {
+        btn.textContent = ft.classList.toggle("is-paused") ? "Play" : "Pause";
+      });
+    });
+  })();
+</script>

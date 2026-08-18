@@ -176,7 +176,10 @@ const steps = [
 
   <section class="section section-facts">
     <div class="full">
-      <p class="eyebrow" style="margin-bottom: 2.25rem"><span>Before you ask</span></p>
+      {/* The eyebrow labels the card grid below it, which does animate in.
+          Without a watcher of its own it was the one thing in the band that
+          was simply already there. */}
+      <p class="eyebrow mv-rise" data-mv-watch style="margin-bottom: 2.25rem"><span>Before you ask</span></p>
       <div class="facts mv-stagger" data-mv-watch>
         <div class="aside-card">
           <span class="aside-label">Response time</span>
