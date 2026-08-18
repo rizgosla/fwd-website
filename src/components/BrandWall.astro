@@ -43,11 +43,14 @@ interface Props {
   angle?: number;
 }
 
-/* 16 rows covers the tallest case measured (a narrow, tall mobile footer needs
-   ~15 at its mark size). Overshooting is close to free: every mark is a <use>
-   of one defined path, so an unused row costs a handful of elements rather
-   than another copy of ~3000 characters of path data. */
-const { rows = 16, angle = -14 } = Astro.props;
+/* Rows are laid out at their NATURAL height (see `flex: none` below) and the
+   stack simply overhangs the slab, so this number only has to be large enough
+   to cover the rotated diagonal at every breakpoint — the tallest case needing
+   ~15 rows at mobile mark size, and more once the rows are full height rather
+   than squeezed. Overshooting is close to free: every mark is a <use> of one
+   defined symbol, so an extra row costs a handful of elements rather than
+   another copy of ~3000 characters of path data. */
+const { rows = 24, angle = -14 } = Astro.props;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
    another, so rows drift out of phase instead of locking into a pattern that
@@ -161,7 +164,15 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
     gap: clamp(0.15rem, 0.5vw, 0.5rem);
   }
 
-  .bw-row { overflow: hidden; }
+  /* flex: none is load-bearing. The slab is a column flex container and the
+     rows deliberately overflow it, so with the default `flex: 0 1 auto` every
+     row SHRANK to fit — 113px of mark squeezed into a 58px row — and the
+     row's own overflow:hidden then sliced the letterforms in half. The rows
+     must keep their natural height and simply overhang; .bw clips them. */
+  .bw-row {
+    flex: none;
+    overflow: hidden;
+  }
 
   /* max-content, not the flex default: the keyframe moves by a percentage of
      this box, so the box has to measure its content rather than the row it
