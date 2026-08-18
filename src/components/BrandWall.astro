@@ -1,0 +1,165 @@
+---
+/* ----------------------------------------------------------------------------
+   BrandWall — a field of the wordmark, in outline, drifting.
+
+   Replaces the single large BrandMark that used to close the footer. That mark
+   arrived directly under CtaClose's ASCII rendering of the *same* logo, so the
+   page ended by showing one piece of artwork twice; this says the name as a
+   texture instead of as a second logo.
+
+   Every row is the word repeated, in outline only, and adjacent rows travel in
+   opposite directions — so the wall reads as a moving weave rather than as one
+   block sliding sideways. Rows also differ slightly in speed and opacity, which
+   is what stops the alternation from looking mechanical.
+
+   Decorative in full: aria-hidden, no links, no text a reader needs. The
+   footer's actual name and contact details sit above it in real markup.
+   -------------------------------------------------------------------------- */
+interface Props {
+  /** The repeated word. */
+  word?: string;
+  /** Number of rows in the wall. */
+  rows?: number;
+}
+
+const { word = "fwd.", rows = 6 } = Astro.props;
+
+/* Per-row character. Index into these rather than deriving from `i` inline, so
+   the wall's rhythm is legible in one place and tunable without touching CSS.
+   `dir` alternates; `dur` is deliberately not a multiple of its neighbour, so
+   rows drift out of phase with each other instead of locking into a pattern
+   that repeats every couple of cycles. */
+const ROWS = [
+  { dur: 38, dim: 0.30, dir: 1 },
+  { dur: 47, dim: 0.20, dir: -1 },
+  { dur: 32, dim: 0.38, dir: 1 },
+  { dur: 53, dim: 0.18, dir: -1 },
+  { dur: 42, dim: 0.26, dir: 1 },
+  { dur: 36, dim: 0.22, dir: -1 },
+];
+
+/* Copies per row. The row scrolls by exactly one copy per cycle, so the loop is
+   only seamless while the copies remaining to the right still cover the band:
+   (REPS - 1) x copyWidth >= viewport. A copy is WORDS_PER_COPY words at roughly
+   9rem each, so four copies cover an ultrawide comfortably. */
+const REPS = 4;
+const WORDS_PER_COPY = 7;
+---
+
+<div class="bw" aria-hidden="true" data-brand-wall>
+  {Array.from({ length: rows }, (_, i) => {
+    const r = ROWS[i % ROWS.length];
+    return (
+      <div
+        class="bw-row"
+        style={`--dur:${r.dur}s; --dim:${r.dim}; --dir:${r.dir}; --reps:${REPS}`}
+      >
+        <div class="bw-track">
+          {Array.from({ length: REPS }, () => (
+            <div class="bw-copy">
+              {Array.from({ length: WORDS_PER_COPY }, () => (
+                <span class="bw-word">{word}</span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .bw {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Negative gap: the rows overlap slightly so the wall reads as a woven
+       field rather than as six separate strips with air between them. */
+    gap: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    /* Fades into the footer at top and bottom instead of ending on a hard
+       edge, and pulls in at the sides so a word is never cut mid-letter at
+       the viewport edge without explanation. */
+    -webkit-mask-image:
+      linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent),
+      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image:
+      linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent),
+      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* Rows sit close enough that the wall reads as one field, but each line
+     stays legible as its own word. The italic has a deep descender, so the
+     row box is much taller than the letterforms and a small negative margin
+     closes that gap; past about -0.12 the descenders start crossing the row
+     below and the whole thing turns to noise. */
+  .bw-row {
+    overflow: hidden;
+    margin-block: calc(var(--bw-size) * -0.1);
+  }
+
+  /* max-content, not the flex default: the keyframe below moves by a
+     percentage of this box, so the box has to measure its content rather
+     than the row it overflows. */
+  .bw-track {
+    display: flex;
+    width: max-content;
+    animation: bwDrift var(--dur) linear infinite;
+    /* One direction per row. Reversing the *direction* rather than writing a
+       second keyframe keeps both rows travelling exactly one copy per cycle,
+       so a left row and a right row stay in step at the same duration. */
+    animation-direction: var(--dir-name, normal);
+  }
+  .bw-row[style*="--dir:-1"] .bw-track { animation-direction: reverse; }
+
+  .bw-copy {
+    display: flex;
+    flex: none;
+    gap: var(--bw-gap);
+    padding-right: var(--bw-gap);
+    white-space: nowrap;
+  }
+
+  /* Outline only. -webkit-text-stroke is the one that paints a true inner
+     stroke on text across browsers; `paint-order` keeps the stroke from
+     eating into the letterform. The fill is transparent, so what is left is
+     the contour — the whole point of the wall. */
+  .bw-word {
+    --bw-size: clamp(2.75rem, 6.5vw, 6.5rem);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 350;
+    font-size: var(--bw-size);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144, "SOFT" 70;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(255 255 255 / var(--dim));
+    paint-order: stroke fill;
+  }
+
+  /* Row metrics depend on the word size, so they are declared where the size
+     is known and read back up by .bw-row via the cascade. */
+  .bw-row { --bw-size: clamp(2.75rem, 6.5vw, 6.5rem); --bw-gap: clamp(1.25rem, 2.5vw, 2.5rem); }
+
+  @keyframes bwDrift {
+    to { transform: translateX(calc(-100% / var(--reps))); }
+  }
+
+  /* Paused by the footer's own control, so one button stops the whole wall. */
+  :global(.ft.is-paused) .bw-track { animation-play-state: paused; }
+
+  /* Six rows of large type is a lot of vertical space on a phone; the wall
+     keeps its character at three. */
+  @media (max-width: 700px) {
+    .bw-row:nth-child(n + 4) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bw-track { animation: none; }
+  }
+</style>
