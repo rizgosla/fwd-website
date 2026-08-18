@@ -1,163 +1,164 @@
 ---
 /* ----------------------------------------------------------------------------
-   BrandWall — a field of the wordmark, in outline, drifting.
+   BrandWall — an angled field of the real logo, in outline, drifting.
 
    Replaces the single large BrandMark that used to close the footer. That mark
    arrived directly under CtaClose's ASCII rendering of the *same* logo, so the
    page ended by showing one piece of artwork twice; this says the name as a
-   texture instead of as a second logo.
+   moving texture instead of as a second static logo.
 
-   Every row is the word repeated, in outline only, and adjacent rows travel in
-   opposite directions — so the wall reads as a moving weave rather than as one
-   block sliding sideways. Rows also differ slightly in speed and opacity, which
-   is what stops the alternation from looking mechanical.
+   Three things make it read as a field rather than as a list of logos:
+
+     1. It is the ACTUAL logo, not the word set in Fraunces. The paths are
+        lifted from public/assets/fwd-logo.svg and painted as stroke-only, so
+        the outline is the true letterform of the mark — including the dot,
+        which the display face has no equivalent for.
+     2. The whole slab is rotated, so rows run on a diagonal.
+     3. Adjacent rows travel in opposite directions at unrelated speeds.
+
+   The slab is deliberately much wider and taller than its container: rotating
+   a rectangle leaves triangular gaps at the corners, and the only way for a
+   rotated field to fill an upright box is to overhang it on every side. The
+   parent clips it.
 
    Decorative in full: aria-hidden, no links, no text a reader needs. The
-   footer's actual name and contact details sit above it in real markup.
+   footer's real name and contact details sit above it in markup.
    -------------------------------------------------------------------------- */
+import { LOGO_PATHS, LOGO_VIEWBOX } from "../data/logoPaths";
+
 interface Props {
-  /** The repeated word. */
-  word?: string;
-  /** Number of rows in the wall. */
+  /** Rows in the slab. */
   rows?: number;
+  /** Degrees the whole slab is rotated by. Negative tilts up to the right. */
+  angle?: number;
 }
 
-const { word = "fwd.", rows = 6 } = Astro.props;
+const { rows = 7, angle = -14 } = Astro.props;
 
-/* Per-row character. Index into these rather than deriving from `i` inline, so
-   the wall's rhythm is legible in one place and tunable without touching CSS.
-   `dir` alternates; `dur` is deliberately not a multiple of its neighbour, so
-   rows drift out of phase with each other instead of locking into a pattern
-   that repeats every couple of cycles. */
+/* Per-row character. `dur` values are deliberately not multiples of one
+   another, so rows drift out of phase instead of locking into a pattern that
+   repeats every couple of cycles. `dim` varies the stroke alpha so the
+   alternation does not read as mechanical banding. */
 const ROWS = [
-  { dur: 38, dim: 0.30, dir: 1 },
-  { dur: 47, dim: 0.20, dir: -1 },
-  { dur: 32, dim: 0.38, dir: 1 },
-  { dur: 53, dim: 0.18, dir: -1 },
-  { dur: 42, dim: 0.26, dir: 1 },
-  { dur: 36, dim: 0.22, dir: -1 },
+  { dur: 41, dim: 0.20 },
+  { dur: 53, dim: 0.11 },
+  { dur: 34, dim: 0.24 },
+  { dur: 61, dim: 0.10 },
+  { dur: 45, dim: 0.17 },
+  { dur: 38, dim: 0.22 },
+  { dur: 56, dim: 0.13 },
 ];
 
-/* Copies per row. The row scrolls by exactly one copy per cycle, so the loop is
-   only seamless while the copies remaining to the right still cover the band:
-   (REPS - 1) x copyWidth >= viewport. A copy is WORDS_PER_COPY words at roughly
-   9rem each, so four copies cover an ultrawide comfortably. */
+/* Copies per row. A row scrolls by exactly one copy per cycle, so the loop is
+   seamless only while the copies still to the right cover the slab:
+   (REPS - 1) x copyWidth >= slab width. The slab is ~1.6x its container to
+   survive the rotation, so four copies of five marks carries it. */
 const REPS = 4;
-const WORDS_PER_COPY = 7;
+const PER_COPY = 5;
 ---
 
-<div class="bw" aria-hidden="true" data-brand-wall>
-  {Array.from({ length: rows }, (_, i) => {
-    const r = ROWS[i % ROWS.length];
-    return (
-      <div
-        class="bw-row"
-        style={`--dur:${r.dur}s; --dim:${r.dim}; --dir:${r.dir}; --reps:${REPS}`}
-      >
-        <div class="bw-track">
-          {Array.from({ length: REPS }, () => (
-            <div class="bw-copy">
-              {Array.from({ length: WORDS_PER_COPY }, () => (
-                <span class="bw-word">{word}</span>
-              ))}
-            </div>
-          ))}
+<div class="bw" aria-hidden="true">
+  <div class="bw-slab" style={`--angle:${angle}deg`}>
+    {Array.from({ length: rows }, (_, i) => {
+      const r = ROWS[i % ROWS.length];
+      /* Direction alternates by index rather than being carried in the data,
+         so adding a row can never accidentally give two neighbours the same
+         direction. */
+      const reverse = i % 2 === 1;
+      return (
+        <div class="bw-row" style={`--dur:${r.dur}s; --dim:${r.dim}; --reps:${REPS}`}>
+          <div class:list={["bw-track", reverse && "is-reverse"]}>
+            {Array.from({ length: REPS }, () => (
+              <div class="bw-copy">
+                {Array.from({ length: PER_COPY }, () => (
+                  <svg class="bw-mark" viewBox={LOGO_VIEWBOX} fill="none" focusable="false">
+                    {LOGO_PATHS.map((d) => <path d={d} />)}
+                  </svg>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    );
-  })}
+      );
+    })}
+  </div>
 </div>
 
 <style>
   .bw {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    /* Negative gap: the rows overlap slightly so the wall reads as a woven
-       field rather than as six separate strips with air between them. */
-    gap: 0;
+    position: absolute;
+    inset: 0;
     overflow: hidden;
     user-select: none;
     pointer-events: none;
-    /* Fades into the footer at top and bottom instead of ending on a hard
-       edge, and pulls in at the sides so a word is never cut mid-letter at
-       the viewport edge without explanation. */
-    -webkit-mask-image:
-      linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent),
-      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image:
-      linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent),
-      linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+    /* Fades out towards the left, where the footer's real content sits, so the
+       field never competes with the links for legibility. It only reaches full
+       strength past the right-hand edge of the contact column — the links are
+       the reason anyone is down here, and a texture behind an email address is
+       a texture in the wrong place. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 52%, #000 88%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 52%, #000 88%, #000 100%);
   }
 
-  /* Rows sit close enough that the wall reads as one field, but each line
-     stays legible as its own word. The italic has a deep descender, so the
-     row box is much taller than the letterforms and a small negative margin
-     closes that gap; past about -0.12 the descenders start crossing the row
-     below and the whole thing turns to noise. */
-  .bw-row {
-    overflow: hidden;
-    margin-block: calc(var(--bw-size) * -0.1);
+  /* Oversized on purpose — see the note at the top of this file. Rotating an
+     element that merely matches its container leaves the corners bare. */
+  .bw-slab {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 190%;
+    height: 190%;
+    transform: translate(-50%, -50%) rotate(var(--angle));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.4vw, 1.4rem);
   }
 
-  /* max-content, not the flex default: the keyframe below moves by a
-     percentage of this box, so the box has to measure its content rather
-     than the row it overflows. */
+  .bw-row { overflow: hidden; }
+
+  /* max-content, not the flex default: the keyframe moves by a percentage of
+     this box, so the box has to measure its content rather than the row it
+     overflows. */
   .bw-track {
     display: flex;
     width: max-content;
     animation: bwDrift var(--dur) linear infinite;
-    /* One direction per row. Reversing the *direction* rather than writing a
-       second keyframe keeps both rows travelling exactly one copy per cycle,
-       so a left row and a right row stay in step at the same duration. */
-    animation-direction: var(--dir-name, normal);
   }
-  .bw-row[style*="--dir:-1"] .bw-track { animation-direction: reverse; }
+  /* Reversing the direction rather than writing a second keyframe keeps both
+     directions travelling exactly one copy per cycle, so a left row and a
+     right row stay in step at the same duration. */
+  .bw-track.is-reverse { animation-direction: reverse; }
 
   .bw-copy {
     display: flex;
+    align-items: center;
     flex: none;
     gap: var(--bw-gap);
     padding-right: var(--bw-gap);
-    white-space: nowrap;
   }
 
-  /* Outline only. -webkit-text-stroke is the one that paints a true inner
-     stroke on text across browsers; `paint-order` keeps the stroke from
-     eating into the letterform. The fill is transparent, so what is left is
-     the contour — the whole point of the wall. */
-  .bw-word {
-    --bw-size: clamp(2.75rem, 6.5vw, 6.5rem);
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 350;
-    font-size: var(--bw-size);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144, "SOFT" 70;
-    color: transparent;
-    -webkit-text-stroke: 1px rgb(255 255 255 / var(--dim));
-    paint-order: stroke fill;
+  /* Outline only. The logo's own paths, stroked rather than filled — so this
+     is the true contour of the mark, not an approximation in a text face.
+     vector-effect keeps the hairline at 1px however the mark is scaled. */
+  .bw-mark {
+    --bw-gap: clamp(1.5rem, 3vw, 3rem);
+    flex: none;
+    width: clamp(7rem, 13vw, 13rem);
+    height: auto;
+    stroke: rgb(255 255 255 / var(--dim));
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    overflow: visible;
   }
-
-  /* Row metrics depend on the word size, so they are declared where the size
-     is known and read back up by .bw-row via the cascade. */
-  .bw-row { --bw-size: clamp(2.75rem, 6.5vw, 6.5rem); --bw-gap: clamp(1.25rem, 2.5vw, 2.5rem); }
+  .bw-row { --bw-gap: clamp(1.5rem, 3vw, 3rem); }
 
   @keyframes bwDrift {
     to { transform: translateX(calc(-100% / var(--reps))); }
   }
 
-  /* Paused by the footer's own control, so one button stops the whole wall. */
+  /* Paused by the footer's own control, so one button stops the whole field. */
   :global(.ft.is-paused) .bw-track { animation-play-state: paused; }
-
-  /* Six rows of large type is a lot of vertical space on a phone; the wall
-     keeps its character at three. */
-  @media (max-width: 700px) {
-    .bw-row:nth-child(n + 4) { display: none; }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .bw-track { animation: none; }

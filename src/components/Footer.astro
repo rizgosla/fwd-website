@@ -111,8 +111,11 @@ const serviceLinks = [
     </div>
   </div>
 
-  {/* Outside .ft-inner so it runs the full bleed of the footer rather than
-      sitting inside the page's horizontal padding. */}
+  {/* Absolutely positioned inside .ft, behind .ft-inner (which carries
+      z-index: 1). It fills the whole footer and masks itself down to the
+      right-hand side, so it reads as a graphic occupying the space the old
+      logo held — while the links keep the full width of the grid rather than
+      being squeezed into a column beside it. */}
   <BrandWall />
 </footer>
 
