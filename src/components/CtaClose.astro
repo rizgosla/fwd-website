@@ -256,15 +256,23 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
        mark, with the font-size above scaled to match so the character texture
        scales with it instead of the grid just getting finer.
 
-       The mark still needs slack above and below or the letterforms run into
-       the element edge and get clipped; at 4:3 it lands at ~78% of the box
-       height, which is the air the square raster used to give it for free.
-       Centred, not stretched, so it tracks the type block. */
+       The ratio is the WORDMARK's, not an arbitrary 4:3. The band this
+       rasterises is 157.5 x 95.34 in the logo's viewBox, so it is ~1.65:1;
+       held in a 4:3 box the art could only ever fill ~78% of the height and
+       the leftover split as dead rows top and bottom. Measured, that was
+       ~50px of empty character grid above the mark and ~42px below — not
+       equal, so it read as the mark sitting slightly high in a box that was
+       too tall for it, which is the awkwardness this had.
+
+       Matching the box to the art removes the gap rather than trying to
+       balance it. A little slack is still wanted so the ascenders and the
+       dot do not touch the element edge, hence 1.55 rather than the exact
+       1.65. Centred, not stretched, so it tracks the type block. */
     .ctc-ascii {
       display: block;
       grid-column: 2; grid-row: 1;
       align-self: center;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1.55;
     }
     .ctc-motion { grid-column: 1 / -1; grid-row: 2; }
   }

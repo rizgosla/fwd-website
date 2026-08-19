@@ -375,7 +375,12 @@ const ANSWER_WORDS = ANSWER.split(" ").map((word) =>
   .st-hero {
     position: relative; isolation: isolate; overflow: hidden;
     background: var(--color-ink); color: var(--color-paper);
-    padding-block: clamp(5rem, 15vh, 10rem);
+    /* Was clamp(5rem, 15vh, 10rem) — 135px at 1440, two thirds taller than
+       any other band on the site and the single biggest outlier in the
+       rhythm. A hero should lead, so it keeps the largest step plus a half
+       step, but it now derives that from the scale rather than from a clamp
+       of its own. */
+    padding-block: calc(var(--band-lg) + var(--band-sm) * 0.5);
     border-bottom: 1px solid var(--ink-seam);
   }
   .st-hero-glow {

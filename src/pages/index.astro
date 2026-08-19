@@ -229,18 +229,6 @@ const cities = [
 
   <!-- ============ SELECTED WORK — cursor gallery ============ -->
   <section class="section wk-band">
-    {/* The footer's backing, on the page's other ink surface. The band was
-        flat ink with a single radial wash; the footer directly below it
-        carried the drifting mark, so the two dark surfaces read as
-        different materials.
-
-        Masked BELOW rather than to the edges. The head here is a two-column
-        grid running the full width, so a horizontal ramp cannot miss it —
-        an earlier "edges" pass put a mark straight through "The work so
-        far". The footer's rule is that the field and the type never share
-        space, and clearing the top 46% is how that rule applies to a band
-        shaped like this one: the mark fills the stage area instead. */}
-    <BrandWall tone="ink" mask="below" clearTop={46} opacity={0.5} rows={20} />
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <div class="section-head-lead">
@@ -267,6 +255,18 @@ const cities = [
             shot's opacity and transform at the animation's end state and the
             cursor effect below could never move them. */
         <div class="wk-stage mv-rise" data-mv-watch data-wk-stage>
+          {/* The drifting mark lives INSIDE the stage, and it is what the
+              stage's blueprint grid used to be. The grid was a third copy of
+              a texture the hero panel and the closing CTA already carry; the
+              wall says the studio's name instead, and it stays within the
+              stage's rounded border rather than washing across the whole
+              band — so the field reads as the surface the work is dropped
+              onto, and the ink around it stays flat.
+
+              .bw is absolutely positioned and aria-hidden. The prompt, the
+              trail and the shots all sit above it on their own z-index. */}
+          <BrandWall tone="ink" mask="full" opacity={0.55} rows={16} angle={-12} />
+
           <div class="wk-prompt" aria-hidden="true">
             <span class="wk-prompt-line"></span>
             <span class="wk-prompt-text">Move your cursor</span>
@@ -1092,7 +1092,7 @@ const cities = [
      the unequal lengths read as a table rather than as a row that
      failed to line up.
      ============================================================ */
-  .meta-strip { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 4vh, 3.25rem); }
+  .meta-strip { background: var(--color-bg-soft); border-bottom: 1px solid var(--color-line); padding-block: var(--band-sm); }
   .meta-strip-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -1330,6 +1330,24 @@ const cities = [
   /* Decoration only, and only when the script is driving. Off by default so a
      no-JS or touch visitor never gets a stray positioned layer. */
   .wk-trail { display: none; }
+
+  /* The stage owns the drifting mark now, so it has to be a containing block
+     and a clipping boundary at EVERY width — not only when .is-armed adds
+     those below for the cursor gallery. Without this the wall would resolve
+     against the section and wash across the whole band, which is the thing
+     moving it in here was meant to stop.
+
+     On a phone the stage is a plain column of cards with no frame of its own,
+     so the field is given the same rounded box the armed stage has. It reads
+     as the surface the work sits on rather than as loose texture. */
+  .wk-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 18px;
+  }
+  /* Everything real in the stage sits above the field. */
+  .wk-stage > :not(.bw) { position: relative; z-index: 1; }
   .wk-foot { margin: clamp(2.25rem, 4.5vh, 3.25rem) 0 0; }
 
   /* ============================================================
@@ -1352,19 +1370,10 @@ const cities = [
       overflow: hidden;
       cursor: crosshair;
     }
-    /* The blueprint texture the hero panel and the closing CTA both use. */
-    .wk-stage.is-armed::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px);
-      background-size: 46px 46px;
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 80%);
-      pointer-events: none;
-    }
+    /* The blueprint grid that used to paint here is gone — BrandWall inside
+       the stage replaces it. Keeping both would have stacked two textures on
+       one surface, and the grid was already the site's third copy of that
+       same 46px rule. */
 
     .wk-stage.is-armed .wk-prompt {
       position: absolute;
