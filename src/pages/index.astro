@@ -141,7 +141,7 @@ const cities = [
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">A whole website, <em>one number</em>.</h2>
-        <p class="section-sub">No retainers, no scope creep, no hidden hourlies. You bring the brand and the words — we handle every part of designing, building, and shipping it.</p>
+        <p class="section-sub">No retainers, no scope creep, no hidden hourlies. You bring the brand and the words — we design, build, and ship it.</p>
       </div>
 
       <div class="offer-bento mv-stagger" data-mv-watch>
@@ -1131,6 +1131,22 @@ const cities = [
   .section-head-lead { display: flex; flex-direction: column; align-items: flex-start; gap: 0.9rem; }
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
+
+  /* Offer head: the sub sits over the 2x3 tile block to the right of the
+     headline card, so its column matches the bento's own split (2 of 4
+     columns, 1.5rem gutter) rather than the generic 1fr/1.1fr head grid.
+     It is allowed the full width of that column so it runs two lines —
+     roughly the height of the title beside it — and both are centred on
+     the same line, which lets the head sit closer to the cards. */
+  @media (min-width: 1000px) {
+    .section-offer .section-head {
+      grid-template-columns: calc(50% - 0.75rem) 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
+    }
+    .section-offer .section-sub { max-width: none; text-wrap: balance; }
+  }
 
   /* ============================================================
      BAND — the soft surface and rhythm the service-area and
