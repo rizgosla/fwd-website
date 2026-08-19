@@ -88,40 +88,40 @@ const {
   clearTop = 42,
 } = Astro.props;
 
-/* Navy rather than black: the paper surfaces this sits on are warm off-white
-   and a neutral grey outline goes muddy against them, where the brand navy
-   stays a colour. 0.42 is the alpha ratio that makes a navy stroke on paper
+/* Brand blue rather than black: the paper surfaces this sits on are warm
+   off-white and a neutral grey outline goes muddy against them, where the
+   brand blue stays a colour. 0.42 is the alpha ratio that makes the stroke
    read at the same weight as a white stroke on ink — dark-on-light carries
    further at equal alpha, and the footer is the reference the other two
    instances have to match.
 
-   The value is --color-navy (#0d2f45). It previously read "20 70 103", which
-   is --color-blue (#144667) — the comment already said navy, so this was the
-   comment being right and the number being wrong. Blue is the accent used for
-   links and italic emphasis; the field is a surface, and it should be the
-   darker structural tone rather than the accent. Written as an rgb triple
+   The value is --color-blue (#144667). Navy (#0d2f45) was tried here and read
+   as a flat grey at these low alphas — a dark neutral loses its hue long
+   before it loses its weight — so the paper field uses the accent blue, which
+   still reads as a colour once it is this faint. Written as an rgb triple
    because the stroke composes it with a per-row alpha below. */
-const STROKE = tone === "paper" ? "13 47 69" : "255 255 255";
+const STROKE = tone === "paper" ? "20 70 103" : "255 255 255";
 const TONE_ALPHA = tone === "paper" ? 0.42 : 1;
 const DIM_SCALE = TONE_ALPHA * opacity;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
    another, so rows drift out of phase instead of locking into a pattern that
-   repeats every couple of cycles. `dim` varies the stroke alpha so the
-   alternation does not read as mechanical banding.
+   repeats every couple of cycles.
+
+   Opacity, by contrast, is now CONSTANT across rows. The alpha used to vary
+   per row (0.10 to 0.24, better than 2x between neighbours) on the theory that
+   it would break up mechanical banding. It did the opposite: because the rows
+   are stacked and parallel, an alpha that changes row by row reads as stripes
+   of light and dark ruled across the field, which is exactly the banding it
+   was meant to avoid. Varied SPEED and alternating DIRECTION already stop the
+   field from looking gridded, and they do it without touching weight. One
+   alpha for every row makes the wall read as a single texture.
 
    Slow on purpose: this is a texture behind a footer, not a ticker anyone is
    meant to read. At these durations a mark takes the better part of two
    minutes to cross, which registers as drift rather than as travel. */
-const ROWS = [
-  { dur: 96, dim: 0.20 },
-  { dur: 127, dim: 0.11 },
-  { dur: 81, dim: 0.24 },
-  { dur: 143, dim: 0.10 },
-  { dur: 108, dim: 0.17 },
-  { dur: 89, dim: 0.22 },
-  { dur: 134, dim: 0.13 },
-];
+const DIM = 0.17;                 // the midpoint of the old per-row range
+const DURATIONS = [96, 127, 81, 143, 108, 89, 134];
 
 /* Copies per row. A row scrolls by exactly ONE copy per cycle, so the loop is
    seamless only while the copies still to the right of the window cover it:
@@ -162,13 +162,13 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
 
   <div class="bw-slab" style={`--angle:${angle}deg`}>
     {Array.from({ length: rows }, (_, i) => {
-      const r = ROWS[i % ROWS.length];
+      const dur = DURATIONS[i % DURATIONS.length];
       /* Direction alternates by index rather than being carried in the data,
          so adding a row can never accidentally give two neighbours the same
          direction. */
       const reverse = i % 2 === 1;
       return (
-        <div class="bw-row" style={`--dur:${r.dur}s; --dim:${(r.dim * DIM_SCALE).toFixed(4)}; --reps:${REPS}`}>
+        <div class="bw-row" style={`--dur:${dur}s; --dim:${(DIM * DIM_SCALE).toFixed(4)}; --reps:${REPS}`}>
           <div class:list={["bw-track", reverse && "is-reverse"]}>
             {Array.from({ length: REPS }, () => (
               <div class="bw-copy">
