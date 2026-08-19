@@ -3000,8 +3000,18 @@ const cities = [
         if (!box) return;
         const w = box.clientWidth;
         if (!w) return;
-        const base = parseFloat(getComputedStyle(stage).width) || 470;
-        const s = Math.min(Math.max(w / base, 0.3), 1.6);
+        const cs = getComputedStyle(stage);
+        const baseW = parseFloat(cs.width) || 470;
+        const baseH = parseFloat(cs.height) || 500;
+        // Fit BOTH axes. Width-only fitting is what cropped the top of the
+        // draft browser and the bottom of the revisions sheet: the column is
+        // shorter than 500 * (w / 470) in the four-up regime, and .pc-visual
+        // clips the overflow. Height is only a constraint when the box has a
+        // definite one (the stage is absolutely positioned, so clientHeight
+        // is 0 in the stacked layout, where aspect-ratio already sizes it).
+        const h = box.clientHeight;
+        const ratio = h > 0 ? Math.min(w / baseW, h / baseH) : w / baseW;
+        const s = Math.min(Math.max(ratio, 0.3), 1.6);
         stage.style.setProperty('--pc-scale', String(s));
       });
     };

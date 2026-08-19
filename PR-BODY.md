@@ -1,6 +1,6 @@
 # Hero, work band, CTA rhythm and site-wide section spacing
 
-Seven commits. The bulk is spacing and the brand field; the last two commits
+Eight commits. The bulk is spacing and the brand field; the last three commits
 correct earlier ones in the same branch.
 
 ## What changed
@@ -45,6 +45,18 @@ correct earlier ones in the same branch.
 - Legal and contact pages closed on 54px of padding against the CTA pages'
   95px, so they ran into the dark footer. All seven now close within 10px.
 
+**Process cards**
+- The four mockups were cropped: `--pc-scale` is measured in JS (a ratio of two
+  lengths, which `calc()` will not compute) and it fitted the stage to the
+  column's **width only**. In the four-up regime the column has a definite and
+  shorter height, so the 470x500 composition overflowed it and `.pc-visual`'s
+  `overflow: hidden` took the difference off the top and bottom — the draft
+  browser lost its chrome, the revisions sheet lost its last rows.
+- The fit is now `min(w/470, h/500)` whenever the box has a definite height,
+  falling back to width-only in the stacked layout, where the stage is
+  absolutely positioned so `clientHeight` is 0 and `aspect-ratio` already sizes
+  the column.
+
 **Work page**
 - The hero *graphic* (the fan of browser frames) is ~1.33x larger. An earlier
   commit in this branch grew the whole section instead, which was the wrong
@@ -70,6 +82,7 @@ Playwright harnesses in `scripts/`, added alongside the changes they check:
 | `swap-stability.mjs` | heading geometry identical across all four cycling words |
 | `fan-fit.mjs` | union of all three fan panes vs the page gutter, 8 widths |
 | `ascii-box.mjs` | the mark's box vs the type block, gutter, and its own fill |
+| `process-fit.mjs` | each stage's painted box vs its clipping column, 4 cards x 5 widths |
 
 CTA alignment measures delta=0 on four pages at two widths. The work band's
 wall reads 0/255 behind its heading (matching the footer, which clears its own
@@ -78,18 +91,16 @@ passes.
 
 ## Known issues, not addressed here
 
-Two problems are **still open** and were deliberately left rather than
+One problem is **still open** and was deliberately left rather than
 half-fixed:
 
-1. **Process cards clip their graphics.** Each composition renders at its
-   natural 468×498 inside a 263×280 frame with no scaling transform, so 205px
-   of width and 218px of height are cut. Visible at rest on cards 2–4 and
-   worse on hover, and the graphics also read as blurry. `process-clip.mjs`
-   and `process-shots.mjs` are included and reproduce it.
-2. **The FAQ card on `/services` overflows its band by 36px** at 1440px
+1. **The FAQ card on `/services` overflows its band by 36px** at 1440px
    (49px at 390px), because `.section-faq` sets `overflow: hidden`. This
    predates the branch — measured against the merge base — but is worth
    fixing next.
+
+The process-card clipping listed here previously is fixed above;
+`process-fit.mjs` passes all 20 card/width pairs with zero clipped edges.
 
 An attempt at closing the CTA-to-footer gap and the doubled seam above the CTA
 was reverted before this PR: zeroing the pre-CTA section's bottom padding
