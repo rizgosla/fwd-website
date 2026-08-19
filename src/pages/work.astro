@@ -114,7 +114,12 @@ const projects = (await getCollection("work")).sort(
   .work-hero {
     position: relative;
     background: var(--color-paper);
-    padding-block: clamp(3.5rem, 8vh, 6rem) clamp(3rem, 8vh, 5.5rem);
+    /* The grid below carries a min-height and centres its own content, so
+       tall padding here is added ON TOP of that rather than creating the
+       height — at 12vh the band opened with ~330px of empty paper above the
+       first line. The band's size is the min-height's job; this is just the
+       breathing room that keeps the type off the nav and the meta strip. */
+    padding-block: clamp(2.5rem, 5vh, 4rem) clamp(2.5rem, 5vh, 4rem);
     border-bottom: 1px solid var(--color-line);
     overflow: hidden;
   }
@@ -123,6 +128,10 @@ const projects = (await getCollection("work")).sort(
     grid-template-columns: 1fr;
     gap: clamp(3rem, 6vw, 5rem);
     align-items: center;
+    /* Matches the home hero's band height exactly (100px is the nav), so the
+       two pages open on the same measure. */
+    min-height: calc(100vh - 100px);
+    align-content: center;
   }
   @media (min-width: 900px) {
     .work-hero-grid { grid-template-columns: 1fr 1fr; }
@@ -133,12 +142,12 @@ const projects = (await getCollection("work")).sort(
      descenders clip against the lede below, so this runs 1.1 with a reserve
      rather than inheriting .display's 0.98. */
   .work-hero-title {
-    font-size: var(--text-step-5); margin: 0;
-    line-height: 1.1; padding-bottom: 0.08em;
-    letter-spacing: -0.03em; color: var(--color-navy); max-width: 14ch;
+    font-size: var(--text-step-6); margin: 0;
+    line-height: 1.05; padding-bottom: 0.08em;
+    letter-spacing: -0.03em; color: var(--color-navy); max-width: 12ch;
   }
   .work-hero-title em { font-style: italic; color: var(--color-blue); }
-  .work-hero-lede { margin: 1.5rem 0 0; color: var(--color-fg-soft); max-width: 46ch; font-size: var(--text-step-1); }
+  .work-hero-lede { margin: 1.75rem 0 0; color: var(--color-fg-soft); max-width: 44ch; font-size: var(--text-step-2); line-height: 1.5; text-wrap: pretty; }
 
   /* ============================================================
      META STRIP — same pattern as the homepage's, one row down.
@@ -250,6 +259,15 @@ const projects = (await getCollection("work")).sort(
   }
 
   @media (max-width: 899px) {
-    .work-hero-title { font-size: clamp(2.6rem, 10vw, 4.2rem); }
+    .work-hero-grid { min-height: auto; }
+    .work-hero-title {
+      font-size: clamp(3rem, 11vw, 5rem);
+      max-width: 14ch;
+      overflow-wrap: break-word;
+    }
+    .work-hero-lede { font-size: var(--text-step-1); max-width: 46ch; }
+  }
+  @media (max-width: 400px) {
+    .work-hero-title { font-size: clamp(2.5rem, 10.5vw, 3.2rem); letter-spacing: -0.02em; }
   }
 </style>

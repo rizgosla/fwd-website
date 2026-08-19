@@ -6,6 +6,7 @@ import Marquee from "../components/Marquee.astro";
 import HeroShowcase from "../components/HeroShowcase.astro";
 import CtaClose from "../components/CtaClose.astro";
 import BrandMark from "../components/BrandMark.astro";
+import BrandWall from "../components/BrandWall.astro";
 import { Image } from "astro:assets";
 
 /* eager so the parsed list is available at build time rather than as promises.
@@ -80,15 +81,21 @@ const cities = [
 >
 <!-- ============ HERO with idle motion baked in ============ -->
   <section class="hero-outer">
+    {/* Paper tone, masked to the gutters: the field paints in the margins
+        either side and clears the whole middle, so it never sits under the
+        headline or the showcase panel. Dialled well below the footer's
+        weight — this is the first thing on the page and the type has to
+        stay the subject. */}
+    <BrandWall tone="paper" mask="gutters" opacity={0.45} rows={20} />
     <div class="hero">
       <div class="hero-left">
         <h1 class="display hero-title">
-          Your website is the new<br />
+          Your Website is The New<br />
           <span class="hero-swap">
-            <span class="hero-swap-item"><em>storefront</em>.</span>
-            <span class="hero-swap-item" aria-hidden="true"><em>business card</em>.</span>
-            <span class="hero-swap-item" aria-hidden="true"><em>firm handshake</em>.</span>
-            <span class="hero-swap-item" aria-hidden="true"><em>fancy suit</em>.</span>
+            <span class="hero-swap-item"><em>Storefront</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>Business Card</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>Firm Handshake</em>.</span>
+            <span class="hero-swap-item" aria-hidden="true"><em>Fancy Suit</em>.</span>
           </span>
         </h1>
         <p class="lede hero-lede">Make the best <em>first impression</em>.</p>
@@ -222,6 +229,13 @@ const cities = [
 
   <!-- ============ SELECTED WORK — cursor gallery ============ -->
   <section class="section wk-band">
+    {/* The footer's backing, on the page's other ink surface. The band was
+        flat ink with a single radial wash; the footer directly below it
+        carried the drifting mark, so the two dark surfaces read as
+        different materials. Same wall, same tone, masked to the edges
+        because this band's content runs the full width rather than
+        sitting in one column like the footer's links. */}
+    <BrandWall tone="ink" mask="edges" opacity={0.85} rows={20} />
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <div class="section-head-lead">
@@ -994,7 +1008,11 @@ const cities = [
 </BaseLayout>
 
 <style>
-.hero-outer { position: relative; min-height: calc(100vh - 100px); display: flex; align-items: stretch; }
+.hero-outer { position: relative; isolation: isolate; overflow: hidden; min-height: calc(100vh - 100px); display: flex; align-items: stretch; }
+  /* The wall is an absolutely positioned first child, so everything real in
+     the hero has to claim a layer above it. One rule on .hero covers both
+     columns and the showcase inside them. */
+  .hero { position: relative; z-index: 1; }
   .hero { display: grid; grid-template-columns: 1fr 1.15fr; width: 100%; align-items: stretch; gap: clamp(2rem, 4vw, 4rem); }
   /* Padding lives on the text column so the showcase column (with its grid
      background) can run flush to the section's top and bottom edges. */
@@ -1134,6 +1152,8 @@ const cities = [
     position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background: radial-gradient(ellipse 60% 60% at 80% 0%, rgb(142 148 184 / 0.14), transparent 70%);
   }
+  /* Above the wall AND above the radial wash, both of which are painted by
+     absolutely positioned layers at z-index 0. */
   .wk-band > .full { position: relative; z-index: 1; }
   /* Section head + footer link, recoloured for ink. */
   .wk-band .section-title { color: var(--color-paper); }
