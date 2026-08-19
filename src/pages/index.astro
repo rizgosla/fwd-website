@@ -141,7 +141,7 @@ const cities = [
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <h2 class="display section-title">A whole website, <em>one number</em>.</h2>
-        <p class="section-sub">No retainers, no scope creep, no hidden hourlies. You bring the brand and the words — we handle every part of designing, building, and shipping it.</p>
+        <p class="section-sub">No retainers, no scope creep, no hidden hourlies. You bring the brand and the words — we handle the design, build, and launch.</p>
       </div>
 
       <div class="offer-bento mv-stagger" data-mv-watch>
@@ -1132,6 +1132,39 @@ const cities = [
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
+  /* Section heads: on desktop the sub sits directly over the 2x3 tile block
+     of the offer bento, and every other head on the page follows it so the
+     four (offer, selected work, process, service area) share one start line
+     and one measure. The head is laid out on the bento's own four-column
+     track, with the lead in columns 1-2 (under the headline card) and the
+     sub in 3-4 (under the tiles), so the two grids line up by construction
+     rather than by a hand-figured percentage.
+
+     The measure is capped rather than left to the column: with `balance` a
+     free-running sub sets as one long line on a wide display. ~72ch splits
+     each of these paragraphs into two balanced lines, about the height of
+     the title beside it — which is what lets the head sit closer in. */
+  @media (min-width: 1000px) {
+    .section-head {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
+    }
+    .section-head > :first-child { grid-column: 1 / span 2; }
+    /* Centred across the pair of tile columns rather than flush to the left
+       one: at 60ch the two lines straddle the gutter between the two cards,
+       which reads as a caption for the whole block instead of a label on the
+       card underneath its first word. `justify-self` moves the box; the text
+       inside stays left-aligned, so both lines still share a start edge. */
+    .section-sub {
+      grid-column: 3 / span 2;
+      justify-self: center;
+      max-width: 60ch;
+      text-wrap: balance;
+    }
+  }
+
   /* ============================================================
      BAND — the soft surface and rhythm the service-area and
      process bands use, so this reads as one more band on the page.
@@ -1517,6 +1550,9 @@ const cities = [
      ============================================================ */
   .area-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
   @media (min-width: 760px) { .area-grid { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  /* At the width where the heads switch to the even 2 + 2 split, the map/card
+     pair follows them, so the card still starts on the x of the sub above it. */
+  @media (min-width: 1000px) { .area-grid { grid-template-columns: calc(50% - 0.75rem) 1fr; gap: 1.5rem; } }
 
   /* ---- left: map in a double bezel ----
      Outer shell is paper with the two stacked shadows the project cards use;
@@ -2731,7 +2767,7 @@ const cities = [
   .fold-cap {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.14em; text-transform: uppercase;
-    transition: opacity 600ms var(--ease-soft) 1100ms;
+    transition: opacity 1200ms var(--ease-soft) 2200ms;
   }
   .fold-cap-before { color: rgba(255,255,255,0.42); opacity: 1; }
   .fold-cap-after { color: var(--color-periwinkle); opacity: 0; }
@@ -2768,9 +2804,9 @@ const cities = [
     box-shadow: 0 18px 40px -22px rgba(0,0,0,0.7);
     transform: translateX(var(--spread)) rotate(var(--rot));
     transition:
-      transform 1200ms var(--ease-out-expo),
-      opacity 700ms var(--ease-soft);
-    transition-delay: calc(1200ms + var(--i) * 60ms);
+      transform 2400ms var(--ease-out-expo),
+      opacity 1400ms var(--ease-soft);
+    transition-delay: calc(2400ms + var(--i) * 120ms);
   }
 
   .fold-solo {
@@ -2789,8 +2825,8 @@ const cities = [
     box-shadow: 0 26px 60px -24px rgba(142,148,184,0.7);
     opacity: 0;
     transition:
-      opacity 600ms var(--ease-soft) 2000ms,
-      transform 800ms var(--ease-out-expo) 2000ms;
+      opacity 1200ms var(--ease-soft) 4000ms,
+      transform 1600ms var(--ease-out-expo) 4000ms;
   }
   .fold-solo :global(.fold-mark) {
     height: clamp(44px, 6vw, 60px); width: auto; display: block;

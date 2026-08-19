@@ -924,9 +924,9 @@ const ANSWER_WORDS = ANSWER.split(" ").map((word) =>
        the block is 15% visible, and the whole thing was finishing before it
        had properly arrived on screen. */
     transition:
-      transform 1500ms var(--ease-out-expo),
-      opacity 900ms var(--ease-soft);
-    transition-delay: calc(3000ms + var(--i) * 70ms);
+      transform 3000ms var(--ease-out-expo),
+      opacity 1800ms var(--ease-soft);
+    transition-delay: calc(6000ms + var(--i) * 140ms);
   }
 
   .st-fold-solo {
@@ -945,8 +945,8 @@ const ANSWER_WORDS = ANSWER.split(" ").map((word) =>
     box-shadow: 0 26px 60px -24px var(--peri-glow);
     opacity: 0;
     transition:
-      opacity 700ms var(--ease-soft) 4300ms,
-      transform 900ms var(--ease-out-expo) 4300ms;
+      opacity 1400ms var(--ease-soft) 8600ms,
+      transform 1800ms var(--ease-out-expo) 8600ms;
   }
   .st-fold-solo :global(.st-fold-mark) {
     height: clamp(48px, 7vw, 68px); width: auto; display: block;
@@ -1006,7 +1006,7 @@ const ANSWER_WORDS = ANSWER.split(" ").map((word) =>
   .st-fold.is-inview .st-fold-solo { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   .st-fold.is-inview .st-fold-cap-before { opacity: 0; }
   .st-fold.is-inview .st-fold-cap-after { opacity: 1; }
-  .st-fold-cap { transition: opacity 700ms var(--ease-soft) 2300ms; }
+  .st-fold-cap { transition: opacity 1400ms var(--ease-soft) 4600ms; }
 
   /* [data-mv-watch] holds elements at opacity 0 until observed; this one
      animates its children instead, so the container itself stays visible. */
