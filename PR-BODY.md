@@ -1,134 +1,97 @@
-# Hero rotation, a dark work band, and four things that were broken on a phone
+# Hero, work band, CTA rhythm and site-wide section spacing
 
-Branch: `claude/mobile-hero-work-process-fixes` (cut from `main`, independent of #29).
+Seven commits. The bulk is spacing and the brand field; the last two commits
+correct earlier ones in the same branch.
 
-Open the PR:
-https://github.com/rizgosla/fwd-website/compare/main...claude/mobile-hero-work-process-fixes?expand=1
+## What changed
 
----
+**Hero**
+- Headline title-cased, including the four cycling words: "Your Website is
+  The New Storefront." and friends.
+- The drifting logo field now lives *inside* the showcase panel and replaces
+  the blueprint grid that used to paint there. It is the inverse of the
+  footer's field in the literal sense: same logo paths, same drift, stroked
+  navy-on-light instead of white-on-ink. The grid it replaces was the third
+  copy of the same 46px rule on the page.
 
-## 1. The hero was static, so the headline now rotates
+**Selected work band**
+- Gets the footer's backing, contained to the work stage rather than washing
+  across the section.
+- `BrandWall` gained `tone` / `mask` / `opacity` props to make that possible;
+  it had been written for exactly one home.
 
-`Your website is your new storefront.` was one fixed line. It is now
-`Your website is the new ___`, where the blank cycles through **storefront →
-business card → firm handshake → fancy suit**, with `Make the best first
-impression.` beneath it.
+**Closing CTA**
+- Section padding was `clamp(5rem, 13vh, 9rem)` against neighbouring bands'
+  `clamp(4rem, 9vh, 7rem)` — 117px vs 81px at 900px tall, which read as a gap
+  rather than emphasis. Now 95px.
+- Dropped a stray `margin-top` on the actions row; tightened mobile; the
+  button goes full-width under 480px.
+- The ASCII mark's box was `aspect-ratio: 4/3`, but the artwork is the
+  wordmark band at ~1.65:1, so it could only fill 78% of the box height and
+  the remainder sat as dead rows (50px above, 42px below — unequal, hence the
+  "floating high" look). Box now matches the art; fill is 91–94%.
+- Fixed an orphaned word: `/work` broke as "Want your site to be" / "the" /
+  "next one here?".
 
-Same mechanism as the Oasis Dental hero this was modelled on: the phrases are
-stacked in a single `inline-grid` cell so the line never reflows as they swap,
-each fading up and out on a shared 12s loop offset 3s apart. Under
-`prefers-reduced-motion` the animation is dropped and the first phrase simply
-stands.
+**Section rhythm, site-wide**
+- The seven pages used **twelve distinct padding-block pairs**. Root cause:
+  `.section` was declared twice in `global.css` with different values, 680
+  lines apart. The later one (54px) won, so nine sections overrode back up to
+  81px and whatever did not override sat cramped. Every per-band clamp after
+  that was a patch over whichever default had lost.
+- Deleted the duplicate, added a three-step scale (`--band-lg/md/sm`), moved
+  each outlier to its nearest step. Studio hero 135→104, services hero
+  72/63→81/63, FAQ and legal body 54→81, meta strips 36→45.
+- Legal and contact pages closed on 54px of padding against the CTA pages'
+  95px, so they ran into the dark footer. All seven now close within 10px.
 
-## 2. The showcase build animation was reading as a slow page load
-
-The browser frame that builds a site in the hero took **3.6s** to get from
-blank canvas to live. Long enough that visitors read it as the page struggling
-to load rather than as an animation. Now **1.5s**, with the live state held a
-little longer (3.0s → 3.8s) so the finished site still gets its moment.
-
-## 3. Selected work is a dark band, and a real disclosure on mobile
-
-The page ran white from the hero all the way down to the studio band. The work
-now sits on ink — the one thing on the page that should read as hanging on a
-gallery wall — with the heading, frames, pills and cursor stage all recoloured
-to match.
-
-On phones each shot became three big pictures you scrolled past, so each card
-is now a disclosure: tapping the caption opens **what that project actually
-covered**, keyed off the shot's filename slug in `WORK_DETAIL`.
-
-> **Oasis Dental** — Client site · Dental practice
-> Full site · Design system · Photography direction · Booking flow · Local SEO
-
-One open at a time. The panel is clipped by `max-height`, never `display: none`
-and never `hidden`, so a screen reader walks all of it whatever is open on
-screen — and above 900px every panel stands open and the desktop cursor gallery
-is untouched.
-
-## 4. Four mobile bugs, each measured
-
-### The mockups in the process section overflowed their cards
-
-`--pc-scale: clamp(0.3, calc(100cqi / var(--stage-w)), 1.6)` divides a length
-by a length, which `calc()` does not do. The whole declaration was being
-dropped, so every stage fell back to the `@property` initial value of `0.8`:
-**376px of artwork inside a 292px column** at 390px wide.
-
-`tan(atan2())` is the usual CSS trick for a length ratio, but Chromium does not
-resolve it inside a registered custom property here (verified: the computed
-value came back as the literal `tan(atan2(292px, 470px))`), so the ratio is
-measured in JS with a `ResizeObserver`, exactly as the hero showcase already
-fits its own stage. The stylesheet value is now only the pre-script fallback.
-
-### An open process card could never be closed
-
-The tap handler returned early when the card was already open, so the only way
-out was opening a different one. It toggles now. Since the head no longer
-navigates below the breakpoint, each open panel carries its own
-`See the full scope →` link to /services.
-
-### The mobile menu was broken
-
-`global.css` carries `main, header, footer { position: relative; z-index: 1 }`
-**unlayered**, and Tailwind's utilities live in `@layer utilities` — an
-unlayered rule beats any layered one regardless of specificity, so the nav's
-`sticky top-0 z-50` was being thrown away entirely. The header was not sticky
-and shared `z-index: 1` with `<main>`, which paints later, so the hero drew
-straight over the open menu.
-
-Stated explicitly in the component's own sheet. While there: the panel gets a
-z-index and a shadow, rows get 44px targets, the burger animates into an X so
-the open state is legible, and the menu closes on link tap, Escape, an outside
-tap, or crossing back above the breakpoint.
-
-### "Who you'll work with" overlapped itself
-
-Five 100px role cards need ~500px of spread and a phone has 390px, so the step
-was cut to 52px: every card sat half on top of its neighbour and all five
-labels printed over each other. Below 700px they stop being a fan and become a
-**wrapped row of chips**. The collapse still plays as a fade-and-shrink into
-the studio card, and the stage grew to 290px so that card no longer bleeds over
-the caption below it. The desktop fan is unchanged.
-
-## 5. The affordances now say what they do
-
-The arrows alone were not reading as "there is more here". Process heads carry
-**TAP TO LEARN MORE**, swapping to **TAP TO CLOSE** when open; work captions
-carry **TAP TO SEE THE WORK** / **TAP TO CLOSE**. Both labels are mobile-only,
-so desktop hover behaviour and the head-as-link are untouched.
-
----
+**Work page**
+- The hero *graphic* (the fan of browser frames) is ~1.33x larger. An earlier
+  commit in this branch grew the whole section instead, which was the wrong
+  reading; `dc95afe` reverts that.
+- While measuring, found the fan busting the page gutter at four widths — 29px
+  each side at 360px, and 31/38px on the right at 900/1100px. The latter is
+  the subtle one: the grid goes two-column at 900px so the container halves,
+  but the panes were still sized in `vw` off the whole viewport. Now sized
+  against the container.
 
 ## Verification
 
-Measured in headless Chromium at 390×844 with touch emulation, against the dev
-server. Two small helpers are committed rather than left as throwaways:
-`scripts/shot.cjs` and `scripts/mobile-check.cjs`.
+Playwright harnesses in `scripts/`, added alongside the changes they check:
 
-| Check | Result |
-| --- | --- |
-| Process card tap → open → tap again | `is-open` true, then **false** (was stuck open) |
-| Process mockup fit | stage scales to its column; no overflow past the card |
-| Role-card overlap at 700/600/480/390/360px | **0 overlapping pairs** at every width |
-| Collapsed studio card | sits inside the stage bounds, clear of the caption |
-| Mobile menu | opens above the hero, closes on link/Escape/outside/resize |
-| Page errors on load and interaction | **0** |
-| Elements wider than the viewport | only the marquee/ticker tracks, which are meant to be |
-| Desktop cursor gallery at 1440px | still arms and drops shots on the ink band |
-| Hint labels above the breakpoint | `display: none` — no "tap" copy on desktop |
-| `astro build` | passes |
+| script | checks |
+|---|---|
+| `section-rhythm.mjs` | every section's computed padding, grouped so outliers show |
+| `cta-check.mjs` | CTA left-edge alignment and vertical rhythm, 4 pages × 2 widths |
+| `bottom-air.mjs` | last line of text → footer, all 7 pages |
+| `wall-legibility.mjs` | pixel-diffs each headline with the wall shown vs hidden |
+| `wall-color.mjs` | each wall's stroke against the real tokens |
+| `orphan-check.mjs` | real line-box breaks in the CTA headline |
+| `swap-stability.mjs` | heading geometry identical across all four cycling words |
+| `fan-fit.mjs` | union of all three fan panes vs the page gutter, 8 widths |
+| `ascii-box.mjs` | the mark's box vs the type block, gutter, and its own fill |
 
-## Accessibility
+CTA alignment measures delta=0 on four pages at two widths. The work band's
+wall reads 0/255 behind its heading (matching the footer, which clears its own
+text by design); the hero's reads 3–8/255, faint texture. Production build
+passes.
 
-- Both disclosures are real `<button>`s carrying `aria-expanded`, and the
-  attribute is **removed** above the breakpoint rather than left behind, so a
-  disclosure is never announced where none exists.
-- Neither panel is ever `display: none` or `hidden` — both are clipped by
-  `max-height`, so the full content stays in the accessibility tree at every
-  width.
-- Tap targets are 44px minimum on the nav rows, the process heads, the work
-  captions and the in-panel links.
-- The rotating headline collapses to its first phrase under
-  `prefers-reduced-motion`, and the shortened build sequence still resolves
-  straight to the live state there.
+## Known issues, not addressed here
+
+Two problems are **still open** and were deliberately left rather than
+half-fixed:
+
+1. **Process cards clip their graphics.** Each composition renders at its
+   natural 468×498 inside a 263×280 frame with no scaling transform, so 205px
+   of width and 218px of height are cut. Visible at rest on cards 2–4 and
+   worse on hover, and the graphics also read as blurry. `process-clip.mjs`
+   and `process-shots.mjs` are included and reproduce it.
+2. **The FAQ card on `/services` overflows its band by 36px** at 1440px
+   (49px at 390px), because `.section-faq` sets `overflow: hidden`. This
+   predates the branch — measured against the merge base — but is worth
+   fixing next.
+
+An attempt at closing the CTA-to-footer gap and the doubled seam above the CTA
+was reverted before this PR: zeroing the pre-CTA section's bottom padding
+sheared 117px off that same FAQ card, because for a clipping section the
+padding box *is* the clip box. That work is stashed locally, not lost.
