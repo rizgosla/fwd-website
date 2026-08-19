@@ -94,12 +94,15 @@ const {
    grey. A lighter, more saturated blue (#4E86AE) keeps its colour at the same
    faintness, because there is far less black in it to wash out.
 
-   Being lighter, it also carries less weight per unit alpha, so the tone alpha
-   goes up from 0.42 to 0.62 to land at the same visual presence as the white
-   stroke on ink. Written as an rgb triple because the stroke composes it with a
+   The paper tone no longer discounts its alpha at all. The old 0.42 factor was
+   written for the DARK brand blue, where dark-on-light needed holding back; a
+   light blue at that discount simply disappeared into the white and read as no
+   colour whatsoever. At full alpha the stroke is still only the per-row 0.17,
+   which is a hairline — light enough to stay a texture, strong enough to be
+   visibly blue. Written as an rgb triple because the stroke composes it with a
    per-row alpha below. */
 const STROKE = tone === "paper" ? "78 134 174" : "255 255 255";
-const TONE_ALPHA = tone === "paper" ? 0.62 : 1;
+const TONE_ALPHA = 1;
 const DIM_SCALE = TONE_ALPHA * opacity;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
