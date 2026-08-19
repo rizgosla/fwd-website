@@ -2731,7 +2731,7 @@ const cities = [
   .fold-cap {
     font-family: var(--font-mono); font-size: var(--text-step--2);
     letter-spacing: 0.14em; text-transform: uppercase;
-    transition: opacity 600ms var(--ease-soft) 1100ms;
+    transition: opacity 1200ms var(--ease-soft) 2200ms;
   }
   .fold-cap-before { color: rgba(255,255,255,0.42); opacity: 1; }
   .fold-cap-after { color: var(--color-periwinkle); opacity: 0; }
@@ -2768,9 +2768,9 @@ const cities = [
     box-shadow: 0 18px 40px -22px rgba(0,0,0,0.7);
     transform: translateX(var(--spread)) rotate(var(--rot));
     transition:
-      transform 1200ms var(--ease-out-expo),
-      opacity 700ms var(--ease-soft);
-    transition-delay: calc(1200ms + var(--i) * 60ms);
+      transform 2400ms var(--ease-out-expo),
+      opacity 1400ms var(--ease-soft);
+    transition-delay: calc(2400ms + var(--i) * 120ms);
   }
 
   .fold-solo {
@@ -2789,8 +2789,8 @@ const cities = [
     box-shadow: 0 26px 60px -24px rgba(142,148,184,0.7);
     opacity: 0;
     transition:
-      opacity 600ms var(--ease-soft) 2000ms,
-      transform 800ms var(--ease-out-expo) 2000ms;
+      opacity 1200ms var(--ease-soft) 4000ms,
+      transform 1600ms var(--ease-out-expo) 4000ms;
   }
   .fold-solo :global(.fold-mark) {
     height: clamp(44px, 6vw, 60px); width: auto; display: block;
