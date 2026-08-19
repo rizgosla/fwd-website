@@ -93,8 +93,15 @@ const {
    stays a colour. 0.42 is the alpha ratio that makes a navy stroke on paper
    read at the same weight as a white stroke on ink — dark-on-light carries
    further at equal alpha, and the footer is the reference the other two
-   instances have to match. */
-const STROKE = tone === "paper" ? "20 70 103" : "255 255 255";
+   instances have to match.
+
+   The value is --color-navy (#0d2f45). It previously read "20 70 103", which
+   is --color-blue (#144667) — the comment already said navy, so this was the
+   comment being right and the number being wrong. Blue is the accent used for
+   links and italic emphasis; the field is a surface, and it should be the
+   darker structural tone rather than the accent. Written as an rgb triple
+   because the stroke composes it with a per-row alpha below. */
+const STROKE = tone === "paper" ? "13 47 69" : "255 255 255";
 const TONE_ALPHA = tone === "paper" ? 0.42 : 1;
 const DIM_SCALE = TONE_ALPHA * opacity;
 
