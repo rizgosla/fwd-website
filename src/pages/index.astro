@@ -1152,9 +1152,15 @@ const cities = [
       margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
     }
     .section-head > :first-child { grid-column: 1 / span 2; }
+    /* Centred across the pair of tile columns rather than flush to the left
+       one: at 60ch the two lines straddle the gutter between the two cards,
+       which reads as a caption for the whole block instead of a label on the
+       card underneath its first word. `justify-self` moves the box; the text
+       inside stays left-aligned, so both lines still share a start edge. */
     .section-sub {
       grid-column: 3 / span 2;
-      max-width: 72ch;
+      justify-self: center;
+      max-width: 60ch;
       text-wrap: balance;
     }
   }
