@@ -106,14 +106,28 @@ for (const w of [390, 1440, 2560]) {
     );
   }
 
+  /* The footer usually measures 0 behind its own text — its mask deliberately
+     clears the text column — so a RATIO against it divides by zero and prints
+     "Infinity x", which reads like a failure when it actually means the
+     reference is perfectly clean. The footer is the RULE, not a number to
+     divide by: it puts nothing behind its own type, so neither should
+     anything else. Report the absolute reading against that rule, and keep
+     the footer's own figure only as evidence the measurement still works. */
   const ref = results[`${w}|footer (reference)`];
+  console.log(
+    `  footer reads ${ref.worst}/255 behind its own text — the rule: keep the type clear`,
+  );
   for (const k of ["hero", "work band"]) {
     const s = results[`${w}|${k}`];
-    const ratio = ref.mean > 0 ? s.mean / ref.mean : Infinity;
-    console.log(
-      `  -> ${k} is ${ratio.toFixed(2)}x the footer's mean weight ` +
-        `(${ratio <= 1.15 ? "at or below reference" : "HEAVIER than reference"})`,
-    );
+    /* A stroke at these alphas moves a channel by single digits; double
+       digits means a mark is legibly crossing the type. */
+    const verdict =
+      s.worst === 0
+        ? "clear, like the footer"
+        : s.worst <= 12
+          ? "faint texture, acceptable"
+          : "TOO STRONG";
+    console.log(`  -> ${k.padEnd(10)} worst ${String(s.worst).padStart(3)}/255  ${verdict}`);
   }
 }
 await browser.close();
