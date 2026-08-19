@@ -53,15 +53,21 @@ interface Props {
      since dark-on-light carries further than light-on-dark at equal
      opacity, so the tone also scales every row's `dim`.
 
-     `mask` picks where the field paints. "right" is the footer's ramp,
-     which clears the text column. "edges" keeps the two outer edges and
-     clears the middle, for a band whose content is full width. "gutters"
-     is the same idea pulled in much tighter, for a surface whose type
-     starts close to the edge — the hero, where the headline begins at
-     --pad-x and anything wider than a gutter lands underneath it. "full"
-     is an even vignette for a surface that is texture throughout. */
+     `mask` picks where the field paints, and every option exists to keep
+     the field OFF the type — which is the rule the footer set: measured at
+     1440px its wall starts painting at 893px while every word in it ends
+     by 555px, so the mark and the text never share space.
+
+     "right" is the footer's own ramp, clearing the text column. "gutters"
+     is the hero's: the headline starts at --pad-x, so the field is held to
+     the outer margins. "edges" clears a wider middle, and "below" clears a
+     horizontal band off the TOP — for a section whose head spans the full
+     width, where no vertical ramp can help. "full" is an even vignette for
+     a surface that is texture throughout. */
   tone?: "ink" | "paper";
-  mask?: "right" | "edges" | "gutters" | "full";
+  mask?: "right" | "edges" | "gutters" | "below" | "full";
+  /** With mask="below", the % of the height kept clear at the top. */
+  clearTop?: number;
   /** Multiplies every row's stroke alpha. For dialling one instance back. */
   opacity?: number;
 }
@@ -79,6 +85,7 @@ const {
   tone = "ink",
   mask = "right",
   opacity = 1,
+  clearTop = 42,
 } = Astro.props;
 
 /* Navy rather than black: the paper surfaces this sits on are warm off-white
@@ -131,7 +138,11 @@ const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
 const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<div class:list={["bw", `bw-mask-${mask}`]} style={`--bw-stroke:${STROKE}`} aria-hidden="true">
+<div
+  class:list={["bw", `bw-mask-${mask}`]}
+  style={`--bw-stroke:${STROKE}; --bw-clear-top:${clearTop}%`}
+  aria-hidden="true"
+>
   {/* The mark, defined ONCE. Every tile below is a <use> of this, so the path
       data appears a single time in the document instead of once per tile —
       the difference between a few hundred bytes and a megabyte of duplicated
@@ -202,6 +213,23 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
   .bw-mask-gutters {
     -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 11%, transparent 89%, #000 100%);
     mask-image: linear-gradient(90deg, #000 0%, transparent 11%, transparent 89%, #000 100%);
+  }
+
+  /* Clears a band off the TOP instead of off the sides. The work band's
+     section head is a two-column grid spanning the full width — title left,
+     paragraph right — so there is no horizontal ramp that can miss it. A
+     vertical one can: the field starts below the head and fills the space the
+     work stage sits in, which is mostly empty ink. Combined with a gentle
+     side fade so it still has no hard edge of its own. */
+  .bw-mask-below {
+    -webkit-mask-image:
+      linear-gradient(180deg, transparent var(--bw-clear-top), #000 calc(var(--bw-clear-top) + 14%)),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.35) 30%, rgb(0 0 0 / 0.35) 70%, #000 100%);
+    mask-image:
+      linear-gradient(180deg, transparent var(--bw-clear-top), #000 calc(var(--bw-clear-top) + 14%)),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.35) 30%, rgb(0 0 0 / 0.35) 70%, #000 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
 
   /* An even vignette — texture everywhere, softened off the edges so the

@@ -232,10 +232,15 @@ const cities = [
     {/* The footer's backing, on the page's other ink surface. The band was
         flat ink with a single radial wash; the footer directly below it
         carried the drifting mark, so the two dark surfaces read as
-        different materials. Same wall, same tone, masked to the edges
-        because this band's content runs the full width rather than
-        sitting in one column like the footer's links. */}
-    <BrandWall tone="ink" mask="edges" opacity={0.85} rows={20} />
+        different materials.
+
+        Masked BELOW rather than to the edges. The head here is a two-column
+        grid running the full width, so a horizontal ramp cannot miss it —
+        an earlier "edges" pass put a mark straight through "The work so
+        far". The footer's rule is that the field and the type never share
+        space, and clearing the top 46% is how that rule applies to a band
+        shaped like this one: the mark fills the stage area instead. */}
+    <BrandWall tone="ink" mask="below" clearTop={46} opacity={0.5} rows={20} />
     <div class="full">
       <div class="section-head mv-rise" data-mv-watch>
         <div class="section-head-lead">
