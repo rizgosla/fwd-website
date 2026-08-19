@@ -24,7 +24,7 @@ const FROM = "Forward Design Consulting <inquiries@fwddesignconsulting.com>";
 const RESEND = "https://api.resend.com/emails";
 
 const SCOPE_LABEL: Record<string, string> = {
-  full: "Full Site, $6,000",
+  full: "Full Site, $4,000",
   smaller: "Something smaller",
   "not-sure": "Not sure yet",
 };

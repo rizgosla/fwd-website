@@ -26,7 +26,7 @@ const DAYS = Array.from({ length: 20 }, (_, i) => {
 const FAQS = [
   {
     q: "What if I only need a single landing page?",
-    a: "Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $6,000 number is for a full site of up to eight pages.",
+    a: "Email us. Smaller projects come up regularly and we quote them at a reduced flat fee within a day, sized to the scope. The $4,000 number is for a full site of up to eight pages.",
   },
   {
     q: 'What counts as a "small change" after launch?',
@@ -66,8 +66,8 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="Flat-Fee Web Design, $6,000 | Orange County | Forward Design"
-  description="Full website design for $6,000 flat — up to eight pages in about four weeks. No retainers, no hourly billing. Serving Irvine and all of Orange County."
+  title="Flat-Fee Web Design, $4,000 | Orange County | Forward Design"
+  description="Full website design for $4,000 flat — up to eight pages in about four weeks. No retainers, no hourly billing. Serving Irvine and all of Orange County."
   ogImage="/og/services.jpg"
 >
   <!-- ============ HERO — editorial split with a spec index card ============ -->
@@ -398,7 +398,7 @@ const faqSchema = {
           <div class="bh-body">
             <h3 class="bh-title">Full <em>Site</em></h3>
             <div class="bh-price">
-              <span class="bh-dollar">$</span><span class="bh-amount" id="svcAmount" data-target="6000">6,000</span>
+              <span class="bh-dollar">$</span><span class="bh-amount" id="svcAmount" data-target="4000">4,000</span>
             </div>
             <p class="bh-note">Flat fee. Three rounds of revisions. You own everything when we're done.</p>
           </div>
@@ -1832,7 +1832,7 @@ const faqSchema = {
   (() => {
     const el = document.getElementById('svcAmount');
     if (!el) return;
-    const target = parseInt(el.dataset.target, 10) || 6000;
+    const target = parseInt(el.dataset.target, 10) || 4000;
     const fmt = (n) => n.toLocaleString('en-US');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) { el.textContent = fmt(target); return; }

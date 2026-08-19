@@ -150,7 +150,7 @@ const cities = [
           <div class="bh-body">
             <h3 class="bh-title">Full <em>Site</em></h3>
             <div class="bh-price">
-              <span class="bh-dollar">$</span><span class="bh-amount" id="bhAmount" data-target="6000">6,000</span>
+              <span class="bh-dollar">$</span><span class="bh-amount" id="bhAmount" data-target="4000">4,000</span>
             </div>
             <p class="bh-note">Flat fee. Three rounds of revisions. You own everything when we're done.</p>
           </div>
@@ -3022,7 +3022,7 @@ const cities = [
   (() => {
     const el = document.getElementById('bhAmount');
     if (!el) return;
-    const target = parseInt(el.dataset.target, 10) || 6000;
+    const target = parseInt(el.dataset.target, 10) || 4000;
     const fmt = (n) => n.toLocaleString('en-US');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) { el.textContent = fmt(target); return; }
