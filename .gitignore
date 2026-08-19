@@ -39,3 +39,6 @@ skills-lock.json
 
 # Screenshot output from scripts/shots.mjs — local review artifacts only.
 .shots/
+
+# Local dev-server log.
+.devlog.txt
