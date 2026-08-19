@@ -92,12 +92,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
 
     <pre class:list={["ctc-ascii", mark === "paper" && "is-paper"]} data-ascii aria-hidden="true"></pre>
 
-    {/* Control for the only remaining moving part: the cycling word above. */}
-    {words.length > 0 && (
-      <div class="ctc-motion">
-        <button type="button" class="ctc-pause" data-ctc-pause>Pause</button>
-      </div>
-    )}
   </div>
 </section>
 
@@ -236,7 +230,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
       align-self: center;
       aspect-ratio: 1.55;
     }
-    .ctc-motion { grid-column: 1 / -1; grid-row: 2; }
   }
 
   .ctc-eyebrow {
@@ -356,50 +349,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     color: var(--color-navy);
   }
 
-  /* The rule and the spacing above it belong to the row, not the ticker, so
-     they still span the full width now that the button shares the line. */
-  .ctc-motion {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1.25rem;
-    width: 100%;
-    margin-top: clamp(2rem, 5vh, 3.5rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--ctc-line);
-  }
-  /* WCAG 2.2.2 — the cycling word and the ticker both run forever, and
-     prefers-reduced-motion only covers people who set it. One control stops
-     both: they are the only moving parts of this section, so a second button
-     would only ask the reader to work out which is which. Sits at the end of
-     the ticker line, in the zone the mask has already faded out, so it takes
-     nothing away from the strip. Styled after .walkthrough-controls button on
-     /services, in this section's tone tokens rather than that band's fixed
-     white. Focus ring comes from the global :focus-visible rule. */
-  .ctc-pause {
-    flex: none;
-    font-family: var(--font-mono);
-    font-size: var(--text-step--2);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ctc-muted);
-    background: transparent;
-    border: 1px solid var(--ctc-line);
-    border-radius: 999px;
-    padding: 0.35rem 0.8rem;
-    /* PAUSE and PLAY differ in width; a fixed slot stops the pill resizing
-       under the cursor when it is clicked. */
-    min-width: 7ch;
-    text-align: center;
-    cursor: pointer;
-    transition: color 200ms var(--ease-soft), border-color 200ms var(--ease-soft);
-  }
-  .ctc-pause:hover { color: var(--ctc-fg); border-color: var(--ctc-accent); }
-
-  /* Freezes both animations mid-flight rather than resetting them, so the word
-     showing when you press Pause is the word that stays. */
-  .ctc.is-paused .ctc-swap-item { animation-play-state: paused; }
-
   /* The global reduce rule collapses animation-duration to 0.01ms, which would
      snap every swap word to its final keyframe — opacity 0 — and leave the
      headline with no ending. Pin the first word visible instead. */
@@ -407,8 +356,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     .ctc-swap-item { animation: none; opacity: 0; transform: none; }
     .ctc-swap-item:first-child { opacity: 1; }
     .ctc-dot { animation: none; }
-    /* Nothing left to pause, so the control would be dead weight. */
-    .ctc-pause { display: none; }
   }
 
   @media (max-width: 700px) {
@@ -420,7 +367,6 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
        the tallest block on the page, without the hole. */
     .ctc { padding-block: clamp(3.5rem, 9.5vh, 6rem); }
     .ctc-main { gap: 1.25rem; }
-    .ctc-motion { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
   }
 
   @media (max-width: 480px) {
@@ -429,26 +375,9 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
        let the button own the block. */
     .ctc-actions { gap: 0.85rem 1.25rem; }
     .ctc-btn { width: 100%; justify-content: center; }
-    .ctc-motion { gap: 0.75rem; padding-top: 1rem; }
   }
 </style>
 
-<script is:inline>
-  // Pause control. The label carries the state instead of aria-pressed: for a
-  // pause control the accessible name IS the state, and doing both announces
-  // contradictions like "Play, pressed". Scoped to the button's own section so
-  // two of these on one page (as the preview route renders) stay independent.
-  (() => {
-    if (window.__ctcPause) return; // one initialiser per page, not per instance
-    window.__ctcPause = true;
-    document.querySelectorAll("[data-ctc-pause]").forEach((btn) => {
-      const section = btn.closest(".ctc");
-      btn.addEventListener("click", () => {
-        btn.textContent = section.classList.toggle("is-paused") ? "Play" : "Pause";
-      });
-    });
-  })();
-</script>
 
 <script is:inline>
   // ASCII render of the brand mark. Rasterises /assets/fwd-logo.svg into a
