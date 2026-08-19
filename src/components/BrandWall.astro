@@ -121,7 +121,13 @@ const DIM_SCALE = TONE_ALPHA * opacity;
    Slow on purpose: this is a texture behind a footer, not a ticker anyone is
    meant to read. At these durations a mark takes the better part of two
    minutes to cross, which registers as drift rather than as travel. */
-const DIM = 0.17;                 // the midpoint of the old per-row range
+/* Ink stays a hairline ghost behind the footer. Paper is now SOLID: the hero's
+   field is asked to read as the brand blue outright rather than as a hint of
+   it, and any alpha at all over white immediately pulls a light blue back
+   towards grey. The mask still does the work of keeping it off the type, and
+   the stroke is a 1px non-scaling hairline, so full opacity here is a line
+   drawing rather than a wash. */
+const DIM = tone === "paper" ? 1 : 0.17;
 const DURATIONS = [96, 127, 81, 143, 108, 89, 134];
 
 /* Copies per row. A row scrolls by exactly ONE copy per cycle, so the loop is
