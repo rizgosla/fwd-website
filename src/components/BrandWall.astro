@@ -41,6 +41,35 @@ interface Props {
   rows?: number;
   /** Degrees the whole slab is rotated by. Negative tilts up to the right. */
   angle?: number;
+  /* ------------------------------------------------------------------
+     The wall was written for exactly one home: the ink footer, masked to
+     its right-hand track. It is now also the backing for the home page's
+     work band (ink, same idiom) and its hero (paper). Those surfaces want
+     the same drifting field but not the same ink-and-right-edge
+     treatment, so the two things that were hard-coded became props.
+
+     `tone` picks the stroke colour: white on ink, navy on paper. A paper
+     surface needs a much lower alpha to sit at the same visual weight,
+     since dark-on-light carries further than light-on-dark at equal
+     opacity, so the tone also scales every row's `dim`.
+
+     `mask` picks where the field paints, and every option exists to keep
+     the field OFF the type — which is the rule the footer set: measured at
+     1440px its wall starts painting at 893px while every word in it ends
+     by 555px, so the mark and the text never share space.
+
+     "right" is the footer's own ramp, clearing the text column. "gutters"
+     is the hero's: the headline starts at --pad-x, so the field is held to
+     the outer margins. "edges" clears a wider middle, and "below" clears a
+     horizontal band off the TOP — for a section whose head spans the full
+     width, where no vertical ramp can help. "full" is an even vignette for
+     a surface that is texture throughout. */
+  tone?: "ink" | "paper";
+  mask?: "right" | "edges" | "gutters" | "below" | "full";
+  /** With mask="below", the % of the height kept clear at the top. */
+  clearTop?: number;
+  /** Multiplies every row's stroke alpha. For dialling one instance back. */
+  opacity?: number;
 }
 
 /* Rows are laid out at their NATURAL height (see `flex: none` below) and the
@@ -50,7 +79,31 @@ interface Props {
    than squeezed. Overshooting is close to free: every mark is a <use> of one
    defined symbol, so an extra row costs a handful of elements rather than
    another copy of ~3000 characters of path data. */
-const { rows = 24, angle = -14 } = Astro.props;
+const {
+  rows = 24,
+  angle = -14,
+  tone = "ink",
+  mask = "right",
+  opacity = 1,
+  clearTop = 42,
+} = Astro.props;
+
+/* Navy rather than black: the paper surfaces this sits on are warm off-white
+   and a neutral grey outline goes muddy against them, where the brand navy
+   stays a colour. 0.42 is the alpha ratio that makes a navy stroke on paper
+   read at the same weight as a white stroke on ink — dark-on-light carries
+   further at equal alpha, and the footer is the reference the other two
+   instances have to match.
+
+   The value is --color-navy (#0d2f45). It previously read "20 70 103", which
+   is --color-blue (#144667) — the comment already said navy, so this was the
+   comment being right and the number being wrong. Blue is the accent used for
+   links and italic emphasis; the field is a surface, and it should be the
+   darker structural tone rather than the accent. Written as an rgb triple
+   because the stroke composes it with a per-row alpha below. */
+const STROKE = tone === "paper" ? "13 47 69" : "255 255 255";
+const TONE_ALPHA = tone === "paper" ? 0.42 : 1;
+const DIM_SCALE = TONE_ALPHA * opacity;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
    another, so rows drift out of phase instead of locking into a pattern that
@@ -92,7 +145,11 @@ const REPS = Math.max(3, Math.ceil(COVER_PX / COPY_PX) + 1);
 const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<div class="bw" aria-hidden="true">
+<div
+  class:list={["bw", `bw-mask-${mask}`]}
+  style={`--bw-stroke:${STROKE}; --bw-clear-top:${clearTop}%`}
+  aria-hidden="true"
+>
   {/* The mark, defined ONCE. Every tile below is a <use> of this, so the path
       data appears a single time in the document instead of once per tile —
       the difference between a few hundred bytes and a megabyte of duplicated
@@ -111,7 +168,7 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
          direction. */
       const reverse = i % 2 === 1;
       return (
-        <div class="bw-row" style={`--dur:${r.dur}s; --dim:${r.dim}; --reps:${REPS}`}>
+        <div class="bw-row" style={`--dur:${r.dur}s; --dim:${(r.dim * DIM_SCALE).toFixed(4)}; --reps:${REPS}`}>
           <div class:list={["bw-track", reverse && "is-reverse"]}>
             {Array.from({ length: REPS }, () => (
               <div class="bw-copy">
@@ -136,13 +193,57 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
     overflow: hidden;
     user-select: none;
     pointer-events: none;
-    /* Fades out towards the left, where the footer's real content sits, so the
-       field never competes with the links for legibility. The layout reserves
-       an empty right-hand track for this, and the ramp is aligned to it: gone
-       by the time it reaches the text column, at full strength across the
-       space kept clear for it. */
+  }
+
+  /* Fades out towards the left, where the footer's real content sits, so the
+     field never competes with the links for legibility. The layout reserves
+     an empty right-hand track for this, and the ramp is aligned to it: gone
+     by the time it reaches the text column, at full strength across the
+     space kept clear for it. */
+  .bw-mask-right {
     -webkit-mask-image: linear-gradient(90deg, transparent 62%, #000 86%, #000 100%);
     mask-image: linear-gradient(90deg, transparent 62%, #000 86%, #000 100%);
+  }
+
+  /* For a band whose content runs the full width: strongest at the two outer
+     edges, cleared out of the middle where the type is. */
+  .bw-mask-edges {
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 28%, transparent 72%, #000 100%);
+    mask-image: linear-gradient(90deg, #000 0%, transparent 28%, transparent 72%, #000 100%);
+  }
+
+  /* Only the outer gutters. The hero's headline starts at --pad-x and runs
+     most of the column, so the "edges" ramp above (clear from 28%) still put
+     marks under the first two or three characters of every line. This clears
+     by 11%, which is inside the page gutter at every breakpoint, so the field
+     frames the hero instead of sitting behind the type. */
+  .bw-mask-gutters {
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 11%, transparent 89%, #000 100%);
+    mask-image: linear-gradient(90deg, #000 0%, transparent 11%, transparent 89%, #000 100%);
+  }
+
+  /* Clears a band off the TOP instead of off the sides. The work band's
+     section head is a two-column grid spanning the full width — title left,
+     paragraph right — so there is no horizontal ramp that can miss it. A
+     vertical one can: the field starts below the head and fills the space the
+     work stage sits in, which is mostly empty ink. Combined with a gentle
+     side fade so it still has no hard edge of its own. */
+  .bw-mask-below {
+    -webkit-mask-image:
+      linear-gradient(180deg, transparent var(--bw-clear-top), #000 calc(var(--bw-clear-top) + 14%)),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.35) 30%, rgb(0 0 0 / 0.35) 70%, #000 100%);
+    mask-image:
+      linear-gradient(180deg, transparent var(--bw-clear-top), #000 calc(var(--bw-clear-top) + 14%)),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.35) 30%, rgb(0 0 0 / 0.35) 70%, #000 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* An even vignette — texture everywhere, softened off the edges so the
+     field has no hard boundary of its own. */
+  .bw-mask-full {
+    -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, #000 20%, transparent 88%);
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, #000 20%, transparent 88%);
   }
 
   /* Carries the <symbol> only; nothing in it paints directly. */
@@ -207,7 +308,7 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
     flex: none;
     width: clamp(7rem, 13vw, 13rem);
     height: auto;
-    stroke: rgb(255 255 255 / var(--dim));
+    stroke: rgb(var(--bw-stroke) / var(--dim));
     stroke-width: 1;
     fill: none;
     vector-effect: non-scaling-stroke;
@@ -219,8 +320,11 @@ const markId = `bw-mark-${Math.random().toString(36).slice(2, 8)}`;
     to { transform: translateX(calc(-100% / var(--reps))); }
   }
 
-  /* Paused by the footer's own control, so one button stops the whole field. */
-  :global(.ft.is-paused) .bw-track { animation-play-state: paused; }
+  /* Paused by the footer's own control, so one button stops the whole field.
+     The home page's hero and work band reuse the same hook on their own
+     wrappers, so any surface can stop its wall by toggling one class. */
+  :global(.ft.is-paused) .bw-track,
+  :global(.is-paused) .bw-track { animation-play-state: paused; }
 
   @media (prefers-reduced-motion: reduce) {
     .bw-track { animation: none; }

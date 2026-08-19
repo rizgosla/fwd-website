@@ -144,7 +144,12 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding-block: clamp(5rem, 13vh, 9rem);
+    /* Page sections run clamp(4rem, 9vh, 7rem). This is the closing beat, so it
+       gets one step more air rather than the 13vh it used to take: at 900px
+       tall that was 117px against a neighbouring section's 81px, ~45% taller,
+       which read as a gap rather than as emphasis. 10.5vh lands ~15% above its
+       neighbours — deliberate, not disconnected. */
+    padding-block: clamp(4.5rem, 10.5vh, 7.5rem);
   }
   .ctc-light {
     --ctc-fg: var(--color-navy);
@@ -251,15 +256,23 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
        mark, with the font-size above scaled to match so the character texture
        scales with it instead of the grid just getting finer.
 
-       The mark still needs slack above and below or the letterforms run into
-       the element edge and get clipped; at 4:3 it lands at ~78% of the box
-       height, which is the air the square raster used to give it for free.
-       Centred, not stretched, so it tracks the type block. */
+       The ratio is the WORDMARK's, not an arbitrary 4:3. The band this
+       rasterises is 157.5 x 95.34 in the logo's viewBox, so it is ~1.65:1;
+       held in a 4:3 box the art could only ever fill ~78% of the height and
+       the leftover split as dead rows top and bottom. Measured, that was
+       ~50px of empty character grid above the mark and ~42px below — not
+       equal, so it read as the mark sitting slightly high in a box that was
+       too tall for it, which is the awkwardness this had.
+
+       Matching the box to the art removes the gap rather than trying to
+       balance it. A little slack is still wanted so the ascenders and the
+       dot do not touch the element edge, hence 1.55 rather than the exact
+       1.65. Centred, not stretched, so it tracks the type block. */
     .ctc-ascii {
       display: block;
       grid-column: 2; grid-row: 1;
       align-self: center;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1.55;
     }
     .ctc-motion { grid-column: 1 / -1; grid-row: 2; }
   }
@@ -281,9 +294,16 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
     letter-spacing: -0.03em;
     color: var(--ctc-fg);
     max-width: 17ch;
-    /* The swapping word changes the last line's width; balancing would make
-       the whole heading re-wrap on every swap. */
-    text-wrap: initial;
+    /* Balanced, which only became safe once .ctc-swap below became a block.
+       While the cycling word shared a line with the lead, balancing re-wrapped
+       the whole heading every time the word changed — hence the plain value this
+       replaces. Now the lead wraps as its own paragraph and the swap always
+       starts a new line, so a balance here is computed once and never moves.
+
+       It is also what stops the remaining orphan: at 1440px /work's lead
+       ("Want your site to be the") broke as "Want your site to be" / "the",
+       leaving one word on a line. Balancing splits it evenly instead. */
+    text-wrap: balance;
   }
 
   /* Static ending carries the same accent the cycling words do, so a page
@@ -295,9 +315,22 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
   }
 
   /* All four words share one grid cell, so the slot is as wide as the
-     longest and nothing above it reflows when the word changes. */
+     longest and nothing above it reflows when the word changes.
+
+     BLOCK, not inline-grid, and that is what stops the headline orphaning a
+     word. The slot is sized to the LONGEST phrase in the set, so it behaves
+     as one very wide unbreakable word — and on /work the longest ("one people
+     bookmark?", 20ch) is wider than .ctc-title's 17ch measure on its own. The
+     line-breaker therefore could never fit anything beside it, and whatever
+     ended the lead was left stranded: "Want your site to be" / "the" /
+     "next one here?".
+
+     Starting the swap on its own line makes that break deliberate and
+     identical on every page — the lead wraps as prose, the cycling phrase is
+     always the last line — instead of depending on whether a given page's
+     longest word happens to leave room for the one before it. */
   .ctc-swap {
-    display: inline-grid;
+    display: grid;
     vertical-align: top;
   }
   .ctc-swap-item {
@@ -333,8 +366,10 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
 
   .ctc-actions {
     display: flex; align-items: center; flex-wrap: wrap;
+    /* No margin-top: the 1.5rem .ctc-main gap already separates this from the
+       lede, and the extra 0.5rem on top of it made the button sit at an
+       arbitrary 2rem that matched no other step in the section. */
     gap: 1rem 1.5rem;
-    margin-top: 0.5rem;
   }
   .ctc-note {
     display: inline-flex; align-items: center; gap: 0.6rem;
@@ -461,6 +496,23 @@ const titleId = `ctc-title-${Math.random().toString(36).slice(2, 8)}`;
   @media (max-width: 700px) {
     .ctc-title { font-size: var(--text-step-4); max-width: 14ch; }
     .ctc-ascii { opacity: 0.13; }
+    /* vh-based padding is at its most generous on a tall phone, exactly where
+       there is least room for it — 13vh of an 844px viewport was 110px at each
+       end against a neighbouring section's 76px. 9.5vh lands at ~80px: still
+       the tallest block on the page, without the hole. */
+    .ctc { padding-block: clamp(3.5rem, 9.5vh, 6rem); }
+    .ctc-main { gap: 1.25rem; }
+    .ctc-motion { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
+  }
+
+  @media (max-width: 480px) {
+    /* The button and the note stack at this width; a 1rem row gap between two
+       items of such different weight reads as a stray line, so tighten it and
+       let the button own the block. */
+    .ctc-actions { gap: 0.85rem 1.25rem; }
+    .ctc-btn { width: 100%; justify-content: center; }
+    /* Pause pill would otherwise squeeze the ticker to a couple of words. */
+    .ctc-motion { gap: 0.75rem; padding-top: 1rem; }
   }
 </style>
 

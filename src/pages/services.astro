@@ -638,7 +638,10 @@ const faqSchema = {
      ============================================================ */
   .svc-hero {
     position: relative;
-    padding-block: clamp(3.5rem, 8vh, 6rem) clamp(3rem, 7vh, 5.5rem);
+    /* Was 72/63 — asymmetric by 9px, which is not enough to read as
+       intentional and is exactly enough to look like a mistake. Now one step
+       plus a shoulder above (it sits under the nav) and one clean step below. */
+    padding-block: calc(var(--band-md) + var(--band-sm) * 0.4) var(--band-md);
     border-bottom: 1px solid var(--color-hairline);
     overflow: hidden;
   }
@@ -1414,7 +1417,10 @@ const faqSchema = {
      ============================================================ */
   /* Top padding matches the head's own margin-bottom below, so the title sits
      the same distance from the section's top edge as it does from the cards. */
-  .section-offer { padding-block: clamp(2.5rem, 5vh, 4rem) clamp(4rem, 9vh, 7rem); }
+  /* Was 45/81. The short top is deliberate — this band follows the hero and
+     the two read as one unit — so it keeps a shoulder above and a full step
+     below, now expressed on the scale. */
+  .section-offer { padding-block: var(--band-sm) var(--band-lg); }
   .section-offer .section-head { margin-bottom: clamp(2.5rem, 5vh, 4rem); }
 
   .offer-bento {

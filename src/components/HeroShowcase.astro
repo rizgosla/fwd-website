@@ -12,12 +12,21 @@
    -------------------------------------------------------------------------- */
 import { showcase } from "../data/showcase";
 import SitePreview from "./showcase/SitePreview.astro";
+import BrandWall from "./BrandWall.astro";
 
 const total = showcase.length;
 const pad = (n: number) => n.toString().padStart(2, "0");
 ---
 
 <div class="sc-panel" id="heroShowcase" data-total={total}>
+  {/* The inverse of the footer's field: the same logo paths, the same drift,
+      stroked in navy on light instead of white on ink. It replaces the
+      blueprint grid this panel used to paint — that grid was one of three
+      copies of the same rule on the page, and the mark says the studio's
+      name instead. Contained by .sc-panel's own overflow: hidden, so it
+      stops at the panel's left border and never reaches the headline. */}
+  <BrandWall tone="paper" mask="full" opacity={1.6} rows={16} angle={-12} />
+
   <div class="browser">
     {/* chrome — dots, live URL bar, build/stage pill */}
     <div class="browser-chrome">
@@ -117,19 +126,9 @@ const pad = (n: number) => n.toString().padStart(2, "0");
     align-self: stretch;
     min-height: clamp(560px, 80vh, 880px);
   }
-  /* Grid runs the FULL height of the panel — it only softens at the left and
-     right edges, so the vertical lines reach top and bottom of the section. */
-  .sc-panel::before {
-    content: "";
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(13,47,69,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(13,47,69,0.06) 1px, transparent 1px);
-    background-size: 38px 38px;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0%, black 13%, black 87%, transparent 100%);
-    pointer-events: none;
-  }
+  /* The blueprint grid that used to paint here is gone — the BrandWall above
+     replaces it. The panel already clips to itself, so the field runs the full
+     height and stops cleanly at the border. */
 
   .browser {
     width: min(860px, 100%);

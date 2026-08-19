@@ -58,6 +58,22 @@
   --container-page: 1240px;
 }
 
+/* ---------------------------------------------------------------------
+   VERTICAL BAND SCALE. Three steps, so a section picks a rhythm rather
+   than inventing a clamp. Every value is a vh-based clamp of the same
+   shape, so the whole site scales together on a short viewport.
+
+   --band-lg is the existing .section value, unchanged, because it was
+   already the dominant rhythm (9 of 24 sections measured). The other two
+   are simple fractions of it, and exist so a denser band reads as
+   deliberately tighter rather than as a different system.
+   --------------------------------------------------------------------- */
+:root {
+  --band-lg: clamp(4rem, 9vh, 7rem);
+  --band-md: clamp(3rem, 7vh, 5.25rem);
+  --band-sm: clamp(2rem, 5vh, 3.5rem);
+}
+
 /* Global page horizontal padding — consumed by .full, .nav-bar, .footer-inner,
    .cta-band-inner, etc. Without this defined in :root, those elements
    collapsed to viewport edges. */
@@ -579,7 +595,7 @@ main:focus { outline: none; }
   padding-inline: var(--pad-x);
 }
 
-.section { padding-block: clamp(4rem, 9vh, 7rem); position: relative; }
+.section { padding-block: var(--band-lg); position: relative; }
 
 /* ============================================================
    BUTTONS — G-06 focus rings folded in
@@ -1258,8 +1274,44 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
    ROUND 3 — density + new components
    ============================================================ */
 
-/* Tighten section padding sitewide (fluidity feedback) */
-.section { padding-block: clamp(3rem, 6vh, 5rem); }
+/* The "tighten section padding sitewide" override that used to sit here is
+   gone. It re-declared .section at clamp(3rem, 6vh, 5rem), 400 lines after
+   the real declaration, so the site had two competing defaults: nine sections
+   overrode their way back up to the larger one and the rest were left at the
+   smaller, which is why the measured rhythm had twelve distinct values. One
+   declaration now, on --band-lg; anything that wants to be denser opts in
+   with --band-md rather than inheriting it by accident. */
+
+/* ------------------------------------------------------------------
+   THE CLOSING MARGIN, on pages that do not end in a CTA band.
+
+   Four of the seven pages close with CtaClose, which carries ~95px of
+   its own bottom padding, so the last line of type gets ~105px of air
+   before the dark footer starts. /contact, /privacy and /terms end on a
+   plain .section instead and were closing on 54px — measured, the last
+   line of "Questions about these terms? Email ..." sat 74px above the
+   footer against 105px everywhere else, so those pages ran into the
+   dark band while the rest landed softly.
+
+   :last-of-type rather than a class, so this is a property of being the
+   final section on a page and no future page has to remember to opt in.
+   The value matches .ctc's own padding-block so all seven pages close on
+   the same measure. Sections that already own their closing treatment
+   (the ink CTA band, and anything explicitly flush) are excluded.
+   ------------------------------------------------------------------ */
+main > .section:last-of-type:not(.ctc):not(.is-flush) {
+  padding-bottom: clamp(4.5rem, 10.5vh, 7.5rem);
+}
+/* Mirrors CtaClose's own phone override. vh padding is most generous on a
+   tall phone, which is where there is least room for it, so the CTA band
+   steps down to 9.5vh under 700px; without the same step these pages closed
+   on ~114px against the CTA pages' ~96px, overshooting the thing they are
+   supposed to match. */
+@media (max-width: 700px) {
+  main > .section:last-of-type:not(.ctc):not(.is-flush) {
+    padding-bottom: clamp(3.5rem, 9.5vh, 6rem);
+  }
+}
 .page-hero { padding-block: clamp(3rem, 9vh, 6rem) clamp(2rem, 5vh, 4rem); }
 .values-band { padding-block: clamp(3rem, 7vh, 5rem); margin-block: 0; }
 .email-poster { padding-block: clamp(3rem, 7vh, 5rem); }
@@ -1272,7 +1324,9 @@ main { animation: pageIn 400ms var(--ease-out-expo) both; }
 .walkthrough {
   background: var(--color-ink);
   color: var(--color-paper);
-  padding-block: clamp(3rem, 7vh, 5rem);
+  /* Already ~63px, which is --band-md; stated as the token so it tracks the
+     scale if that step is ever retuned. */
+  padding-block: var(--band-md);
   position: relative;
   overflow: hidden;
 }
