@@ -114,12 +114,7 @@ const projects = (await getCollection("work")).sort(
   .work-hero {
     position: relative;
     background: var(--color-paper);
-    /* The grid below carries a min-height and centres its own content, so
-       tall padding here is added ON TOP of that rather than creating the
-       height — at 12vh the band opened with ~330px of empty paper above the
-       first line. The band's size is the min-height's job; this is just the
-       breathing room that keeps the type off the nav and the meta strip. */
-    padding-block: clamp(2.5rem, 5vh, 4rem) clamp(2.5rem, 5vh, 4rem);
+    padding-block: var(--band-md) var(--band-md);
     border-bottom: 1px solid var(--color-line);
     overflow: hidden;
   }
@@ -128,9 +123,6 @@ const projects = (await getCollection("work")).sort(
     grid-template-columns: 1fr;
     gap: clamp(3rem, 6vw, 5rem);
     align-items: center;
-    /* Matches the home hero's band height exactly (100px is the nav), so the
-       two pages open on the same measure. */
-    min-height: calc(100vh - 100px);
     align-content: center;
   }
   @media (min-width: 900px) {
@@ -142,12 +134,12 @@ const projects = (await getCollection("work")).sort(
      descenders clip against the lede below, so this runs 1.1 with a reserve
      rather than inheriting .display's 0.98. */
   .work-hero-title {
-    font-size: var(--text-step-6); margin: 0;
-    line-height: 1.05; padding-bottom: 0.08em;
-    letter-spacing: -0.03em; color: var(--color-navy); max-width: 12ch;
+    font-size: var(--text-step-5); margin: 0;
+    line-height: 1.1; padding-bottom: 0.08em;
+    letter-spacing: -0.03em; color: var(--color-navy); max-width: 14ch;
   }
   .work-hero-title em { font-style: italic; color: var(--color-blue); }
-  .work-hero-lede { margin: 1.75rem 0 0; color: var(--color-fg-soft); max-width: 44ch; font-size: var(--text-step-2); line-height: 1.5; text-wrap: pretty; }
+  .work-hero-lede { margin: 1.5rem 0 0; color: var(--color-fg-soft); max-width: 46ch; font-size: var(--text-step-1); }
 
   /* ============================================================
      META STRIP — same pattern as the homepage's, one row down.
@@ -177,10 +169,22 @@ const projects = (await getCollection("work")).sort(
   /* ============================================================
      HERO VISUAL — three browser frames fanning out on entry.
      ============================================================ */
+  /* The fan is the hero's subject on this page — it is the only picture of
+     the work above the fold — and it was rendering smaller than the browser
+     frame in the home page's hero despite doing the same job. Roughly a
+     third larger on every axis: the panes below grow with it, and the height
+     here has to grow in step or the outer two clip against the container as
+     they rotate out. */
   .wh-fan {
     position: relative;
-    height: clamp(260px, 34vw, 400px);
+    height: clamp(340px, 44vw, 520px);
     display: flex; align-items: center; justify-content: center;
+  }
+  /* One column under 900px: the fan runs full width, so it needs less height
+     than the two-column case where it sits beside the type. The pane sizing
+     above is container-relative and needs no override. */
+  @media (max-width: 899px) {
+    .wh-fan { height: clamp(240px, 56vw, 380px); }
   }
   /* The container animates its children rather than itself, so it has to
      opt out of the [data-mv-watch] opacity hold. */
@@ -189,9 +193,18 @@ const projects = (await getCollection("work")).sort(
   .wh-pane {
     position: absolute;
     top: 50%; left: 50%;
-    width: clamp(210px, 27vw, 320px);
-    margin: calc(clamp(150px, 19vw, 224px) / -2) 0 0 calc(clamp(210px, 27vw, 320px) / -2);
-    height: clamp(150px, 19vw, 224px);
+    /* ~1.33x the previous 210-320px, and sized against the CONTAINER, not the
+       viewport: this sits in .wh-fan, which is the full page width at mobile
+       but only ~half of it once the grid goes two-column at 900px. One vw
+       clamp cannot express both, and reading 36vw of the whole viewport
+       inside a half-width box is what pushed the outer panes through the
+       right gutter between 900 and 1100px.
+
+       72% leaves room for --spread (the outer panes sit +/-1 spread from
+       centre) plus the lift their rotation adds. Height is a share of the
+       container's height, which .wh-fan sets explicitly. */
+    width: clamp(200px, 72%, 425px);
+    height: clamp(145px, 62%, 298px);
     display: flex; flex-direction: column;
     border-radius: 14px;
     border: 1px solid var(--color-line);
@@ -200,10 +213,16 @@ const projects = (await getCollection("work")).sort(
     box-shadow:
       0 40px 90px -40px rgb(7 23 34 / 0.32),
       0 14px 30px -14px rgb(7 23 34 / 0.18);
-    --spread: calc((var(--i) - 1) * clamp(30px, 4.5vw, 62px));
+    /* Spread grows with the panes, or a larger fan reads as a tighter stack —
+       a share of the container, for the same reason the width is. */
+    --spread: calc((var(--i) - 1) * clamp(26px, 11%, 82px));
     --rot: calc((var(--i) - 1) * 3.2deg);
-    /* Start stacked square-on, settle out into the fan. */
-    transform: translate(0, 16px) rotate(0deg);
+    /* -50%/-50% centres the pane on the container's midpoint and resolves
+       against the element's OWN box, which is what the negative margins used
+       to do — they had to go, because a percentage margin-top resolves
+       against the containing block's width and so would not cancel a
+       percentage height. Start stacked square-on, settle out into the fan. */
+    transform: translate(-50%, calc(-50% + 16px)) rotate(0deg);
     opacity: 0;
     transition:
       transform 1100ms var(--ease-out-expo),
@@ -212,7 +231,7 @@ const projects = (await getCollection("work")).sort(
     z-index: calc(var(--i) + 1);
   }
   .wh-fan.is-inview .wh-pane {
-    transform: translate(var(--spread), 0) rotate(var(--rot));
+    transform: translate(calc(-50% + var(--spread)), -50%) rotate(var(--rot));
     opacity: 1;
   }
 
@@ -259,15 +278,6 @@ const projects = (await getCollection("work")).sort(
   }
 
   @media (max-width: 899px) {
-    .work-hero-grid { min-height: auto; }
-    .work-hero-title {
-      font-size: clamp(3rem, 11vw, 5rem);
-      max-width: 14ch;
-      overflow-wrap: break-word;
-    }
-    .work-hero-lede { font-size: var(--text-step-1); max-width: 46ch; }
-  }
-  @media (max-width: 400px) {
-    .work-hero-title { font-size: clamp(2.5rem, 10.5vw, 3.2rem); letter-spacing: -0.02em; }
+    .work-hero-title { font-size: clamp(2.6rem, 10vw, 4.2rem); }
   }
 </style>
