@@ -1132,20 +1132,21 @@ const cities = [
   .section-title { font-size: var(--text-step-4); max-width: 18ch; margin: 0; }
   .section-sub { color: var(--color-fg-soft); max-width: 50ch; font-size: var(--text-step-1); margin: 0; text-wrap: pretty; }
 
-  /* Offer head: the sub sits over the 2x3 tile block to the right of the
-     headline card, so its column matches the bento's own split (2 of 4
-     columns, 1.5rem gutter) rather than the generic 1fr/1.1fr head grid.
-     It is allowed the full width of that column so it runs two lines —
-     roughly the height of the title beside it — and both are centred on
-     the same line, which lets the head sit closer to the cards. */
+  /* Section heads: on desktop every sub sits at the same x as the offer's,
+     over the right-hand half of the band, so the four heads down the page
+     (offer, selected work, process, service area) share one measure and one
+     start line instead of three. The split matches the offer bento's own
+     2 + 2 column split (half the band, minus half its 1.5rem gutter).
+     Title and sub are centred on each other and the head sits closer to
+     what follows, since the sub is now two lines rather than three. */
   @media (min-width: 1000px) {
-    .section-offer .section-head {
+    .section-head {
       grid-template-columns: calc(50% - 0.75rem) 1fr;
       gap: 1.5rem;
       align-items: center;
       margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
     }
-    .section-offer .section-sub { max-width: none; text-wrap: balance; }
+    .section-sub { max-width: none; text-wrap: balance; }
   }
 
   /* ============================================================
@@ -1533,6 +1534,9 @@ const cities = [
      ============================================================ */
   .area-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
   @media (min-width: 760px) { .area-grid { grid-template-columns: 1fr 1.1fr; gap: 3rem; } }
+  /* At the width where the heads switch to the even 2 + 2 split, the map/card
+     pair follows them, so the card still starts on the x of the sub above it. */
+  @media (min-width: 1000px) { .area-grid { grid-template-columns: calc(50% - 0.75rem) 1fr; gap: 1.5rem; } }
 
   /* ---- left: map in a double bezel ----
      Outer shell is paper with the two stacked shadows the project cards use;

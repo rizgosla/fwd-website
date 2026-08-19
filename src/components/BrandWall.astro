@@ -88,20 +88,18 @@ const {
   clearTop = 42,
 } = Astro.props;
 
-/* Brand blue rather than black: the paper surfaces this sits on are warm
-   off-white and a neutral grey outline goes muddy against them, where the
-   brand blue stays a colour. 0.42 is the alpha ratio that makes the stroke
-   read at the same weight as a white stroke on ink — dark-on-light carries
-   further at equal alpha, and the footer is the reference the other two
-   instances have to match.
+/* A LIGHT blue rather than the dark brand blue: --color-blue (#144667) is deep
+   enough that, once it is knocked back to a ~0.07 effective alpha over white,
+   what survives is its value and not its hue — the hero field read as plain
+   grey. A lighter, more saturated blue (#4E86AE) keeps its colour at the same
+   faintness, because there is far less black in it to wash out.
 
-   The value is --color-blue (#144667). Navy (#0d2f45) was tried here and read
-   as a flat grey at these low alphas — a dark neutral loses its hue long
-   before it loses its weight — so the paper field uses the accent blue, which
-   still reads as a colour once it is this faint. Written as an rgb triple
-   because the stroke composes it with a per-row alpha below. */
-const STROKE = tone === "paper" ? "20 70 103" : "255 255 255";
-const TONE_ALPHA = tone === "paper" ? 0.42 : 1;
+   Being lighter, it also carries less weight per unit alpha, so the tone alpha
+   goes up from 0.42 to 0.62 to land at the same visual presence as the white
+   stroke on ink. Written as an rgb triple because the stroke composes it with a
+   per-row alpha below. */
+const STROKE = tone === "paper" ? "78 134 174" : "255 255 255";
+const TONE_ALPHA = tone === "paper" ? 0.62 : 1;
 const DIM_SCALE = TONE_ALPHA * opacity;
 
 /* Per-row character. `dur` values are deliberately not multiples of one
